@@ -1,4 +1,11 @@
 package com.example.domain.models.enums;
 
-public class PlaceCategory {
+public enum PlaceCategory {
+    HOTEL,
+    RESTAURANT,
+    MUSEUM,
+    PARK,
+    SHOPPING,
+    ENTERTAINMENT,
+    OTHER,
 }
