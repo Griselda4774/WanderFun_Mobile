@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Black Shades -->
+    <color name="black1">#666666</color>
+    <color name="black2">#525252</color>
+    <color name="black3">#3D3D3D</color>
+    <color name="black4">#292929</color>
+    <color name="black5">#141414</color>
+
+    <!-- White Shades -->
+    <color name="white1">#F9F9F9</color>
+    <color name="white2">#EBEBEB</color>
+    <color name="white3">#D6D6D6</color>
+    <color name="white4">#C2C2C2</color>
+    <color name="white5">#ADADAD</color>
+
+    <!-- Green Shades -->
+    <color name="green1">#56DC7C</color>
+    <color name="green2">#34D562</color>
+    <color name="green3">#24B24C</color>
+    <color name="green4">#1F9842</color>
+    <color name="green5">#187733</color>
+
+    <!-- Blue Shades -->
+    <color name="blue1">#005AF5</color>
+    <color name="blue2">#004BCC</color>
+    <color name="blue3">#003CA3</color>
+    <color name="blue4">#002D7A</color>
+    <color name="blue5">#001F54</color>
+
+    <!-- Yellow Shades -->
+    <color name="yellow1">#F8E0A0</color>
+    <color name="yellow2">#F4D06F</color>
+    <color name="yellow3">#F2C854</color>
+    <color name="yellow4">#EFBC2E</color>
+    <color name="yellow5">#E4AC11</color>
+
+    <!-- Orange Shades -->
+    <color name="orange1">#FFB370</color>
+    <color name="orange2">#FF9D47</color>
+    <color name="orange3">#FF7F11</color>
+    <color name="orange4">#F57200</color>
+    <color name="orange5">#CC5F00</color>
+
+    <!-- Red Shades -->
+    <color name="red1">#F490A0</color>
+    <color name="red2">#F06A81</color>
+    <color name="red3">#ED4561</color>
+    <color name="red4">#E92042</color>
+    <color name="red5">#C91432</color>
+</resources>
