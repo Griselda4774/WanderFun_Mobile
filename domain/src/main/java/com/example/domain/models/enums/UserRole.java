@@ -1,4 +1,6 @@
 package com.example.domain.models.enums;
 
-public class UserRole {
+public enum UserRole {
+    ADMIN,
+    USER
 }

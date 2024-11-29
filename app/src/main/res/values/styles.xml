@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Text">
+        <item name="android:textColor">@color/black4</item>
+        <item name="android:fontFamily">@font/nunitosans_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Text.Logo">
+        <item name="android:fontFamily">@font/caveatbrush_regular</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Text.Logo.Splash">
+        <item name="android:textColor">@color/white1</item>
+        <item name="android:shadowColor">@color/black4</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">4</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    
+    <style name="Text.Header">
+        <item name="android:fontFamily">@font/nunitosans_bold</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="Text.Description">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Text.Description.Highlight">
+        <item name="android:textColor">@color/blue2</item>
+    </style>
+
+    <style name="Text.Content">
+    </style>
+
+    <style name="Text.Content.Highlight">
+        <item name="android:textColor">@color/blue2</item>
+    </style>
+
+    <style name="Text.Button">
+        <item name="android:fontFamily">@font/nunitosans_bold</item>
+    </style>
+
+    <style name="Text.Button.Highlight">
+        <item name="android:textColor">@color/white1</item>
+    </style>
+
+</resources>
