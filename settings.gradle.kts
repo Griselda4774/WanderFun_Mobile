@@ -21,5 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "WanderFunMobile"
 include(":app")
-include(":domain")
-include(":data")

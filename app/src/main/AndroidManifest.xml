@@ -13,11 +13,14 @@
         android:theme="@style/Theme.WanderFunMobile"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.LoginActivity"
-            android:exported="false"
-            android:theme="@style/ActivityTheme"/>
+            android:name=".infrastructure.ui.activities.RegisterActivity"
+            android:exported="false" />
         <activity
-            android:name=".ui.activities.SplashScreenActivity"
+            android:name=".infrastructure.ui.activities.LoginActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".infrastructure.ui.activities.SplashScreenActivity"
             android:exported="true"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
@@ -27,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".infrastructure.ui.activities.MainActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
     </application>

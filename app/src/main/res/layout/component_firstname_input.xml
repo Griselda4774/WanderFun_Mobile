@@ -8,7 +8,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
-        
+
         <LinearLayout
             android:id="@+id/input_header"
             android:layout_width="wrap_content"
@@ -17,16 +17,16 @@
             app:layout_constraintTop_toTopOf="parent"
             android:orientation="horizontal"
             android:gravity="center">
-            
+
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:background="@drawable/ic_mail"/>
+                android:background="@drawable/ic_user"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email"
+                android:text="Tên"
                 android:layout_marginStart="4dp"
                 style="@style/Text.Description" />
 
@@ -45,6 +45,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>
