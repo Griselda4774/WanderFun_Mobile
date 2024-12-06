@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".WanderFunApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,14 +14,14 @@
         android:theme="@style/Theme.WanderFunMobile"
         tools:targetApi="31">
         <activity
-            android:name=".infrastructure.ui.activities.RegisterActivity"
+            android:name=".infrastructure.ui.activity.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".infrastructure.ui.activities.LoginActivity"
+            android:name=".infrastructure.ui.activity.LoginActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activities.SplashScreenActivity"
+            android:name=".infrastructure.ui.activity.SplashScreenActivity"
             android:exported="true"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
@@ -30,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".infrastructure.ui.activities.MainActivity"
+            android:name=".infrastructure.ui.activity.MainActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
     </application>

@@ -1,6 +1,6 @@
 package com.example.wanderfunmobile.infrastructure.mapper;
 
-import com.example.wanderfunmobile.data.mapper.ObjectMapper;
+import com.example.wanderfunmobile.application.mapper.ObjectMapper;
 
 import org.modelmapper.ModelMapper;
 
