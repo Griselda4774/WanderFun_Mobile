@@ -2,7 +2,6 @@
 agp = "8.7.3"
 googleHiltAndroid = "2.51.1"
 hiltAndroid = "2.51.1"
-hiltCompiler = "2.44"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -10,15 +9,15 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
-modelmapper = "3.2.1"
+modelmapper = "3.2.2"
 retrofit = "2.11.0"
+viewpager2 = "1.1.0"
 
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "googleHiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -28,6 +27,7 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 modelmapper = { module = "org.modelmapper:modelmapper", version.ref = "modelmapper" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

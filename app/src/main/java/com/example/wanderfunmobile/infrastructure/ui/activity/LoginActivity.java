@@ -19,7 +19,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
-import com.example.wanderfunmobile.infrastructure.ui.viewmodel.LoginViewModel;
+import com.example.wanderfunmobile.infrastructure.viewmodel.LoginViewModel;
+import com.example.wanderfunmobile.network.dto.auth.LoginDto;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -60,20 +61,29 @@ public class LoginActivity extends AppCompatActivity {
 
 
         TextView loginButton = viewBinding.loginButton;
-
         loginButton.setOnClickListener(v -> {
             String username = emailEditText.getText().toString();
             String password = passwordEditText.getText().toString();
-            loginViewModel.login(username, password);
+            LoginDto loginDto = new LoginDto();
+            loginDto.setEmail(username);
+            loginDto.setPassword(password);
+            loginViewModel.login(loginDto);
         });
 
-        loginViewModel.getUserLiveData().observe(this, loginResponse ->
+        loginViewModel.getLiveData().observe(this, loginResponse ->
                 Toast.makeText(this, "Welcome " + loginResponse.getEmail(), Toast.LENGTH_SHORT).show()
         );
 
         loginViewModel.getErrorLiveData().observe(this, error ->
                 Toast.makeText(this, "Error: " + error, Toast.LENGTH_SHORT).show()
         );
+
+        TextView guestButton = viewBinding.guestButton;
+        guestButton.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void setupPasswordToggle(EditText passwordEditText, ImageView showIcon, ImageView hideIcon) {

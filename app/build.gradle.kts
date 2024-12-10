@@ -45,8 +45,9 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.dagger.hilt.android)
-    annotationProcessor(libs.hilt.compiler)
+    annotationProcessor(libs.hilt.android.compiler)
     implementation(libs.modelmapper)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.viewpager2)
 }

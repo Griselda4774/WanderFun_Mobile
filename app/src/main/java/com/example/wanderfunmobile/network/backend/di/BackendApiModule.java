@@ -1,5 +1,7 @@
 package com.example.wanderfunmobile.network.backend.di;
 
+import android.content.Context;
+
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.network.backend.AuthApi;
 
@@ -10,6 +12,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
+import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -20,9 +23,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BackendApiModule {
     @Provides
     @Singleton
-    public AuthApi provideAuthApi(Retrofit retrofit) {
+    public AuthApi provideAuthApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
-                .baseUrl(String.valueOf(R.string.base_url))
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)

@@ -51,4 +51,38 @@
         <item name="android:textColor">@color/white1</item>
     </style>
 
+    <style name="Text.BottomNav">
+        <item name="android:textColor">@color/black2</item>
+        <item name="android:fontFamily">@font/nunitosans_medium</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Text.BottomNav.Active">
+        <item name="android:textColor">@color/blue2</item>
+    </style>
+
+    <style name="Text.TabLabel">
+        <item name="android:fontFamily">@font/nunitosans_medium</item>
+    </style>
+
+    <style name="Text.TabLabel.Active">
+
+    </style>
+
+    <style name="Text.TabLabel.Active.Blue">
+        <item name="android:textColor">@color/blue2</item>
+    </style>
+
+    <style name="Text.TabLabel.Active.Orange">
+        <item name="android:textColor">@color/orange5</item>
+    </style>
+
+    <style name="Text.TabLabel.Active.Green">
+        <item name="android:textColor">@color/green4</item>
+    </style>
+
+    <style name="Text.TabLabel.Active.Red">
+        <item name="android:textColor">@color/red4</item>
+    </style>
+
 </resources>

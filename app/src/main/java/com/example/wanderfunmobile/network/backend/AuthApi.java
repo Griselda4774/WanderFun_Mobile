@@ -1,9 +1,10 @@
 package com.example.wanderfunmobile.network.backend;
 
-import com.example.wanderfunmobile.application.dto.ResponseDto;
-import com.example.wanderfunmobile.application.dto.auth.LoginDto;
-import com.example.wanderfunmobile.application.dto.auth.LoginResponseDto;
-import com.example.wanderfunmobile.application.dto.auth.RegisterDto;
+import com.example.wanderfunmobile.network.dto.ResponseDto;
+import com.example.wanderfunmobile.network.dto.auth.EmptyDataDto;
+import com.example.wanderfunmobile.network.dto.auth.LoginDto;
+import com.example.wanderfunmobile.network.dto.auth.LoginResponseDto;
+import com.example.wanderfunmobile.network.dto.auth.RegisterDto;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -13,6 +14,6 @@ public interface AuthApi {
     @POST("auth/login")
     Call<ResponseDto<LoginResponseDto>> login(@Body LoginDto loginDto);
 
-    @POST("/auth/register")
-    Call<ResponseDto<?>> register(@Body RegisterDto registerDto);
+    @POST("auth/register")
+    Call<ResponseDto<EmptyDataDto>> register(@Body RegisterDto registerDto);
 }

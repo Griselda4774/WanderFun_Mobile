@@ -181,6 +181,7 @@
                     style="@style/Text.Content"/>
 
                 <TextView
+                    android:id="@+id/guest_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Đăng nhập với tư cách khách"
