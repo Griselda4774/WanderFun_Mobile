@@ -41,7 +41,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <include layout="@layout/component_edit_text_text"/>
+            <include layout="@layout/component_edittext_text"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
