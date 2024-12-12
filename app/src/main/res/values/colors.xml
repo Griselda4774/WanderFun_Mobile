@@ -17,6 +17,8 @@
     <color name="white4">#C2C2C2</color>
     <color name="white5">#ADADAD</color>
 
+    <color name="white5_30">#4DADADAD</color>
+
     <!-- Green Shades -->
     <color name="green1">#56DC7C</color>
     <color name="green2">#34D562</color>
@@ -30,6 +32,12 @@
     <color name="blue3">#003CA3</color>
     <color name="blue4">#002D7A</color>
     <color name="blue5">#001F54</color>
+
+    <color name="blue2_20">#33004BCC</color>
+    <color name="blue2_30">#4D004BCC</color>
+    <color name="blue2_70">#B2004BCC</color>
+    <color name="blue2_80">#CC004BCC</color>
+    <color name="blue2_90">#E6004BCC</color>
 
     <!-- Yellow Shades -->
     <color name="yellow1">#F8E0A0</color>
@@ -51,4 +59,9 @@
     <color name="red3">#ED4561</color>
     <color name="red4">#E92042</color>
     <color name="red5">#C91432</color>
+
+    <color name="section_icon_color">@color/black4</color>
+    <color name="red_section_icon_color">@color/red4</color>
+    <color name="input_title_icon_color">@color/black3</color>
+
 </resources>

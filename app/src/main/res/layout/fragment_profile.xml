@@ -9,12 +9,556 @@
     tools:context=".infrastructure.ui.fragment.ProfileFragment">
 
     <TextView
+        android:id="@+id/header_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Profile"
+        android:text="Hồ sơ"
+        style="@style/Text.Title"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="@dimen/app_horizontal_margin2"/>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/header_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/user_base_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <ImageView
+                    android:id="@+id/user_avatar"
+                    android:layout_width="@dimen/big_avatar_size"
+                    android:layout_height="@dimen/big_avatar_size"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:contentDescription="User avatar"
+                    android:background="@drawable/bg_circle_img"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/brown"
+                    android:clipToOutline="true"/>
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trần Đình Tâm"
+                    style="@style/Text.Title"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/user_avatar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="4dp"
+                    android:background="@drawable/bg_ranking_label"
+                    app:layout_constraintTop_toBottomOf="@id/user_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <TextView
+                        android:id="@+id/rank_symbol"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="#"
+                        style="@style/Text.Button.Highlight"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/user_ranking"/>
+
+                    <TextView
+                        android:id="@+id/user_ranking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="9.999"
+                        android:layout_marginLeft="4dp"
+                        style="@style/Text.Button.Highlight"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/rank_symbol"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="32dp"
+                app:layout_constraintTop_toBottomOf="@id/user_base_info"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/personal_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cá nhân"
+                    style="@style/Text.Description"
+                    android:background="@color/blue2_30"
+                    android:paddingVertical="4dp"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/profile_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/personal_banner"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/profile_section_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_user"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/profile_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hồ sơ của tôi"
+                        style="@style/Text.Title.Section"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/profile_section_icon"/>
+
+                    <ImageView
+                        android:id="@+id/profile_section_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/favourite_place_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/profile_section"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/favourite_place_section_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_heart_2"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/favourite_place_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Địa điểm yêu thích"
+                        style="@style/Text.Title.Section"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/favourite_place_section_icon"/>
+
+                    <ImageView
+                        android:id="@+id/favourite_place_section_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/album_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/favourite_place_section"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/album_section_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_gallery"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/album_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Album của tôi"
+                        style="@style/Text.Title.Section"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/album_section_icon"/>
+
+                    <ImageView
+                        android:id="@+id/album_section_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/help_and_info_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Trợ giúp &amp; Thông tin"
+                    style="@style/Text.Description"
+                    android:background="@color/blue2_30"
+                    android:layout_marginTop="@dimen/section_padding_vertical"
+                    android:paddingVertical="4dp"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    app:layout_constraintTop_toBottomOf="@id/album_section"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/term_and_policy_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/help_and_info_banner"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/term_and_policy_section_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_information"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/term_and_policy_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Điều khoản và chính sách"
+                        style="@style/Text.Title.Section"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/term_and_policy_section_icon"/>
+
+                    <ImageView
+                        android:id="@+id/term_and_policy_section_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/help_center_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/term_and_policy_section"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/help_center_section_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_question"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/help_center_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Trung tâm trợ giúp"
+                        style="@style/Text.Title.Section"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/help_center_section_icon"/>
+
+                    <ImageView
+                        android:id="@+id/help_center_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/about_us_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/help_center_section"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/about_us_section_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_information"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/about_us_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Về chúng tôi"
+                        style="@style/Text.Title.Section"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/about_us_section_icon"/>
+
+                    <ImageView
+                        android:id="@+id/about_us_section_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/action_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hành động"
+                    style="@style/Text.Description"
+                    android:background="@color/blue2_30"
+                    android:paddingVertical="4dp"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:layout_marginTop="@dimen/section_padding_vertical"
+                    app:layout_constraintTop_toBottomOf="@id/about_us_section"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/report_problem_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/action_banner"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/report_problem_section_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_flag"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/report_problem_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Báo cáo vấn đề"
+                        style="@style/Text.Title.Section"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/report_problem_section_icon"/>
+
+                    <ImageView
+                        android:id="@+id/report_problem_section_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/change_password_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/report_problem_section"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/change_password_section_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_key"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/change_password_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đổi mật khẩu"
+                        style="@style/Text.Title.Section"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/change_password_section_icon"/>
+
+                    <ImageView
+                        android:id="@+id/change_password_section_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/log_out_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_horizontal_margin2"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/change_password_section"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/log_out_section_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_logout"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/red_section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/log_out_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đăng xuất"
+                        style="@style/Text.Title.Section.Red"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/log_out_section_icon"/>
+
+                    <ImageView
+                        android:id="@+id/log_out_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/red_section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

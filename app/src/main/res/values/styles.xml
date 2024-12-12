@@ -26,9 +26,28 @@
         <item name="android:textSize">28sp</item>
     </style>
 
+    <style name="Text.Title">
+        <item name="android:fontFamily">@font/nunitosans_bold</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Text.Title.Section">
+        <item name="android:fontFamily">@font/nunitosans_medium</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Text.Title.Section.Red">
+        <item name="android:textColor">@color/red4</item>
+    </style>
+
+    <style name="Text.Title.Input">
+        <item name="android:textColor">@color/black3</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/nunitosans_regular</item>
+    </style>
+
     <style name="Text.Description">
         <item name="android:textSize">14sp</item>
-
     </style>
 
     <style name="Text.Description.Highlight">
@@ -42,9 +61,12 @@
         <item name="android:textColor">@color/blue2</item>
     </style>
 
+    <style name="Text.Content.Highlight.White">
+        <item name="android:textColor">@color/white1</item>
+    </style>
+
     <style name="Text.Button">
         <item name="android:fontFamily">@font/nunitosans_bold</item>
-        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="Text.Button.Highlight">
@@ -83,6 +105,12 @@
 
     <style name="Text.TabLabel.Active.Red">
         <item name="android:textColor">@color/red4</item>
+    </style>
+
+    <style name="CustomMaterialDatePicker" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorOnPrimary">@color/white1</item>
+        <item name="colorPrimary">@color/blue2</item>
+        <item name="fontFamily">@font/nunitosans_medium</item>
     </style>
 
 </resources>

@@ -19,16 +19,17 @@
             android:gravity="center">
 
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:background="@drawable/ic_user"/>
+                android:layout_width="@dimen/input_title_icon_size"
+                android:layout_height="@dimen/input_title_icon_size"
+                android:src="@drawable/ic_user"
+                app:tint="@color/input_title_icon_color" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tên"
                 android:layout_marginStart="4dp"
-                style="@style/Text.Description" />
+                style="@style/Text.Title.Input" />
 
         </LinearLayout>
 

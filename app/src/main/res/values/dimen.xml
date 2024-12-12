@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="app_horizontal_margin">32dp</dimen>
+    <dimen name="app_horizontal_margin2">20dp</dimen>
+    <dimen name="section_margin">16dp</dimen>
+    <dimen name="section_title_margin">24dp</dimen>
+    <dimen name="section_padding_vertical">10dp</dimen>
+    <dimen name="section_icon_size">24dp</dimen>
+    <dimen name="section_next_icon_size">24dp</dimen>
+    <dimen name="input_title_icon_size">16dp</dimen>
+    <dimen name="input_margin_vertical">8dp</dimen>
+    <dimen name="input_padding">16dp</dimen>
+    <dimen name="input_icon_size">20dp</dimen>
+    <dimen name="back_button_padding">8dp</dimen>
+    <dimen name="title_content_margin">8dp</dimen>
+    <dimen name="content_metric_margin">4dp</dimen>
+    <dimen name="big_avatar_size">120dp</dimen>
+    <dimen name="small_avatar_size">32dp</dimen>
+    <dimen name="img_selector_icon_size">32dp</dimen>
+    <dimen name="item_padding">20dp</dimen>
 </resources>
