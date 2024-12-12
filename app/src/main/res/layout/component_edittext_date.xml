@@ -11,18 +11,20 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <EditText
-            android:id="@+id/phone_edittext"
+            android:id="@+id/date_edittext"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg_edit_text"
             android:padding="@dimen/input_padding"
-            android:inputType="phone"
             style="@style/Text.Content"
+            android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:hint="Nhập số điện thoại..."/>
+            android:hint="Chọn ngày"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

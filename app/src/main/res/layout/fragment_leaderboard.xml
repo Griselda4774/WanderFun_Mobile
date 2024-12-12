@@ -8,10 +8,22 @@
     android:background="@color/white1"
     tools:context=".infrastructure.ui.fragment.LeaderboardFragment">
 
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bảng xếp hạng"
+        style="@style/Text.Title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="@dimen/app_horizontal_margin2"/>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabPaddingEnd="@dimen/app_horizontal_margin2"
+        app:tabPaddingStart="@dimen/app_horizontal_margin2"
         app:tabIndicator="@drawable/tab_indicator"
         app:tabIndicatorColor="@color/blue2"
         app:tabIndicatorGravity="bottom"
@@ -19,7 +31,8 @@
         app:tabMode="fixed"
         app:tabGravity="fill"
         app:tabBackground="@drawable/bg_tab_layout"
-        app:layout_constraintTop_toTopOf="parent"
+        app:tabRippleColor="@null"
+        app:layout_constraintTop_toBottomOf="@id/header_title"
         app:layout_constraintBottom_toTopOf="@id/view_pager"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -28,6 +41,7 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingHorizontal="@dimen/app_horizontal_margin2"
         app:layout_constraintTop_toBottomOf="@id/tab_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
