@@ -1,5 +1,8 @@
 [versions]
 agp = "8.7.3"
+androidPluginAnnotationV9 = "3.0.2"
+androidSdk = "11.7.1"
+firebaseBom = "33.7.0"
 googleHiltAndroid = "2.51.1"
 hiltAndroid = "2.51.1"
 junit = "4.13.2"
@@ -15,8 +18,12 @@ viewpager2 = "1.1.0"
 
 
 [libraries]
+android-plugin-annotation-v9 = { module = "org.maplibre.gl:android-plugin-annotation-v9", version.ref = "androidPluginAnnotationV9" }
+android-sdk = { module = "org.maplibre.gl:android-sdk", version.ref = "androidSdk" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "googleHiltAndroid" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

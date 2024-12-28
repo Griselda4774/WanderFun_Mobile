@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "906797855273",
+    "project_id": "wanderfun-7e918",
+    "storage_bucket": "wanderfun-7e918.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906797855273:android:a2c638acf832e18aec6238",
+        "android_client_info": {
+          "package_name": "com.example.wanderfunmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsPVvTCkMGuGiXchl_m-fvqSx645c9jRY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

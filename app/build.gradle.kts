@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -50,4 +51,11 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.viewpager2)
+    implementation(libs.android.sdk)
+    implementation("com.github.goong-io:goong-map-android-sdk:1.5@aar") {
+        isTransitive = true
+    }
+    implementation(libs.android.plugin.annotation.v9)
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.analytics)
 }

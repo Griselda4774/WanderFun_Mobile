@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
-import com.example.wanderfunmobile.infrastructure.viewmodel.LoginViewModel;
+import com.example.wanderfunmobile.viewmodel.LoginViewModel;
 import com.example.wanderfunmobile.network.dto.auth.LoginDto;
 
 import dagger.hilt.android.AndroidEntryPoint;

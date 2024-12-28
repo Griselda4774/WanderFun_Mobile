@@ -67,6 +67,7 @@
 
     <style name="Text.Button">
         <item name="android:fontFamily">@font/nunitosans_bold</item>
+        <item name="android:textColor">@color/blue2</item>
     </style>
 
     <style name="Text.Button.Highlight">

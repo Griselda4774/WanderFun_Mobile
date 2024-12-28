@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.infrastructure.ui.adapter;
+package com.example.wanderfunmobile.infrastructure.ui.adapter.trip;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
