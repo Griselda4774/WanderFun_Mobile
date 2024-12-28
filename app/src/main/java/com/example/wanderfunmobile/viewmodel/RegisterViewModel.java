@@ -1,13 +1,13 @@
-package com.example.wanderfunmobile.infrastructure.viewmodel;
+package com.example.wanderfunmobile.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.network.dto.ResponseDto;
-import com.example.wanderfunmobile.network.dto.auth.LoginDto;
-import com.example.wanderfunmobile.network.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.network.backend.AuthApi;
+import com.example.wanderfunmobile.network.dto.ResponseDto;
+import com.example.wanderfunmobile.network.dto.auth.EmptyDataDto;
+import com.example.wanderfunmobile.network.dto.auth.RegisterDto;
 
 import java.io.IOException;
 
@@ -19,29 +19,29 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @HiltViewModel
-public class LoginViewModel extends ViewModel {
+public class RegisterViewModel extends ViewModel {
     private final AuthApi authApi;
-    private final MutableLiveData<LoginResponseDto> liveData = new MutableLiveData<>();
+    private final MutableLiveData<String> liveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
 
     @Inject
-    public LoginViewModel(AuthApi authApi) {
+    public RegisterViewModel(AuthApi authApi) {
         this.authApi = authApi;
     }
 
-    public LiveData<LoginResponseDto> getLiveData() { return liveData; }
+    public LiveData<String> getLiveData() { return liveData; }
     public LiveData<String> getErrorLiveData() { return errorLiveData; }
 
-    public void login(LoginDto loginDto) {
+    public void register(RegisterDto registerDto) {
         try {
-            Call<ResponseDto<LoginResponseDto>> call = authApi.login(loginDto);
-            call.enqueue(new Callback<ResponseDto<LoginResponseDto>>() {
+            Call<ResponseDto<EmptyDataDto>> call = authApi.register(registerDto);
+            call.enqueue(new Callback<ResponseDto<EmptyDataDto>>() {
                 @Override
-                public void onResponse(Call<ResponseDto<LoginResponseDto>> call, Response<ResponseDto<LoginResponseDto>> response) {
+                public void onResponse(Call<ResponseDto<EmptyDataDto>> call, Response<ResponseDto<EmptyDataDto>> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        liveData.postValue(response.body().getData());
+                        liveData.postValue(response.body().getMessage());
                     } else {
-                        String errorMessage = "Login failed";
+                        String errorMessage = "Register failed";
                         if (response.errorBody() != null) {
                             try {
                                 errorMessage = response.errorBody().string();
@@ -54,7 +54,7 @@ public class LoginViewModel extends ViewModel {
                 }
 
                 @Override
-                public void onFailure(Call<ResponseDto<LoginResponseDto>> call, Throwable t) {
+                public void onFailure(Call<ResponseDto<EmptyDataDto>> call, Throwable t) {
                     errorLiveData.postValue(t.getMessage());
                 }
             });
@@ -62,5 +62,4 @@ public class LoginViewModel extends ViewModel {
             errorLiveData.postValue(e.getMessage());
         }
     }
-
 }

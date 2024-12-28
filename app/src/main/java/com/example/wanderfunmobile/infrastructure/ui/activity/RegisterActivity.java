@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityRegisterBinding;
-import com.example.wanderfunmobile.infrastructure.viewmodel.RegisterViewModel;
+import com.example.wanderfunmobile.viewmodel.RegisterViewModel;
 import com.example.wanderfunmobile.network.dto.auth.RegisterDto;
 
 import dagger.hilt.android.AndroidEntryPoint;

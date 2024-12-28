@@ -18,4 +18,8 @@
     <dimen name="small_avatar_size">32dp</dimen>
     <dimen name="img_selector_icon_size">32dp</dimen>
     <dimen name="item_padding">20dp</dimen>
+    <dimen name="button_container_padding">32dp</dimen>
+    <dimen name="button_margin">16dp</dimen>
+    <dimen name="button_icon_size">20dp</dimen>
+    <dimen name="rounded_button_size">60dp</dimen>
 </resources>

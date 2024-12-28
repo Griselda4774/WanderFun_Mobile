@@ -3,6 +3,12 @@
     <string name="app_logo_no_bg">App Logo No Background</string>
     <string name="api_prefix">wanderfun</string>
     <string name="base_url">http://192.168.1.10:8080/wanderfun/</string>
+
+    <string name="goong_api_url">https://rsapi.goong.io/</string>
+    <string name="goong_map_url">https://tiles.goong.io</string>
+    <string name="goong_api_key">xC0sC1N7JwgjhB9bBCunmIqta8U1Mi6cvK42RQOK</string>
+    <string name="goong_map_key">SwuyUpXUUJBRLUOj65PR5YokDBYBnrpdT5XGtVcM</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

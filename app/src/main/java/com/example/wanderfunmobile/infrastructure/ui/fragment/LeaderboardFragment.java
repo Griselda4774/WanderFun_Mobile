@@ -15,8 +15,7 @@ import android.widget.TextView;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.FragmentLeaderboardBinding;
-import com.example.wanderfunmobile.infrastructure.ui.adapter.LeaderboardTabAdapter;
-import com.example.wanderfunmobile.infrastructure.ui.adapter.TripTabAdapter;
+import com.example.wanderfunmobile.infrastructure.ui.adapter.leaderboard.LeaderboardTabAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
