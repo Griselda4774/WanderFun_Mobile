@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.network.dto.auth;
+package com.example.wanderfunmobile.network.dto;
 
 public class EmptyDataDto {
     public EmptyDataDto() {};

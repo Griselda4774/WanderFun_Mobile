@@ -3,7 +3,12 @@ package com.example.wanderfunmobile.network.backend.di;
 import android.content.Context;
 
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.network.backend.AlbumApi;
 import com.example.wanderfunmobile.network.backend.AuthApi;
+import com.example.wanderfunmobile.network.backend.CloudinaryApi;
+import com.example.wanderfunmobile.network.backend.PlaceApi;
+import com.example.wanderfunmobile.network.backend.TripApi;
+import com.example.wanderfunmobile.network.backend.UserApi;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,5 +39,80 @@ public class BackendApiModule {
                         .build())
                 .build()
                 .create(AuthApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public AlbumApi provideAlbumApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(AlbumApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public CloudinaryApi provideCloudinaryApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(CloudinaryApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public PlaceApi providePlaceApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(PlaceApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public TripApi provideTripApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(TripApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public UserApi provideUserApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(UserApi.class);
     }
 }

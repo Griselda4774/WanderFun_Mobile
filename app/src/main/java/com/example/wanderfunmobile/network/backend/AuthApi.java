@@ -1,7 +1,7 @@
 package com.example.wanderfunmobile.network.backend;
 
 import com.example.wanderfunmobile.network.dto.ResponseDto;
-import com.example.wanderfunmobile.network.dto.auth.EmptyDataDto;
+import com.example.wanderfunmobile.network.dto.EmptyDataDto;
 import com.example.wanderfunmobile.network.dto.auth.LoginDto;
 import com.example.wanderfunmobile.network.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.network.dto.auth.RegisterDto;

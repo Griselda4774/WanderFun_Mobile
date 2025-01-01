@@ -1,14 +1,13 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.place;
 
 import com.example.wanderfunmobile.domain.model.enums.PlaceCategory;
+import com.example.wanderfunmobile.network.dto.placeimage.PlaceImageCreateDto;
+import com.example.wanderfunmobile.network.dto.section.SectionCreateDto;
 
-import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
-public class Place {
-    private Long id;
+public class PlaceCreateDto {
     private double longitude;
     private double latitude;
     private String address;
@@ -17,7 +16,7 @@ public class Place {
     private String iconPublicId;
     private String coverImageUrl;
     private String coverImagePublicId;
-    private List<Section> description;
+    private List<SectionCreateDto> description;
     private int checkInPoint;
     private float checkInRange;
     private PlaceCategory category;
@@ -26,17 +25,9 @@ public class Place {
     private String alternativeName;
     private String operator;
     private String link;
-    private List<PlaceImage> placeImages;
-    private List<Feedback> feedbacks;
+    private List<PlaceImageCreateDto> placeImages;
 
-    public Place() {};
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public PlaceCreateDto() {
     }
 
     public double getLongitude() {
@@ -103,11 +94,11 @@ public class Place {
         this.coverImagePublicId = coverImagePublicId;
     }
 
-    public List<Section> getDescription() {
+    public List<SectionCreateDto> getDescription() {
         return description;
     }
 
-    public void setDescription(List<Section> description) {
+    public void setDescription(List<SectionCreateDto> description) {
         this.description = description;
     }
 
@@ -175,19 +166,11 @@ public class Place {
         this.link = link;
     }
 
-    public List<PlaceImage> getPlaceImages() {
+    public List<PlaceImageCreateDto> getPlaceImages() {
         return placeImages;
     }
 
-    public void setPlaceImages(List<PlaceImage> placeImages) {
+    public void setPlaceImages(List<PlaceImageCreateDto> placeImages) {
         this.placeImages = placeImages;
-    }
-
-    public List<Feedback> getFeedbacks() {
-        return feedbacks;
-    }
-
-    public void setFeedbacks(List<Feedback> feedbacks) {
-        this.feedbacks = feedbacks;
     }
 }

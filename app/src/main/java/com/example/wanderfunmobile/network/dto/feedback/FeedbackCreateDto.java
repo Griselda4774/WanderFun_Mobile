@@ -1,27 +1,20 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.feedback;
+
+import com.example.wanderfunmobile.network.dto.feedbackimage.FeedbackImageCreateDto;
 
 import java.util.Date;
 import java.util.List;
 
-public class Feedback {
-    private Long id;
+public class FeedbackCreateDto {
     private String userName;
     private String userAvatar;
     private float rating;
     private String comment;
-    private List<FeedbackImage> feedbackImages;
+    private List<FeedbackImageCreateDto> feedbackImages;
     private Date time;
     private Long placeId;
 
-    public Feedback() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public FeedbackCreateDto() {
     }
 
     public String getUserName() {
@@ -56,11 +49,11 @@ public class Feedback {
         this.comment = comment;
     }
 
-    public List<FeedbackImage> getFeedbackImages() {
+    public List<FeedbackImageCreateDto> getFeedbackImages() {
         return feedbackImages;
     }
 
-    public void setFeedbackImages(List<FeedbackImage> feedbackImages) {
+    public void setFeedbackImages(List<FeedbackImageCreateDto> feedbackImages) {
         this.feedbackImages = feedbackImages;
     }
 

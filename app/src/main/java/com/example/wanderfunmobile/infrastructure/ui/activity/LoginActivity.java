@@ -1,6 +1,7 @@
 package com.example.wanderfunmobile.infrastructure.ui.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -71,7 +72,21 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         loginViewModel.getLiveData().observe(this, loginResponse ->
-                Toast.makeText(this, "Welcome " + loginResponse.getEmail(), Toast.LENGTH_SHORT).show()
+                {
+                    Toast.makeText(this, "Welcome " + loginResponse.getEmail(), Toast.LENGTH_SHORT).show();
+                    SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putLong("id", loginResponse.getId());
+                    editor.putString("email", loginResponse.getEmail());
+                    editor.putString("role", loginResponse.getRole().toString());
+                    editor.putString("tokenType", loginResponse.getTokenType());
+                    editor.putString("accessToken", loginResponse.getAccessToken());
+                    editor.putString("refreshToken", loginResponse.getRefreshToken());
+                    editor.putBoolean("isLoggedIn", true);
+                    editor.apply();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
         );
 
         loginViewModel.getErrorLiveData().observe(this, error ->

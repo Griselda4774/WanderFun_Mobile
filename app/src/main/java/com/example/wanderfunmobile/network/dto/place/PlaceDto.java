@@ -1,13 +1,14 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.place;
 
+import com.example.wanderfunmobile.domain.model.Section;
 import com.example.wanderfunmobile.domain.model.enums.PlaceCategory;
+import com.example.wanderfunmobile.network.dto.feedbackimage.FeedbackImageDto;
+import com.example.wanderfunmobile.network.dto.placeimage.PlaceImageDto;
 
-import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
-public class Place {
+public class PlaceDto {
     private Long id;
     private double longitude;
     private double latitude;
@@ -26,10 +27,11 @@ public class Place {
     private String alternativeName;
     private String operator;
     private String link;
-    private List<PlaceImage> placeImages;
-    private List<Feedback> feedbacks;
+    private List<PlaceImageDto> placeImages;
+    private List<FeedbackImageDto> feedbacks;
 
-    public Place() {};
+    public PlaceDto() {
+    }
 
     public Long getId() {
         return id;
@@ -175,19 +177,19 @@ public class Place {
         this.link = link;
     }
 
-    public List<PlaceImage> getPlaceImages() {
+    public List<PlaceImageDto> getPlaceImages() {
         return placeImages;
     }
 
-    public void setPlaceImages(List<PlaceImage> placeImages) {
+    public void setPlaceImages(List<PlaceImageDto> placeImages) {
         this.placeImages = placeImages;
     }
 
-    public List<Feedback> getFeedbacks() {
+    public List<FeedbackImageDto> getFeedbacks() {
         return feedbacks;
     }
 
-    public void setFeedbacks(List<Feedback> feedbacks) {
+    public void setFeedbacks(List<FeedbackImageDto> feedbacks) {
         this.feedbacks = feedbacks;
     }
 }

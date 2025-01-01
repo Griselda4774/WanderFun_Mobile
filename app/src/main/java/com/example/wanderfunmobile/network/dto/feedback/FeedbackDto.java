@@ -1,9 +1,11 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.feedback;
+
+import com.example.wanderfunmobile.domain.model.FeedbackImage;
 
 import java.util.Date;
 import java.util.List;
 
-public class Feedback {
+public class FeedbackDto {
     private Long id;
     private String userName;
     private String userAvatar;
@@ -13,8 +15,7 @@ public class Feedback {
     private Date time;
     private Long placeId;
 
-    public Feedback() {
-    }
+    public FeedbackDto() {};
 
     public Long getId() {
         return id;

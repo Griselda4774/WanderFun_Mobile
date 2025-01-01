@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.wanderfunmobile.network.backend.AuthApi;
 import com.example.wanderfunmobile.network.dto.ResponseDto;
-import com.example.wanderfunmobile.network.dto.auth.EmptyDataDto;
+import com.example.wanderfunmobile.network.dto.EmptyDataDto;
 import com.example.wanderfunmobile.network.dto.auth.RegisterDto;
 
 import java.io.IOException;

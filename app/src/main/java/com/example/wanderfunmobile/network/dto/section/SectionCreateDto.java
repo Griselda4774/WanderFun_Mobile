@@ -1,22 +1,12 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.section;
 
-public class Section {
-    private Long id;
+public class SectionCreateDto {
     private String title;
     private String content;
     private String imageUrl;
     private String imagePublicId;
-    private Long placeId;
 
-    public Section() {};
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public SectionCreateDto() {};
 
     public String getTitle() {
         return title;
@@ -48,13 +38,5 @@ public class Section {
 
     public void setImagePublicId(String imagePublicId) {
         this.imagePublicId = imagePublicId;
-    }
-
-    public Long getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(Long placeId) {
-        this.placeId = placeId;
     }
 }

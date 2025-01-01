@@ -1,8 +1,10 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.album;
+
+import com.example.wanderfunmobile.network.dto.albumimage.AlbumImageDto;
 
 import java.util.List;
 
-public class Album {
+public class AlbumDto {
     private Long id;
     private String name;
     private String description;
@@ -11,10 +13,9 @@ public class Album {
     private double placeLatitude;
     private String placeName;
     private String placeCoverImageUrl;
-    private List<AlbumImage> albumImages;
-    private Long userId;
+    private List<AlbumImageDto> albumImages;
 
-    public Album() {};
+    public AlbumDto() {};
 
     public Long getId() {
         return id;
@@ -80,19 +81,11 @@ public class Album {
         this.placeCoverImageUrl = placeCoverImageUrl;
     }
 
-    public List<AlbumImage> getAlbumImages() {
+    public List<AlbumImageDto> getAlbumImages() {
         return albumImages;
     }
 
-    public void setAlbumImages(List<AlbumImage> albumImages) {
+    public void setAlbumImages(List<AlbumImageDto> albumImages) {
         this.albumImages = albumImages;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

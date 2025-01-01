@@ -1,20 +1,15 @@
 package com.example.wanderfunmobile.domain.model;
 
-import java.util.List;
-
-public class Album {
+public class FavouritePlace {
     private Long id;
-    private String name;
-    private String description;
+    private Long userId;
     private Long placeId;
     private double placeLongitude;
     private double placeLatitude;
     private String placeName;
     private String placeCoverImageUrl;
-    private List<AlbumImage> albumImages;
-    private Long userId;
 
-    public Album() {};
+    public FavouritePlace() {};
 
     public Long getId() {
         return id;
@@ -24,20 +19,12 @@ public class Album {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getPlaceId() {
@@ -78,21 +65,5 @@ public class Album {
 
     public void setPlaceCoverImageUrl(String placeCoverImageUrl) {
         this.placeCoverImageUrl = placeCoverImageUrl;
-    }
-
-    public List<AlbumImage> getAlbumImages() {
-        return albumImages;
-    }
-
-    public void setAlbumImages(List<AlbumImage> albumImages) {
-        this.albumImages = albumImages;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

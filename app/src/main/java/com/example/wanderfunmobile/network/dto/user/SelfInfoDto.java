@@ -1,18 +1,20 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.user;
 
+import com.example.wanderfunmobile.domain.model.Album;
+import com.example.wanderfunmobile.domain.model.Trip;
 import com.example.wanderfunmobile.domain.model.enums.UserRole;
 
 import java.util.Date;
 import java.util.List;
 
-public class User {
+public class SelfInfoDto {
     private Long id;
     private UserRole role;
     private String email;
-    private String password;
     private String firstName;
     private String lastName;
     private boolean isVerified;
+    private boolean isCreatedProfile;
     private String avatarUrl;
     private String avatarPublicId;
     private Date dateOfBirth;
@@ -22,9 +24,9 @@ public class User {
     private List<String> favoritePlaceIds;
     private List<Trip> trips;
     private List<Album> albums;
-    private boolean isCreatedProfile;
 
-    public User() {};
+    public SelfInfoDto() {
+    }
 
     public Long getId() {
         return id;
@@ -50,14 +52,6 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getFirstName() {
         return firstName;
     }
@@ -80,6 +74,14 @@ public class User {
 
     public void setVerified(boolean verified) {
         isVerified = verified;
+    }
+
+    public boolean isCreatedProfile() {
+        return isCreatedProfile;
+    }
+
+    public void setCreatedProfile(boolean createdProfile) {
+        isCreatedProfile = createdProfile;
     }
 
     public String getAvatarUrl() {
@@ -152,13 +154,5 @@ public class User {
 
     public void setAlbums(List<Album> albums) {
         this.albums = albums;
-    }
-
-    public boolean isCreatedProfile() {
-        return isCreatedProfile;
-    }
-
-    public void setCreatedProfile(boolean createdProfile) {
-        isCreatedProfile = createdProfile;
     }
 }

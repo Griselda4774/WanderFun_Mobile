@@ -22,4 +22,17 @@
     <dimen name="button_margin">16dp</dimen>
     <dimen name="button_icon_size">20dp</dimen>
     <dimen name="rounded_button_size">60dp</dimen>
+    <dimen name="search_bar_icon_size">32dp</dimen>
+    <dimen name="bottom_sheet_radius">32dp</dimen>
+    <dimen name="close_icon_size">12dp</dimen>
+    <dimen name="close_button_padding">16dp</dimen>
+    <dimen name="bottom_sheet_top_padding">4dp</dimen>
+    <dimen name="bottom_sheet_drag_bar_width">100dp</dimen>
+    <dimen name="bottom_sheet_drag_bar_height">8dp</dimen>
+    <dimen name="bottom_sheet_button_icon_size">16dp</dimen>
+    <dimen name="bottom_sheet_button_horizontal_padding">20dp</dimen>
+    <dimen name="bottom_sheet_button_vertical_padding">12dp</dimen>
+    <dimen name="bottom_sheet_button_icon_text_margin">4dp</dimen>
+
+
 </resources>

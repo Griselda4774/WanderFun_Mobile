@@ -45,13 +45,13 @@
             <ImageView
                 android:layout_width="@dimen/section_next_icon_size"
                 android:layout_height="@dimen/section_next_icon_size"
+                android:rotation="180"
                 android:src="@drawable/ic_next"
-                app:tint="@color/black4"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:rotation="180"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black4" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
