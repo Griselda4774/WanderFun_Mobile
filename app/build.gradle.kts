@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.dagger.hilt.android")
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -56,6 +55,7 @@ dependencies {
         isTransitive = true
     }
     implementation(libs.android.plugin.annotation.v9)
-    implementation(libs.firebase.bom)
-    implementation(libs.firebase.analytics)
+
+    implementation(libs.cloudinary.android)
+    implementation(libs.glide)
 }

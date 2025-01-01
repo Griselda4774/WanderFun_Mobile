@@ -1,6 +1,6 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.section;
 
-public class Section {
+public class SectionDto {
     private Long id;
     private String title;
     private String content;
@@ -8,7 +8,7 @@ public class Section {
     private String imagePublicId;
     private Long placeId;
 
-    public Section() {};
+    public SectionDto() {};
 
     public Long getId() {
         return id;

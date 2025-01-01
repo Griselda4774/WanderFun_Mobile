@@ -1,20 +1,16 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.tripplace;
 
-import java.util.List;
+import java.util.Date;
 
-public class Album {
+public class TripPlaceDto {
     private Long id;
-    private String name;
-    private String description;
-    private Long placeId;
     private double placeLongitude;
     private double placeLatitude;
     private String placeName;
     private String placeCoverImageUrl;
-    private List<AlbumImage> albumImages;
-    private Long userId;
-
-    public Album() {};
+    private Date startTime;
+    private Date endTime;
+    private Long tripId;
 
     public Long getId() {
         return id;
@@ -22,30 +18,6 @@ public class Album {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(Long placeId) {
-        this.placeId = placeId;
     }
 
     public double getPlaceLongitude() {
@@ -80,19 +52,27 @@ public class Album {
         this.placeCoverImageUrl = placeCoverImageUrl;
     }
 
-    public List<AlbumImage> getAlbumImages() {
-        return albumImages;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setAlbumImages(List<AlbumImage> albumImages) {
-        this.albumImages = albumImages;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Date getEndTime() {
+        return endTime;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Long getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(Long tripId) {
+        this.tripId = tripId;
     }
 }

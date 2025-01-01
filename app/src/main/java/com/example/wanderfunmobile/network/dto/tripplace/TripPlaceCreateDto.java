@@ -1,26 +1,16 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.tripplace;
 
 import java.util.Date;
 
-public class TripPlace {
-    private Long id;
+public class TripPlaceCreateDto {
     private double placeLongitude;
     private double placeLatitude;
     private String placeName;
     private String placeCoverImageUrl;
     private Date startTime;
     private Date endTime;
-    private Long tripId;
 
-    public TripPlace() {};
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public TripPlaceCreateDto() {};
 
     public double getPlaceLongitude() {
         return placeLongitude;
@@ -68,13 +58,5 @@ public class TripPlace {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
-    }
-
-    public Long getTripId() {
-        return tripId;
-    }
-
-    public void setTripId(Long tripId) {
-        this.tripId = tripId;
     }
 }

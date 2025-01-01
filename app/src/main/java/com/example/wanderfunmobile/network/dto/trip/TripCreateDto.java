@@ -1,26 +1,19 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.network.dto.trip;
+
+import com.example.wanderfunmobile.network.dto.tripplace.TripPlaceCreateDto;
 
 import java.util.Date;
 import java.util.List;
 
-public class Trip {
-    private Long id;
+public class TripCreateDto {
     private String name;
     private String imageUrl;
     private String imagePublicId;
     private Date startTime;
     private Date endTime;
-    private List<TripPlace> tripPlaces;
-    private Long userId;
+    private List<TripPlaceCreateDto> tripPlaces;
 
-    public Trip() {};
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public TripCreateDto() {
     }
 
     public String getName() {
@@ -63,19 +56,11 @@ public class Trip {
         this.endTime = endTime;
     }
 
-    public List<TripPlace> getTripPlaces() {
+    public List<TripPlaceCreateDto> getTripPlaces() {
         return tripPlaces;
     }
 
-    public void setTripPlaces(List<TripPlace> tripPlaces) {
+    public void setTripPlaces(List<TripPlaceCreateDto> tripPlaces) {
         this.tripPlaces = tripPlaces;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -20,11 +21,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.FragmentHomeBinding;
 import com.example.wanderfunmobile.infrastructure.util.BitMapUtil;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -61,6 +64,7 @@ import java.util.Objects;
 public class HomeFragment extends Fragment implements OnMapReadyCallback{
     private MapView mapView;
     private MapLibreMap mapLibreMap;
+    private Style mapStyle;
     private SymbolManager symbolManager;
     private Symbol currentMarker;
 
@@ -71,7 +75,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
     private String mapStyleUrl;
 
     private LinearLayout gpsButton;
-    private LatLng currentLocation = new LatLng();
+    private Location currentLocation;
+
+    private ConstraintLayout bottomSheet;
+    private BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +94,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
 
         mapView = viewBinding.mapView;
         gpsButton = viewBinding.gpsButton;
+
+        bottomSheet = viewBinding.bottomSheetContainer.bottomSheet;
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         // Khởi tạo launcher cho yêu cầu quyền
         requestPermissionsLauncher = registerForActivityResult(
@@ -111,16 +122,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
         mapStyleUrl = String.format("%s/assets/goong_map_web.json?api_key=%s",
                 getString(R.string.goong_map_url),
                 getString(R.string.goong_map_key));
-        checkPermissions();
         mapView.getMapAsync(this);
+
         gpsButton.setOnClickListener(v -> {
             if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
                 if (currentMarker != null) {
                     symbolManager.delete(currentMarker);
                     currentMarker = null;
                 }
+                initializeLocationComponent(mapStyle, mapLibreMap);
                 mapLibreMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
-                        .target(currentLocation)
+                        .target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                         .zoom(15)
                         .build()), 1000);
 
@@ -128,13 +140,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
                 checkPermissions();
             }
         });
+
+
     }
 
     @Override
     public void onMapReady(@NonNull MapLibreMap map) {
         map.setStyle(mapStyleUrl, style -> {
             symbolManager = new SymbolManager(mapView, map, style);
-//
             symbolManager.setIconAllowOverlap(true);
             symbolManager.setIconIgnorePlacement(true);
 
@@ -200,6 +213,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
                                 .build()), 1000
                 );
             }
+
+            mapStyle = style;
         });
 
         mapLibreMap = map;
@@ -307,20 +322,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
         locationComponent.getLocationEngine().getLastLocation(locationEngineCallback);
 
         mapLibreMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
-                .target(currentLocation)
+                .target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                 .zoom(8)
                 .build()), 1000);
-
     }
 
     private final LocationEngineCallback<LocationEngineResult> locationEngineCallback = new LocationEngineCallback<LocationEngineResult>() {
         @Override
         public void onSuccess(LocationEngineResult result) {
-            Location location = result.getLastLocation();
-            if (location != null) {
-                currentLocation.setLatitude(location.getLatitude());
-                currentLocation.setLongitude(location.getLongitude());
-                Log.d("UserLocation", "Lat: " + location.getLatitude() + ", Lng: " + location.getLongitude());
+            currentLocation = result.getLastLocation();
+            if (currentLocation != null) {
+                Log.d("UserLocation", "Lat: " + currentLocation.getLatitude() + ", Lng: " + currentLocation.getLongitude());
             }
         }
 
@@ -358,7 +370,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
         if (currentMarker != null) {
             symbolManager.delete(currentMarker);
             currentMarker = null;
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         } else {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            TextView placeLong = bottomSheet.findViewById(R.id.place_long);
+            TextView placeLat = bottomSheet.findViewById(R.id.place_lat);
+            placeLong.setText(String.valueOf(latLng.getLongitude()));
+            placeLat.setText(String.valueOf(latLng.getLatitude()));
+
             JsonObject data = new JsonObject();
             data.addProperty("title", "My Marker");
             data.addProperty("description", "This is a sample marker description");
