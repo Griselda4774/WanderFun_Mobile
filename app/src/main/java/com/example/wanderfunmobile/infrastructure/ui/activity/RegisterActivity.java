@@ -19,14 +19,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityRegisterBinding;
-import com.example.wanderfunmobile.viewmodel.RegisterViewModel;
-import com.example.wanderfunmobile.network.dto.auth.RegisterDto;
+import com.example.wanderfunmobile.viewmodel.AuthViewModel;
+import com.example.wanderfunmobile.application.dto.auth.RegisterDto;
+
+import org.modelmapper.ModelMapper;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class RegisterActivity extends AppCompatActivity {
-    private RegisterViewModel registerViewModel;
+    private AuthViewModel authViewModel;
+    private ModelMapper modelMapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
             return insets;
         });
 
-        registerViewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         TextView loginButton = viewBinding.loginButton;
         loginButton.setOnClickListener(v -> {
@@ -82,16 +85,16 @@ public class RegisterActivity extends AppCompatActivity {
             registerDto.setLastName(lastname);
             registerDto.setEmail(username);
             registerDto.setPassword(password);
-            registerViewModel.register(registerDto);
+            authViewModel.register(registerDto);
         });
 
-        registerViewModel.getLiveData().observe(this, registerResponse ->
-                Toast.makeText(this, registerResponse, Toast.LENGTH_SHORT).show()
-        );
-
-        registerViewModel.getErrorLiveData().observe(this, error ->
-                Toast.makeText(this, "Error: " + error, Toast.LENGTH_SHORT).show()
-        );
+        authViewModel.getRegisterResponseLiveData().observe(this, registerResponse -> {
+            if (!registerResponse.isError()) {
+                Toast.makeText(this, "Success: " + registerResponse.getMessage(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Error: " + registerResponse.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupPasswordToggle(EditText passwordEditText, ImageView showIcon, ImageView hideIcon) {

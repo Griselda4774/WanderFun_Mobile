@@ -19,15 +19,19 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.application.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
-import com.example.wanderfunmobile.viewmodel.LoginViewModel;
-import com.example.wanderfunmobile.network.dto.auth.LoginDto;
+import com.example.wanderfunmobile.viewmodel.AuthViewModel;
+import com.example.wanderfunmobile.application.dto.auth.LoginDto;
+
+import org.modelmapper.ModelMapper;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
-    private LoginViewModel loginViewModel;
+    private AuthViewModel authViewModel;
+    private ModelMapper modelMapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,8 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+
 
         TextView registerButton = viewBinding.registerButton;
         registerButton.setOnClickListener(v -> {
@@ -68,30 +73,29 @@ public class LoginActivity extends AppCompatActivity {
             LoginDto loginDto = new LoginDto();
             loginDto.setEmail(username);
             loginDto.setPassword(password);
-            loginViewModel.login(loginDto);
+            authViewModel.login(loginDto);
         });
 
-        loginViewModel.getLiveData().observe(this, loginResponse ->
-                {
-                    Toast.makeText(this, "Welcome " + loginResponse.getEmail(), Toast.LENGTH_SHORT).show();
-                    SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putLong("id", loginResponse.getId());
-                    editor.putString("email", loginResponse.getEmail());
-                    editor.putString("role", loginResponse.getRole().toString());
-                    editor.putString("tokenType", loginResponse.getTokenType());
-                    editor.putString("accessToken", loginResponse.getAccessToken());
-                    editor.putString("refreshToken", loginResponse.getRefreshToken());
-                    editor.putBoolean("isLoggedIn", true);
-                    editor.apply();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }
-        );
-
-        loginViewModel.getErrorLiveData().observe(this, error ->
-                Toast.makeText(this, "Error: " + error, Toast.LENGTH_SHORT).show()
-        );
+        authViewModel.getLoginResponseLiveData().observe(this, loginResponse -> {
+            if (!loginResponse.isError()) {
+                LoginResponseDto loginResponseDto = modelMapper.map(loginResponse.getData(), LoginResponseDto.class);
+                Toast.makeText(this, "Welcome " + loginResponseDto.getEmail(), Toast.LENGTH_SHORT).show();
+                SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putLong("id", loginResponseDto.getId());
+                editor.putString("email", loginResponseDto.getEmail());
+                editor.putString("role", loginResponseDto.getRole().toString());
+                editor.putString("tokenType", loginResponseDto.getTokenType());
+                editor.putString("accessToken", loginResponseDto.getAccessToken());
+                editor.putString("refreshToken", loginResponseDto.getRefreshToken());
+                editor.putBoolean("isLoggedIn", true);
+                editor.apply();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Error: " + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         TextView guestButton = viewBinding.guestButton;
         guestButton.setOnClickListener(v -> {

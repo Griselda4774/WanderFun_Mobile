@@ -1,8 +1,6 @@
 package com.example.wanderfunmobile.network.backend;
 
-import com.example.wanderfunmobile.network.dto.EmptyDataDto;
-import com.example.wanderfunmobile.network.dto.ResponseDto;
-import com.example.wanderfunmobile.network.dto.cloudinary.CloudinarySignatureDto;
+import com.example.wanderfunmobile.application.dto.ResponseDto;
 
 import retrofit2.Call;
 import retrofit2.http.DELETE;
@@ -12,10 +10,10 @@ import retrofit2.http.Query;
 
 public interface CloudinaryApi {
     @GET("cloudinary/signature")
-    Call<ResponseDto<CloudinarySignatureDto>> getSignature(@Header("Authorization") String bearerToken,
+    Call<ResponseDto<Object>> getSignature(@Header("Authorization") String bearerToken,
                                                            @Query("timestamp") String timestamp);
 
     @DELETE("cloudinary")
-    Call<ResponseDto<EmptyDataDto>> deleteImage(@Header("Authorization") String bearerToken,
+    Call<ResponseDto<Object>> deleteImage(@Header("Authorization") String bearerToken,
                                                 @Query("public_id") String publicId);
 }
