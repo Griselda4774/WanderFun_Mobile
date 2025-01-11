@@ -1,15 +1,18 @@
 package com.example.wanderfunmobile.infrastructure.mapper;
 
-import com.example.wanderfunmobile.network.mapper.ObjectMapper;
+import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 public class ObjectMapperImpl implements ObjectMapper {
     private final ModelMapper modelMapper;
 
+    @Inject
     public ObjectMapperImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }

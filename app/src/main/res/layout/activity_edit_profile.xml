@@ -34,24 +34,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/app_horizontal_margin2"
-            android:background="@drawable/bg_circle_back_button"
-            android:padding="@dimen/back_button_padding"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:clickable="true"
-            android:stateListAnimator="@animator/touch_opacity_animator">
+            app:layout_constraintStart_toStartOf="parent">
 
-            <ImageView
-                android:layout_width="@dimen/section_next_icon_size"
-                android:layout_height="@dimen/section_next_icon_size"
-                android:src="@drawable/ic_next"
-                app:tint="@color/black4"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:rotation="180"/>
+            <include layout="@layout/button_back_rounded"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -89,7 +76,7 @@
                     app:layout_constraintEnd_toEndOf="parent">
 
                     <include
-                        layout="@layout/component_avatar_selector"/>
+                        layout="@layout/selector_avatar"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -114,7 +101,7 @@
                         app:layout_constraintEnd_toStartOf="@id/lastname_input">
 
                         <include
-                            layout="@layout/component_firstname_input"/>
+                            layout="@layout/input_firstname"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -129,7 +116,7 @@
                         app:layout_constraintEnd_toEndOf="parent">
 
                         <include
-                            layout="@layout/component_lastname_input"/>
+                            layout="@layout/input_lastname"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -145,7 +132,7 @@
                     app:layout_constraintEnd_toEndOf="parent">
 
                     <include
-                        layout="@layout/component_date_input"/>
+                        layout="@layout/input_date"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -158,8 +145,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
-                    <include
-                        layout="@layout/component_drop_down_list_selector"/>
+                    <include layout="@layout/selector_gender"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -173,7 +159,7 @@
                     app:layout_constraintEnd_toEndOf="parent">
 
                     <include
-                        layout="@layout/component_phone_input"/>
+                        layout="@layout/input_phone"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -189,7 +175,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cancel_edit_profile_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -197,17 +183,13 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/accept_edit_profile_button"
-                    android:text="Hủy"
-                    style="@style/Text.Button"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:background="@drawable/bg_button"
-                    android:paddingVertical="16dp"
-                    android:clickable="true"
-                    android:stateListAnimator="@animator/touch_opacity_animator"/>
+                    app:layout_constraintEnd_toStartOf="@id/accept_edit_profile_button">
 
-                <TextView
+                    <include layout="@layout/button"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/accept_edit_profile_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -215,15 +197,11 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/cancel_edit_profile_button"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:text="Xong"
-                    style="@style/Text.Button.Highlight"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:background="@drawable/bg_highlight_button"
-                    android:paddingVertical="16dp"
-                    android:clickable="true"
-                    android:stateListAnimator="@animator/touch_opacity_animator"/>
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <include layout="@layout/button_highlight" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

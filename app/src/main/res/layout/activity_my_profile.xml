@@ -34,24 +34,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/app_horizontal_margin2"
-            android:background="@drawable/bg_circle_back_button"
-            android:padding="@dimen/back_button_padding"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:clickable="true"
-            android:stateListAnimator="@animator/touch_opacity_animator">
+            app:layout_constraintStart_toStartOf="parent">
 
-            <ImageView
-                android:layout_width="@dimen/section_next_icon_size"
-                android:layout_height="@dimen/section_next_icon_size"
-                android:rotation="180"
-                android:src="@drawable/ic_next"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/black4" />
+            <include layout="@layout/button_back_rounded"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -86,7 +73,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:contentDescription="User avatar"
-                    android:background="@drawable/bg_circle_img"
+                    android:background="@drawable/bg_img_rounded"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/brown"
                     android:clipToOutline="true"/>
@@ -473,7 +460,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/edit_profile_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -481,15 +468,11 @@
                 android:layout_marginHorizontal="@dimen/app_horizontal_margin"
                 app:layout_constraintTop_toBottomOf="@id/user_info_container"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:text="Chỉnh sửa thông tin"
-                style="@style/Text.Button.Highlight"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:background="@drawable/bg_highlight_button"
-                android:paddingVertical="16dp"
-                android:clickable="true"
-                android:stateListAnimator="@animator/touch_opacity_animator"/>
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <include layout="@layout/button_highlight"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

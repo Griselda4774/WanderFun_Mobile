@@ -33,7 +33,7 @@
             android:layout_marginBottom="@dimen/app_horizontal_margin2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="@drawable/bg_rounded_button"
+            android:background="@drawable/bg_button_rounded_border"
             android:clickable="true"
             android:stateListAnimator="@animator/touch_opacity_animator">
 
@@ -76,7 +76,7 @@
                 app:layout_constraintStart_toEndOf="@id/search_bar_app_logo"
                 app:layout_constraintEnd_toStartOf="@id/search_bar_user_avatar">
 
-                <include layout="@layout/component_edittext_search_place"/>
+                <include layout="@layout/edittext_search_place"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -94,7 +94,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/place_info_bottom_sheet"
-        android:id="@+id/bottom_sheet_container"/>
+    <include layout="@layout/bottom_sheet_place_info"
+        android:id="@+id/place_info_bottom_sheet_container"/>
+
+    <include layout="@layout/bottom_sheet_location_pin"
+        android:id="@+id/location_pin_bottom_sheet_container"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

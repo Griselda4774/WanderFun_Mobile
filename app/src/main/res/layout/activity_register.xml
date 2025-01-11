@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <include
-                layout="@layout/component_app_logo_with_text"/>
+                layout="@layout/app_logo_with_text"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -87,7 +87,7 @@
                     app:layout_constraintEnd_toStartOf="@id/lastname_input">
 
                     <include
-                        layout="@layout/component_firstname_input"/>
+                        layout="@layout/input_firstname"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -102,7 +102,7 @@
                     app:layout_constraintEnd_toEndOf="parent">
 
                     <include
-                        layout="@layout/component_lastname_input"/>
+                        layout="@layout/input_lastname"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -118,7 +118,7 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <include
-                    layout="@layout/component_email_input"/>
+                    layout="@layout/input_email"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -132,7 +132,7 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <include
-                    layout="@layout/component_password_input"/>
+                    layout="@layout/input_password"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -146,7 +146,7 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <include
-                    layout="@layout/component_repassword_input"/>
+                    layout="@layout/input_re_password"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -162,21 +162,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="32dp">
 
-            <TextView
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/register_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:text="Đăng ký"
-                style="@style/Text.Button.Highlight"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:background="@drawable/bg_highlight_button"
-                android:paddingVertical="16dp"
-                android:clickable="true"
-                android:stateListAnimator="@animator/touch_opacity_animator"/>
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <include layout="@layout/button_highlight"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/login_question"

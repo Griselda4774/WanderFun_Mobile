@@ -10,11 +10,11 @@ import com.example.wanderfunmobile.infrastructure.repository.AuthRepositoryImpl;
 import com.example.wanderfunmobile.infrastructure.repository.PlaceRepositoryImpl;
 import com.example.wanderfunmobile.infrastructure.repository.TripRepositoryImpl;
 import com.example.wanderfunmobile.infrastructure.repository.UserRepositoryImpl;
-import com.example.wanderfunmobile.network.backend.AlbumApi;
-import com.example.wanderfunmobile.network.backend.AuthApi;
-import com.example.wanderfunmobile.network.backend.PlaceApi;
-import com.example.wanderfunmobile.network.backend.TripApi;
-import com.example.wanderfunmobile.network.backend.UserApi;
+import com.example.wanderfunmobile.infrastructure.api.backend.AlbumApi;
+import com.example.wanderfunmobile.infrastructure.api.backend.AuthApi;
+import com.example.wanderfunmobile.infrastructure.api.backend.PlaceApi;
+import com.example.wanderfunmobile.infrastructure.api.backend.TripApi;
+import com.example.wanderfunmobile.infrastructure.api.backend.UserApi;
 
 import javax.inject.Singleton;
 

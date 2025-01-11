@@ -15,8 +15,12 @@ import com.example.wanderfunmobile.infrastructure.ui.fragment.HomeFragment;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.LeaderboardFragment;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.ProfileFragment;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.TripFragment;
+import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding viewBinding;

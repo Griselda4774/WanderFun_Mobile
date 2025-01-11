@@ -34,5 +34,10 @@
     <dimen name="bottom_sheet_button_vertical_padding">12dp</dimen>
     <dimen name="bottom_sheet_button_icon_text_margin">4dp</dimen>
 
+    <dimen name="place_info_icon_size">24dp</dimen>
+    <dimen name="place_info_content_margin">4dp</dimen>
+    <dimen name="place_info_full_width_image_height">200dp</dimen>
+    <dimen name="place_info_section_small_margin">8dp</dimen>
+    <dimen name="place_info_section_medium_margin">16dp</dimen>
 
 </resources>

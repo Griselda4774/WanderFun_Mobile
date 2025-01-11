@@ -1,9 +1,7 @@
 package com.example.wanderfunmobile.infrastructure.ui.activity.profile;
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -22,7 +20,6 @@ import com.example.wanderfunmobile.databinding.ActivityEditProfileBinding;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -43,7 +40,7 @@ public class EditProfileActivity extends AppCompatActivity {
             return insets;
         });
 
-        ConstraintLayout backButton = viewBinding.backButton;
+        ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
         backButton.setOnClickListener(v -> {
             finish();
         });
@@ -66,7 +63,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         AutoCompleteTextView autoCompleteTextView = viewBinding.genderSelector.findViewById(R.id.auto_complete_text);
         String[] options = {"Nam", "Nữ", "Khác", "Không muốn đề cập"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.component_drop_down_item, options) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item_drop_down, options) {
             @NonNull
             @Override
             public Filter getFilter() {

@@ -30,12 +30,13 @@ public class MyProfileActivity extends AppCompatActivity {
             return insets;
         });
 
-        ConstraintLayout backButton = viewBinding.backButton;
+        ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
         backButton.setOnClickListener(v -> {
             finish();
         });
 
-        TextView editProfileButton = viewBinding.editProfileButton;
+        TextView editProfileButton = viewBinding.editProfileButton.findViewById(R.id.button);
+        editProfileButton.setText("Chỉnh sửa thông tin");
         editProfileButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, EditProfileActivity.class);
             startActivity(intent);
