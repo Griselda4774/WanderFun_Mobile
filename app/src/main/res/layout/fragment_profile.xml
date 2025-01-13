@@ -183,7 +183,7 @@
                         android:id="@+id/favourite_place_section_icon"
                         android:layout_width="@dimen/section_icon_size"
                         android:layout_height="@dimen/section_icon_size"
-                        android:src="@drawable/ic_heart_2"
+                        android:src="@drawable/ic_heart_outline"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

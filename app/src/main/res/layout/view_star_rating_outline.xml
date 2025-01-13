@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/star1"
+        android:layout_width="@dimen/place_info_rating_star_size_large_extra"
+        android:layout_height="@dimen/place_info_rating_star_size_large_extra"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/star2"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator"
+        android:src="@drawable/ic_star_outline"/>
+
+    <ImageView
+        android:id="@+id/star2"
+        android:layout_width="@dimen/place_info_rating_star_size_large_extra"
+        android:layout_height="@dimen/place_info_rating_star_size_large_extra"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/star1"
+        app:layout_constraintEnd_toStartOf="@id/star3"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator"
+        android:src="@drawable/ic_star_outline"/>
+
+    <ImageView
+        android:id="@+id/star3"
+        android:layout_width="@dimen/place_info_rating_star_size_large_extra"
+        android:layout_height="@dimen/place_info_rating_star_size_large_extra"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/star2"
+        app:layout_constraintEnd_toStartOf="@id/star4"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator"
+        android:src="@drawable/ic_star_outline"/>
+
+    <ImageView
+        android:id="@+id/star4"
+        android:layout_width="@dimen/place_info_rating_star_size_large_extra"
+        android:layout_height="@dimen/place_info_rating_star_size_large_extra"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/star3"
+        app:layout_constraintEnd_toStartOf="@id/star5"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator"
+        android:src="@drawable/ic_star_outline"/>
+
+    <ImageView
+        android:id="@+id/star5"
+        android:layout_width="@dimen/place_info_rating_star_size_large_extra"
+        android:layout_height="@dimen/place_info_rating_star_size_large_extra"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/star4"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator"
+        android:src="@drawable/ic_star_outline"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

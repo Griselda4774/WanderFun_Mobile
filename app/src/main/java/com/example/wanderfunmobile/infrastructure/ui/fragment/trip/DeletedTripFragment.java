@@ -15,6 +15,8 @@ import com.example.wanderfunmobile.databinding.FragmentDeletedTripBinding;
 public class DeletedTripFragment extends Fragment {
     FragmentDeletedTripBinding viewBinding;
 
+    public DeletedTripFragment() {}
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

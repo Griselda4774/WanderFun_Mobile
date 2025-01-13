@@ -38,11 +38,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<AlbumDto>>> call,
                                        @NonNull Response<ResponseDto<List<AlbumDto>>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        getAllAlbumsResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    getAllAlbumsResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -70,11 +66,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<AlbumDto>> call,
                                        @NonNull Response<ResponseDto<AlbumDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        getAlbumByIdResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    getAlbumByIdResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -102,11 +94,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<AlbumDto>> call,
                                        @NonNull Response<ResponseDto<AlbumDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        createAlbumResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    createAlbumResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -135,11 +123,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<AlbumDto>> call,
                                        @NonNull Response<ResponseDto<AlbumDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        updateAlbumResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    updateAlbumResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -167,11 +151,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<AlbumDto>> call,
                                        @NonNull Response<ResponseDto<AlbumDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        deleteAllAlbumsResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    deleteAllAlbumsResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -200,11 +180,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<AlbumDto>> call,
                                        @NonNull Response<ResponseDto<AlbumDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        deleteAlbumResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    deleteAlbumResponseLiveData.postValue(response.body());
                 }
 
                 @Override

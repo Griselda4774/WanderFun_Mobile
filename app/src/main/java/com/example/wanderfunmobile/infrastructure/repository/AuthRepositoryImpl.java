@@ -38,11 +38,7 @@ public class AuthRepositoryImpl implements AuthRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<LoginResponseDto>> call,
                                        @NonNull Response<ResponseDto<LoginResponseDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        loginResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during login onResponse");
-                    }
+                    loginResponseLiveData.postValue(response.body());
                 }
                 @Override
                 public void onFailure(@NonNull Call<ResponseDto<LoginResponseDto>> call,
@@ -67,11 +63,7 @@ public class AuthRepositoryImpl implements AuthRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<LoginResponseDto>> call,
                                        @NonNull Response<ResponseDto<LoginResponseDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        registerResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during register onResponse");
-                    }
+                    registerResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -97,11 +89,7 @@ public class AuthRepositoryImpl implements AuthRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<LoginResponseDto>> call,
                                        @NonNull Response<ResponseDto<LoginResponseDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        logoutResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during logout onResponse");
-                    }
+                    logoutResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -127,11 +115,7 @@ public class AuthRepositoryImpl implements AuthRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<TokenResponseDto>> call,
                                        @NonNull Response<ResponseDto<TokenResponseDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        refreshTokenResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    refreshTokenResponseLiveData.postValue(response.body());
                 }
 
                 @Override

@@ -25,6 +25,8 @@ public class TripFragment extends Fragment {
 
     FragmentTripBinding viewBinding;
 
+    public TripFragment() {}
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

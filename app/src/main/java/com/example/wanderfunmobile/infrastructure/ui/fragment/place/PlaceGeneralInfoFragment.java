@@ -1,21 +1,22 @@
-package com.example.wanderfunmobile.infrastructure.ui.fragment.leaderboard;
+package com.example.wanderfunmobile.infrastructure.ui.fragment.place;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.wanderfunmobile.databinding.FragmentUserLeaderboardBinding;
+import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.databinding.FragmentPlaceGeneralInfoBinding;
 
+public class PlaceGeneralInfoFragment extends Fragment {
 
-public class UserLeaderboardFragment extends Fragment {
+    private FragmentPlaceGeneralInfoBinding viewBinding;
 
-    FragmentUserLeaderboardBinding viewBinding;
+    public PlaceGeneralInfoFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,13 +26,8 @@ public class UserLeaderboardFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        viewBinding = FragmentUserLeaderboardBinding.inflate(inflater, container, false);
+        viewBinding = FragmentPlaceGeneralInfoBinding.inflate(inflater, container, false);
         return viewBinding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -39,5 +35,4 @@ public class UserLeaderboardFragment extends Fragment {
         super.onDestroyView();
         viewBinding = null;
     }
-
 }

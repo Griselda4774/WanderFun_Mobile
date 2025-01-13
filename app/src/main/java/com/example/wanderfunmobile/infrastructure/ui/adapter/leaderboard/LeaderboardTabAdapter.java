@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.wanderfunmobile.infrastructure.ui.fragment.leaderboard.PlaceLeaderboardFragment;
-import com.example.wanderfunmobile.infrastructure.ui.fragment.leaderboard.UserLeaderboardFragment;
+import com.example.wanderfunmobile.infrastructure.ui.fragment.leaderboard.LeaderboardPlaceFragment;
+import com.example.wanderfunmobile.infrastructure.ui.fragment.leaderboard.LeaderboardUserFragment;
 
 public class LeaderboardTabAdapter extends FragmentStateAdapter {
     public LeaderboardTabAdapter(@NonNull Fragment fragment) {
@@ -16,9 +16,9 @@ public class LeaderboardTabAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         if (position == 1) {
-            return new PlaceLeaderboardFragment();
+            return new LeaderboardPlaceFragment();
         }
-        return new UserLeaderboardFragment();
+        return new LeaderboardUserFragment();
     }
 
     @Override

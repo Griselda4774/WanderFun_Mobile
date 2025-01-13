@@ -3,7 +3,7 @@
     android:id="@+id/location_pin_bottom_sheet"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@drawable/bg_bottom_sheet_place_info"
+    android:background="@color/white1"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:behavior_peekHeight="140dp"
     app:behavior_hideable="true"
@@ -41,7 +41,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:text="Vị trí đã ghim"
             style="@style/Text.Header"
-            android:background="@drawable/bg_tab_layout"/>
+            android:background="@drawable/bg_border_bottom"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

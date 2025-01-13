@@ -3,7 +3,7 @@
     android:id="@+id/place_info_bottom_sheet"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@drawable/bg_bottom_sheet_place_info"
+    android:background="@color/white1"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:behavior_peekHeight="360dp"
     app:behavior_hideable="true"
@@ -11,7 +11,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/place_info_bottom_sheet_title"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,7 +20,7 @@
         >
 
         <View
-            android:id="@+id/place_info_bottom_sheet_drag_bar"
+            android:id="@+id/drag_bar"
             android:layout_width="@dimen/bottom_sheet_drag_bar_width"
             android:layout_height="@dimen/bottom_sheet_drag_bar_height"
             android:layout_marginTop="@dimen/bottom_sheet_top_padding"
@@ -30,87 +30,266 @@
             android:background="@drawable/bg_drag_bar"/>
 
         <TextView
-            android:id="@+id/place_info_name"
+            android:id="@+id/place_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/app_horizontal_margin2"
             android:layout_marginTop="@dimen/place_info_section_small_margin"
-            app:layout_constraintTop_toBottomOf="@id/place_info_bottom_sheet_drag_bar"
+            app:layout_constraintTop_toBottomOf="@id/drag_bar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Thành phố trong mơ"
+            android:text="Tên địa điểm"
             style="@style/Text.Header"
-            android:background="@drawable/bg_tab_layout"/>
+            android:background="@drawable/bg_border_bottom"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/place_info_bottom_sheet_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/place_info_section_medium_margin"
-        app:layout_constraintTop_toBottomOf="@id/place_info_bottom_sheet_title"
+        app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/place_info_bottom_sheet_footer"
-        android:scrollbars="none">
+        app:layout_constraintBottom_toTopOf="@id/footer"
+        android:scrollbars="none"
+        android:fillViewport="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/place_base_info_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="start">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/place_info_address"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:paddingHorizontal="@dimen/app_horizontal_margin"
+                android:orientation="vertical"
+                android:layout_gravity="start">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/place_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/place_address_icon"
+                        android:layout_width="@dimen/place_info_icon_size"
+                        android:layout_height="@dimen/place_info_icon_size"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:src="@drawable/ic_location"
+                        app:tint="@color/black4" />
+
+                    <TextView
+                        android:id="@+id/place_address_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/place_info_content_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/place_address_icon"
+                        android:text="Địa chỉ"
+                        style="@style/Text.Content" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/place_time_opening"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/place_info_section_extra_small_margin">
+
+                    <TextView
+                        android:id="@+id/place_time_opening_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="Đang mở cửa"
+                        style="@style/Text.Content.Highlight.Green"/>
+
+                    <View
+                        android:id="@+id/place_time_opening_dot"
+                        android:layout_width="@dimen/place_info_time_dot_size"
+                        android:layout_height="@dimen/place_info_time_dot_size"
+                        android:layout_marginStart="@dimen/place_info_content_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/place_time_opening_text"
+                        android:background="@drawable/bg_dot"/>
+
+                    <TextView
+                        android:id="@+id/place_time_opening_time_close_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/place_info_content_margin_medium"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/place_time_opening_dot"
+                        android:text="Đóng cửa lúc"
+                        style="@style/Text.Content"/>
+
+                    <TextView
+                        android:id="@+id/place_time_opening_time_close"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/place_info_content_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/place_time_opening_time_close_text"
+                        android:text="21:00"
+                        style="@style/Text.Content"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/place_time_closing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/place_time_closing_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="Đang đóng cửa"
+                        style="@style/Text.Content.Highlight.Red"/>
+
+                    <View
+                        android:id="@+id/place_time_closing_dot"
+                        android:layout_width="@dimen/place_info_time_dot_size"
+                        android:layout_height="@dimen/place_info_time_dot_size"
+                        android:layout_marginStart="@dimen/place_info_content_margin_medium"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/place_time_closing_text"
+                        android:background="@drawable/bg_dot"/>
+
+                    <TextView
+                        android:id="@+id/place_time_closing_time_open_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/place_info_content_margin_medium"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/place_time_closing_dot"
+                        android:text="Mở cửa lúc"
+                        style="@style/Text.Content"/>
+
+                    <TextView
+                        android:id="@+id/place_time_closing_time_open"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/place_info_content_margin_medium"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/place_time_closing_time_open_text"
+                        android:text="07:00"
+                        style="@style/Text.Content"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/place_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/place_rating_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="4.0"
+                        style="@style/Text.Content"/>
+
+                    <com.example.wanderfunmobile.infrastructure.ui.custom.StarRatingView
+                        android:id="@+id/place_rating_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/place_info_content_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/place_rating_score"/>
+
+                    <TextView
+                        android:id="@+id/place_rating_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/place_info_content_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/place_rating_view"
+                        android:text="(1,000)"
+                        style="@style/Text.Content"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <ImageView
-                    android:id="@+id/place_info_address_icon"
-                    android:layout_width="@dimen/place_info_icon_size"
-                    android:layout_height="@dimen/place_info_icon_size"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:src="@drawable/ic_location"
-                    app:tint="@color/black4" />
+                    android:id="@+id/place_cover_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/place_info_full_width_image_height"
+                    android:layout_marginTop="@dimen/place_info_section_medium_margin"
+                    android:src="@drawable/brown"
+                    android:scaleType="centerCrop"
+                    android:clipToOutline="true"
+                    android:background="@drawable/bg_radius"/>
 
-                <TextView
-                    android:id="@+id/place_info_address_content"
-                    android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/place_info_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/place_info_content_margin"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/place_info_address_icon"
-                    android:text="aaaaaaaaaaaaaaaaaaa"
-                    style="@style/Text.Content" />
+                    android:layout_marginTop="@dimen/place_info_section_medium_margin"
+                    app:tabPaddingEnd="@dimen/app_horizontal_margin2"
+                    app:tabPaddingStart="@dimen/app_horizontal_margin2"
+                    app:tabIndicator="@drawable/tab_indicator"
+                    app:tabIndicatorColor="@color/blue2"
+                    app:tabIndicatorGravity="bottom"
+                    app:tabIndicatorFullWidth="false"
+                    app:tabMode="scrollable"
+                    app:tabGravity="fill"
+                    app:tabBackground="@drawable/bg_border_bottom"
+                    app:tabRippleColor="@null"
+                    android:background="@color/white1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/tab_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:nestedScrollingEnabled="false"
+                    android:isScrollContainer="false"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
-                android:id="@+id/place_info_cover_image"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/place_info_full_width_image_height"
-                android:layout_marginTop="@dimen/place_info_section_medium_margin"
-                app:layout_constraintTop_toBottomOf="@id/place_info_address"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:src="@drawable/brown"
-                android:scaleType="centerCrop"
-                android:clipToOutline="true"
-                android:background="@drawable/bg_radius"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/place_info_bottom_sheet_footer"
+        android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/app_horizontal_margin2"

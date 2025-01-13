@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -36,6 +37,8 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.application.dto.place.PlaceDto;
 import com.example.wanderfunmobile.databinding.FragmentHomeBinding;
 import com.example.wanderfunmobile.domain.model.Place;
+import com.example.wanderfunmobile.infrastructure.ui.adapter.place.PlaceInfoTabAdapter;
+import com.example.wanderfunmobile.infrastructure.ui.custom.StarRatingView;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.dialog.LoadingDialogFragment;
 import com.example.wanderfunmobile.infrastructure.util.BitMapUtil;
 import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
@@ -44,6 +47,8 @@ import com.example.wanderfunmobile.infrastructure.util.MediaManagerStateUtil;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -104,6 +109,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     @Inject
     ObjectMapper objectMapper;
     private LoadingDialogFragment loadingDialogFragment;
+
+    public HomeFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -518,13 +525,86 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-        TextView placeName = placeInfoBottomSheet.findViewById(R.id.place_info_name);
+        // Place info tab
+        // View pager
+        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(this);
+        ViewPager2 viewPager = placeInfoBottomSheet.findViewById(R.id.view_pager);
+        viewPager.setAdapter(placeInfoTabAdapter);
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+                View currentView = viewPager.getChildAt(0);
+                if (currentView != null) {
+                    currentView.post(() -> {
+                        int height = currentView.getMeasuredHeight();
+                        if (height > 0) {
+                            ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
+                            layoutParams.height = height;
+                            viewPager.setLayoutParams(layoutParams);
+                        }
+                    });
+                }
+            }
+        });
+
+        // Tab layout
+        TabLayout tabLayout = placeInfoBottomSheet.findViewById(R.id.tab_layout);
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            @SuppressLint("InflateParams") View customView = LayoutInflater.from(requireContext()).inflate(R.layout.tab_item, null);
+            TextView tabText = customView.findViewById(R.id.tab_text);
+            tabText.setTextAppearance(R.style.Text_TabLabel);
+
+            switch (position) {
+                case 0:
+                    tabText.setText("Tổng quan");
+                    tabText.setTextAppearance(R.style.Text_TabLabel_Active_Blue);
+                    break;
+                case 1:
+                    tabText.setText("Đánh giá");
+                    break;
+                case 2:
+                    tabText.setText("Ảnh");
+                    break;
+                case 3:
+                    tabText.setText("Giới thiệu");
+                    break;
+            }
+
+            tab.setCustomView(customView);
+        }).attach();
+
+        tabLayout.selectTab(tabLayout.getTabAt(0));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                TextView tabText = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab_text);
+                tabText.setTextAppearance(R.style.Text_TabLabel);
+            }
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                TextView tabText = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab_text);
+                tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(), R.color.blue2));
+                tabText.setTextAppearance(R.style.Text_TabLabel_Active_Blue);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        TextView placeName = placeInfoBottomSheet.findViewById(R.id.place_name);
         placeName.setText(place.getName());
 
-        TextView placeAddress = placeInfoBottomSheet.findViewById(R.id.place_info_address_content);
+        TextView placeAddress = placeInfoBottomSheet.findViewById(R.id.place_address_content);
         placeAddress.setText(place.getAddress());
 
-        ImageView placeCoverImage = placeInfoBottomSheet.findViewById(R.id.place_info_cover_image);
+        StarRatingView starRatingView = placeInfoBottomSheet.findViewById(R.id.place_rating_view);
+        starRatingView.setRating(4);
+
+        ImageView placeCoverImage = placeInfoBottomSheet.findViewById(R.id.place_cover_image);
         String transformUrl = MediaManager.get().url()
                 .transformation(new Transformation<>()
                         .width(800)

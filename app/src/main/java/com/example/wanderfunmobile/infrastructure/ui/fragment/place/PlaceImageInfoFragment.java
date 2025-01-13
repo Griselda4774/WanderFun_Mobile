@@ -1,9 +1,8 @@
-package com.example.wanderfunmobile.infrastructure.ui.fragment.leaderboard;
+package com.example.wanderfunmobile.infrastructure.ui.fragment.place;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,12 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.wanderfunmobile.R;
-import com.example.wanderfunmobile.databinding.FragmentAllTripBinding;
-import com.example.wanderfunmobile.databinding.FragmentPlaceLeaderboardBinding;
+import com.example.wanderfunmobile.databinding.FragmentPlaceImageInfoBinding;
 
-public class PlaceLeaderboardFragment extends Fragment {
+public class PlaceImageInfoFragment extends Fragment {
 
-    FragmentPlaceLeaderboardBinding viewBinding;
+    private FragmentPlaceImageInfoBinding viewBinding;
+
+    public PlaceImageInfoFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,13 +26,8 @@ public class PlaceLeaderboardFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        viewBinding = FragmentPlaceLeaderboardBinding.inflate(inflater, container, false);
+        viewBinding = FragmentPlaceImageInfoBinding.inflate(inflater, container, false);
         return viewBinding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -40,5 +35,4 @@ public class PlaceLeaderboardFragment extends Fragment {
         super.onDestroyView();
         viewBinding = null;
     }
-
 }

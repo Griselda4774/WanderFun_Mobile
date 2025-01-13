@@ -25,6 +25,8 @@ public class LeaderboardFragment extends Fragment {
 
     FragmentLeaderboardBinding viewBinding;
 
+    public LeaderboardFragment() {}
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

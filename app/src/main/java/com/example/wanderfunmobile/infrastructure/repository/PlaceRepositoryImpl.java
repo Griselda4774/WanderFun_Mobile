@@ -37,11 +37,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<PlaceDto>>> call,
                                        @NonNull Response<ResponseDto<List<PlaceDto>>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        getAllPlacesResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    getAllPlacesResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -69,11 +65,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<PlaceDto>> call,
                                        @NonNull Response<ResponseDto<PlaceDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        getPlaceByIdResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    getPlaceByIdResponseLiveData.postValue(response.body());
                 }
 
                 @Override

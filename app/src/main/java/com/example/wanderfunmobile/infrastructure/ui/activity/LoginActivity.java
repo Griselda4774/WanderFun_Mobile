@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.application.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
+import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 import com.example.wanderfunmobile.application.dto.auth.LoginDto;
@@ -84,18 +85,16 @@ public class LoginActivity extends AppCompatActivity {
             if (!loginResponse.isError()) {
                 LoginResponseDto loginResponseDto = objectMapper.map(loginResponse.getData(), LoginResponseDto.class);
                 Toast.makeText(this, "Welcome " + loginResponseDto.getEmail(), Toast.LENGTH_SHORT).show();
-                SharedPreferences sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putLong("id", loginResponseDto.getId());
-                editor.putString("email", loginResponseDto.getEmail());
-                editor.putString("role", loginResponseDto.getRole().toString());
-                editor.putString("tokenType", loginResponseDto.getTokenType());
-                editor.putString("accessToken", loginResponseDto.getAccessToken());
-                editor.putString("refreshToken", loginResponseDto.getRefreshToken());
-                editor.putBoolean("isLoggedIn", true);
-                editor.apply();
+                SessionManager.getInstance(this).login(
+                        loginResponseDto.getId(),
+                        loginResponseDto.getEmail(),
+                        loginResponseDto.getRole().name(),
+                        loginResponseDto.getTokenType(),
+                        loginResponseDto.getAccessToken(),
+                        loginResponseDto.getRefreshToken());
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(this, "Error: " + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -103,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
         TextView guestButton = viewBinding.guestButton;
         guestButton.setOnClickListener(v -> {
+            SessionManager.getInstance(this).logout();
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

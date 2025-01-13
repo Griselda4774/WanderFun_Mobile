@@ -1,21 +1,18 @@
 package com.example.wanderfunmobile.application.dto;
 
 import java.util.Date;
+import java.util.Map;
 
 public class ResponseDto<T> {
     private String statusCode;
     private boolean error;
     private String errorType;
+    private Map<String, String> errorData;
     private Date timestamp;
     private String message;
     private T data;
 
-    public ResponseDto() {
-        this.timestamp = new Date();
-        this.data = null;
-        this.error = false;
-        this.errorType = null;
-    }
+    public ResponseDto() {}
 
     public String getStatusCode() {
         return statusCode;
@@ -39,6 +36,14 @@ public class ResponseDto<T> {
 
     public void setErrorType(String errorType) {
         this.errorType = errorType;
+    }
+
+    public Map<String, String> getErrorData() {
+        return errorData;
+    }
+
+    public void setErrorData(Map<String, String> errorData) {
+        this.errorData = errorData;
     }
 
     public Date getTimestamp() {

@@ -5,7 +5,7 @@
     android:id="@+id/user_leaderboard_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".infrastructure.ui.fragment.leaderboard.UserLeaderboardFragment">
+    tools:context=".infrastructure.ui.fragment.leaderboard.LeaderboardUserFragment">
 
     <TextView
         android:layout_width="wrap_content"

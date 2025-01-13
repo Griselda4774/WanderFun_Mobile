@@ -37,11 +37,7 @@ public class UserRepositoryImpl implements UserRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<SelfInfoDto>> call,
                                        @NonNull Response<ResponseDto<SelfInfoDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        getSelfInfoResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    getSelfInfoResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -68,11 +64,7 @@ public class UserRepositoryImpl implements UserRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<SelfInfoDto>> call,
                                        @NonNull Response<ResponseDto<SelfInfoDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        updateSelfInfoResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    updateSelfInfoResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -99,11 +91,7 @@ public class UserRepositoryImpl implements UserRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<SelfInfoDto>> call,
                                        @NonNull Response<ResponseDto<SelfInfoDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        deleteSelfResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    deleteSelfResponseLiveData.postValue(response.body());
                 }
 
                 @Override

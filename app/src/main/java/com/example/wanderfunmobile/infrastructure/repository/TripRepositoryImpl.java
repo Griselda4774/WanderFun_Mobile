@@ -39,11 +39,7 @@ public class TripRepositoryImpl implements TripRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<TripDto>>> call,
                                        @NonNull Response<ResponseDto<List<TripDto>>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        getAllTripsResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    getAllTripsResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -71,11 +67,7 @@ public class TripRepositoryImpl implements TripRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<TripDto>> call,
                                        @NonNull Response<ResponseDto<TripDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        getTripByIdResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    getTripByIdResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -102,11 +94,7 @@ public class TripRepositoryImpl implements TripRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<TripDto>> call,
                                        @NonNull Response<ResponseDto<TripDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        createTripResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    createTripResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -133,11 +121,7 @@ public class TripRepositoryImpl implements TripRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<TripDto>> call,
                                        @NonNull Response<ResponseDto<TripDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        updateTripByIdResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    updateTripByIdResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -164,11 +148,7 @@ public class TripRepositoryImpl implements TripRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<TripDto>> call,
                                        @NonNull Response<ResponseDto<TripDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        deleteAllTripsResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    deleteAllTripsResponseLiveData.postValue(response.body());
                 }
 
                 @Override
@@ -195,11 +175,7 @@ public class TripRepositoryImpl implements TripRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<TripDto>> call,
                                        @NonNull Response<ResponseDto<TripDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        deleteTripByIdResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                    }
+                    deleteTripByIdResponseLiveData.postValue(response.body());
                 }
 
                 @Override

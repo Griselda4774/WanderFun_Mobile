@@ -64,5 +64,7 @@
     <color name="section_icon_color">@color/black4</color>
     <color name="red_section_icon_color">@color/red4</color>
     <color name="input_title_icon_color">@color/black3</color>
+    <color name="star">@color/yellow3</color>
+    <color name="star_disable">@color/white4</color>
 
 </resources>
