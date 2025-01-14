@@ -9,7 +9,11 @@ import com.example.wanderfunmobile.infrastructure.api.backend.CloudinaryApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.PlaceApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.TripApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.UserApi;
+import com.example.wanderfunmobile.infrastructure.util.LocalTimeDeserializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -75,9 +79,12 @@ public class BackendApiModule {
     @Singleton
     public PlaceApi providePlaceApi(@ApplicationContext Context context) {
         String baseUrl = context.getString(R.string.base_url);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalTime.class, new LocalTimeDeserializer())
+                .create();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
