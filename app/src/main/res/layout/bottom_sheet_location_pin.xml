@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/location_pin_bottom_sheet"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/white1"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:behavior_peekHeight="140dp"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/location_pin_bottom_sheet_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <View
+            android:id="@+id/location_pin_bottom_sheet_drag_bar"
+            android:layout_width="@dimen/bottom_sheet_drag_bar_width"
+            android:layout_height="@dimen/bottom_sheet_drag_bar_height"
+            android:layout_marginTop="@dimen/bottom_sheet_top_padding"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/bg_drag_bar"/>
+
+        <TextView
+            android:id="@+id/location_pin_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/app_horizontal_margin2"
+            android:layout_marginTop="@dimen/place_info_section_small_margin"
+            app:layout_constraintTop_toBottomOf="@id/location_pin_bottom_sheet_drag_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Vị trí đã ghim"
+            style="@style/Text.Header"
+            android:background="@drawable/bg_border_bottom"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/bottom_sheet_content"
+        android:paddingHorizontal="@dimen/app_horizontal_margin2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/place_info_section_medium_margin"
+        app:layout_constraintTop_toBottomOf="@id/location_pin_bottom_sheet_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/location_pin_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <ImageView
+                    android:id="@+id/location_pin_location_icon"
+                    android:layout_width="@dimen/place_info_icon_size"
+                    android:layout_height="@dimen/place_info_icon_size"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/ic_location"
+                    app:tint="@color/black4"/>
+
+                <TextView
+                    android:id="@+id/location_pin_location_long"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/place_info_content_margin"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/location_pin_location_lat"
+                    app:layout_constraintStart_toEndOf="@id/location_pin_location_icon"
+                    android:text="aaaaaaaaaaaaaaaa"
+                    style="@style/Text.Content"/>
+
+                <TextView
+                    android:id="@+id/location_pin_location_lat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/place_info_content_margin"
+                    app:layout_constraintTop_toBottomOf="@id/location_pin_location_long"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/location_pin_location_icon"
+                    android:text="aaaaaaaaaaa"
+                    style="@style/Text.Content" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

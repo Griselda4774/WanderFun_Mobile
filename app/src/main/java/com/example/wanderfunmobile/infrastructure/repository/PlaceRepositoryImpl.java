@@ -7,9 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.wanderfunmobile.application.dto.ResponseDto;
+import com.example.wanderfunmobile.application.dto.place.PlaceDto;
 import com.example.wanderfunmobile.application.repository.PlaceRepository;
-import com.example.wanderfunmobile.infrastructure.util.ErrorGenerateUtil;
-import com.example.wanderfunmobile.network.backend.PlaceApi;
+import com.example.wanderfunmobile.infrastructure.api.backend.PlaceApi;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,68 +28,54 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public LiveData<ResponseDto<Object>> getAllPlaces() {
-        MutableLiveData<ResponseDto<Object>> getAllPlacesResponseLiveData = new MutableLiveData<>();
+    public LiveData<ResponseDto<List<PlaceDto>>> getAllPlaces() {
+        MutableLiveData<ResponseDto<List<PlaceDto>>> getAllPlacesResponseLiveData = new MutableLiveData<>();
         String errorType = "PlaceRepositoryImpl GetAllPlaces Error";
         try {
-            Call<ResponseDto<Object>> call = placeApi.getAllPlaces();
-            call.enqueue(new Callback<ResponseDto<Object>>() {
+            Call<ResponseDto<List<PlaceDto>>> call = placeApi.getAllPlaces();
+            call.enqueue(new Callback<ResponseDto<List<PlaceDto>>>() {
                 @Override
-                public void onResponse(@NonNull Call<ResponseDto<Object>> call,
-                                       @NonNull Response<ResponseDto<Object>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        getAllPlacesResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                        getAllPlacesResponseLiveData.postValue(ErrorGenerateUtil.createOnResponseError(errorType));
-                    }
+                public void onResponse(@NonNull Call<ResponseDto<List<PlaceDto>>> call,
+                                       @NonNull Response<ResponseDto<List<PlaceDto>>> response) {
+                    getAllPlacesResponseLiveData.postValue(response.body());
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<ResponseDto<Object>> call,
+                public void onFailure(@NonNull Call<ResponseDto<List<PlaceDto>>> call,
                                       @NonNull Throwable throwable) {
                     Log.e(errorType, "Error during onFailure");
-                    getAllPlacesResponseLiveData.postValue(ErrorGenerateUtil.createOnFailureError(errorType));
                 }
             });
 
         } catch (Exception e) {
             Log.e(errorType, "Error during catch");
-            getAllPlacesResponseLiveData.postValue(ErrorGenerateUtil.createCatchError(errorType));
         }
 
         return getAllPlacesResponseLiveData;
     }
 
     @Override
-    public LiveData<ResponseDto<Object>> getPlaceById(Long placeId) {
-        MutableLiveData<ResponseDto<Object>> getPlaceByIdResponseLiveData = new MutableLiveData<>();
+    public LiveData<ResponseDto<PlaceDto>> getPlaceById(Long placeId) {
+        MutableLiveData<ResponseDto<PlaceDto>> getPlaceByIdResponseLiveData = new MutableLiveData<>();
         String errorType = "PlaceRepositoryImpl GetPlaceById Error";
 
         try {
-            Call<ResponseDto<Object>> call = placeApi.getPlaceById(placeId);
-            call.enqueue(new Callback<ResponseDto<Object>>() {
+            Call<ResponseDto<PlaceDto>> call = placeApi.getPlaceById(placeId);
+            call.enqueue(new Callback<ResponseDto<PlaceDto>>() {
                 @Override
-                public void onResponse(@NonNull Call<ResponseDto<Object>> call,
-                                       @NonNull Response<ResponseDto<Object>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        getPlaceByIdResponseLiveData.postValue(response.body());
-                    } else {
-                        Log.e(errorType, "Error during onResponse");
-                        getPlaceByIdResponseLiveData.postValue(ErrorGenerateUtil.createOnResponseError(errorType));
-                    }
+                public void onResponse(@NonNull Call<ResponseDto<PlaceDto>> call,
+                                       @NonNull Response<ResponseDto<PlaceDto>> response) {
+                    getPlaceByIdResponseLiveData.postValue(response.body());
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<ResponseDto<Object>> call,
+                public void onFailure(@NonNull Call<ResponseDto<PlaceDto>> call,
                                       @NonNull Throwable throwable) {
                     Log.e(errorType, "Error during onFailure");
-                    getPlaceByIdResponseLiveData.postValue(ErrorGenerateUtil.createOnFailureError(errorType));
                 }
             });
         } catch (Exception e) {
             Log.e(errorType, "Error during catch");
-            getPlaceByIdResponseLiveData.postValue(ErrorGenerateUtil.createCatchError(errorType));
         }
 
         return getPlaceByIdResponseLiveData;

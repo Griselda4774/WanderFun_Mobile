@@ -13,10 +13,16 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityMainBinding;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.HomeFragment;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.LeaderboardFragment;
+import com.example.wanderfunmobile.infrastructure.ui.fragment.NotSignedInFragment;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.ProfileFragment;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.TripFragment;
+import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
+import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding viewBinding;
@@ -43,11 +49,19 @@ public class MainActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.home_nav) {
                 selectedFragment = new HomeFragment();
             } else if (item.getItemId() == R.id.trip_nav) {
-                selectedFragment = new TripFragment();
+                if (SessionManager.getInstance(this).isLoggedIn()) {
+                    selectedFragment = new TripFragment();
+                } else {
+                    selectedFragment = new NotSignedInFragment();
+                }
             } else if (item.getItemId() == R.id.leaderboard_nav) {
                 selectedFragment = new LeaderboardFragment();
             } else if (item.getItemId() == R.id.profile_nav) {
-                selectedFragment = new ProfileFragment();
+                if (SessionManager.getInstance(this).isLoggedIn()) {
+                    selectedFragment = new ProfileFragment();
+                } else {
+                    selectedFragment = new NotSignedInFragment();
+                }
             }
 
             if (selectedFragment != null) {

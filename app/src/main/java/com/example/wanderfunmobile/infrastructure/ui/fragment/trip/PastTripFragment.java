@@ -16,6 +16,8 @@ public class PastTripFragment extends Fragment {
 
     FragmentPastTripBinding viewBinding;
 
+    public PastTripFragment() {}
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

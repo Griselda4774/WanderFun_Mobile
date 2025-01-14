@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/feedback_create_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".infrastructure.ui.activity.place.FeedbackCreateActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/header_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Tên địa điểm aaaaaaaaaa aaaaaaaaaaaaa aaaaaa aaaaaaaaaaaaaaa"
+            style="@style/Text.Title"
+            android:layout_margin="@dimen/app_horizontal_margin2"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/back_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/app_horizontal_margin2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <include layout="@layout/button_back_rounded"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        android:gravity="start">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="@dimen/small_avatar_size"
+                android:layout_height="@dimen/small_avatar_size"
+                android:background="@drawable/bg_img_rounded"
+                android:scaleType="centerCrop"
+                android:clipToOutline="true"
+                android:src="@drawable/brown"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/place_info_section_medium_margin"
+                android:text="Trần Đình Tâm"
+                style="@style/Text.Title.Section"/>
+
+        </LinearLayout>
+
+        <com.example.wanderfunmobile.infrastructure.ui.custom.StarRatingOutlineView
+            android:id="@+id/star_rating_outline_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/place_info_section_medium_margin"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/place_info_section_medium_margin"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <include layout="@layout/edittext_content" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/place_cover_image"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_marginTop="@dimen/place_info_section_medium_margin"
+            android:src="@drawable/brown"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true"
+            android:background="@drawable/bg_radius"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/place_info_section_medium_margin"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <include layout="@layout/button_highlight" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/app_horizontal_margin"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <include layout="@layout/button_highlight"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

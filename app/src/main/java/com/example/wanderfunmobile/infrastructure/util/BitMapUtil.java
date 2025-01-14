@@ -6,7 +6,13 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 public class BitMapUtil {
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -35,5 +41,25 @@ public class BitMapUtil {
         vectorDrawable.draw(canvas);
 
         return bitmap;
+    }
+
+    public static void getBitMapFromUrl(Context context, String url, BitmapCallback callback) {
+        Glide.with(context).asBitmap().load(url).into(
+                new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        callback.onBitmapLoaded(resource);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                }
+        );
+    }
+
+    public interface BitmapCallback {
+        void onBitmapLoaded(Bitmap bitmap);
     }
 }

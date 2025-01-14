@@ -1,5 +1,6 @@
 package com.example.wanderfunmobile.infrastructure.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,17 +22,20 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.application.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
-import com.example.wanderfunmobile.viewmodel.AuthViewModel;
+import com.example.wanderfunmobile.infrastructure.util.SessionManager;
+import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
+import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 import com.example.wanderfunmobile.application.dto.auth.LoginDto;
 
-import org.modelmapper.ModelMapper;
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
     private AuthViewModel authViewModel;
-    private ModelMapper modelMapper;
+    @Inject
+    ObjectMapper objectMapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +70,8 @@ public class LoginActivity extends AppCompatActivity {
         setupPasswordToggle(passwordEditText, hidePassIcon, viewPassIcon);
 
 
-        TextView loginButton = viewBinding.loginButton;
+        TextView loginButton = viewBinding.loginButton.findViewById(R.id.button);
+        loginButton.setText("Đăng nhập");
         loginButton.setOnClickListener(v -> {
             String username = emailEditText.getText().toString();
             String password = passwordEditText.getText().toString();
@@ -78,20 +83,18 @@ public class LoginActivity extends AppCompatActivity {
 
         authViewModel.getLoginResponseLiveData().observe(this, loginResponse -> {
             if (!loginResponse.isError()) {
-                LoginResponseDto loginResponseDto = modelMapper.map(loginResponse.getData(), LoginResponseDto.class);
+                LoginResponseDto loginResponseDto = objectMapper.map(loginResponse.getData(), LoginResponseDto.class);
                 Toast.makeText(this, "Welcome " + loginResponseDto.getEmail(), Toast.LENGTH_SHORT).show();
-                SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putLong("id", loginResponseDto.getId());
-                editor.putString("email", loginResponseDto.getEmail());
-                editor.putString("role", loginResponseDto.getRole().toString());
-                editor.putString("tokenType", loginResponseDto.getTokenType());
-                editor.putString("accessToken", loginResponseDto.getAccessToken());
-                editor.putString("refreshToken", loginResponseDto.getRefreshToken());
-                editor.putBoolean("isLoggedIn", true);
-                editor.apply();
+                SessionManager.getInstance(this).login(
+                        loginResponseDto.getId(),
+                        loginResponseDto.getEmail(),
+                        loginResponseDto.getRole().name(),
+                        loginResponseDto.getTokenType(),
+                        loginResponseDto.getAccessToken(),
+                        loginResponseDto.getRefreshToken());
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(this, "Error: " + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -99,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
         TextView guestButton = viewBinding.guestButton;
         guestButton.setOnClickListener(v -> {
+            SessionManager.getInstance(this).logout();
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

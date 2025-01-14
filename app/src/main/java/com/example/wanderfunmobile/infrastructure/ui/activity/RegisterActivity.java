@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityRegisterBinding;
-import com.example.wanderfunmobile.viewmodel.AuthViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 import com.example.wanderfunmobile.application.dto.auth.RegisterDto;
 
 import org.modelmapper.ModelMapper;
@@ -74,7 +74,8 @@ public class RegisterActivity extends AppCompatActivity {
         ImageView viewRePassIcon = rePasswordInput.findViewById(R.id.view_pass_icon);
         setupPasswordToggle(rePasswordEditText, hideRePassIcon, viewRePassIcon);
 
-        TextView registerButton = viewBinding.registerButton;
+        TextView registerButton = viewBinding.registerButton.findViewById(R.id.button);
+        registerButton.setText("Đăng ký");
         registerButton.setOnClickListener(v -> {
             String firstname = firstnameEditText.getText().toString();
             String lastname = lastnameEditText.getText().toString();
@@ -91,6 +92,9 @@ public class RegisterActivity extends AppCompatActivity {
         authViewModel.getRegisterResponseLiveData().observe(this, registerResponse -> {
             if (!registerResponse.isError()) {
                 Toast.makeText(this, "Success: " + registerResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(this, "Error: " + registerResponse.getMessage(), Toast.LENGTH_SHORT).show();
             }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/star1"
+        android:layout_width="@dimen/place_info_rating_star_size"
+        android:layout_height="@dimen/place_info_rating_star_size"
+        android:src="@drawable/ic_star"
+        app:tint="@color/star_disable"/>
+
+    <ImageView
+        android:id="@+id/star2"
+        android:layout_width="@dimen/place_info_rating_star_size"
+        android:layout_height="@dimen/place_info_rating_star_size"
+        android:layout_marginStart="@dimen/place_info_content_margin_small"
+        android:src="@drawable/ic_star"
+        app:tint="@color/star_disable"/>
+
+    <ImageView
+        android:id="@+id/star3"
+        android:layout_width="@dimen/place_info_rating_star_size"
+        android:layout_height="@dimen/place_info_rating_star_size"
+        android:layout_marginStart="@dimen/place_info_content_margin_small"
+        android:src="@drawable/ic_star"
+        app:tint="@color/star_disable"/>
+
+    <ImageView
+        android:id="@+id/star4"
+        android:layout_width="@dimen/place_info_rating_star_size"
+        android:layout_height="@dimen/place_info_rating_star_size"
+        android:layout_marginStart="@dimen/place_info_content_margin_small"
+        android:src="@drawable/ic_star"
+        app:tint="@color/star_disable"/>
+
+    <ImageView
+        android:id="@+id/star5"
+        android:layout_width="@dimen/place_info_rating_star_size"
+        android:layout_height="@dimen/place_info_rating_star_size"
+        android:layout_marginStart="@dimen/place_info_content_margin_small"
+        android:src="@drawable/ic_star"
+        app:tint="@color/star_disable"/>
+
+</LinearLayout>

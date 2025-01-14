@@ -47,7 +47,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:contentDescription="User avatar"
-                    android:background="@drawable/bg_circle_img"
+                    android:background="@drawable/bg_img_rounded"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/brown"
                     android:clipToOutline="true"/>
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="4dp"
-                    android:background="@drawable/bg_ranking_label"
+                    android:background="@drawable/bg_label_ranking"
                     app:layout_constraintTop_toBottomOf="@id/user_name"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
@@ -183,7 +183,7 @@
                         android:id="@+id/favourite_place_section_icon"
                         android:layout_width="@dimen/section_icon_size"
                         android:layout_height="@dimen/section_icon_size"
-                        android:src="@drawable/ic_heart_2"
+                        android:src="@drawable/ic_heart_outline"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

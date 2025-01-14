@@ -3,7 +3,9 @@ package com.example.wanderfunmobile.infrastructure.ui.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -14,26 +16,42 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.cloudinary.Transformation;
+import com.cloudinary.android.MediaManager;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.application.dto.place.PlaceDto;
 import com.example.wanderfunmobile.databinding.FragmentHomeBinding;
+import com.example.wanderfunmobile.domain.model.Place;
+import com.example.wanderfunmobile.infrastructure.ui.adapter.place.PlaceInfoTabAdapter;
+import com.example.wanderfunmobile.infrastructure.ui.custom.StarRatingView;
+import com.example.wanderfunmobile.infrastructure.util.ViewPager2HeightAdjuster;
+import com.example.wanderfunmobile.infrastructure.ui.fragment.dialog.LoadingDialogFragment;
 import com.example.wanderfunmobile.infrastructure.util.BitMapUtil;
+import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
+import com.example.wanderfunmobile.infrastructure.util.ColorHexUtil;
+import com.example.wanderfunmobile.infrastructure.util.MediaManagerStateUtil;
+import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
+import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.gson.JsonElement;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.maplibre.android.MapLibre;
 import org.maplibre.android.camera.CameraPosition;
 import org.maplibre.android.camera.CameraUpdateFactory;
@@ -49,19 +67,24 @@ import org.maplibre.android.location.permissions.PermissionsManager;
 import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.maps.MapView;
 import org.maplibre.android.maps.OnMapReadyCallback;
+import org.maplibre.android.maps.Projection;
 import org.maplibre.android.maps.Style;
 import org.maplibre.android.plugins.annotation.Symbol;
 import org.maplibre.android.plugins.annotation.SymbolManager;
 import org.maplibre.android.plugins.annotation.SymbolOptions;
-import org.maplibre.android.style.expressions.Expression;
 import org.maplibre.android.style.layers.Property;
-import org.maplibre.android.style.layers.PropertyFactory;
-import org.maplibre.android.style.layers.SymbolLayer;
-import org.maplibre.android.style.sources.GeoJsonSource;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback{
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
+public class HomeFragment extends Fragment implements OnMapReadyCallback {
+    private PlaceViewModel placeViewModel;
     private MapView mapView;
     private MapLibreMap mapLibreMap;
     private Style mapStyle;
@@ -77,14 +100,27 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
     private LinearLayout gpsButton;
     private Location currentLocation;
 
-    private ConstraintLayout bottomSheet;
-    private BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
+    private ConstraintLayout placeInfoBottomSheet;
+    private ConstraintLayout locationPinBottomSheet;
+
+    private BottomSheetBehavior<ConstraintLayout> placeInfoBottomSheetBehavior;
+    private BottomSheetBehavior<ConstraintLayout> locationPinBottomSheetBehavior;
+    private List<Place> placeList = new ArrayList<>();
+    @Inject
+    ObjectMapper objectMapper;
+    private LoadingDialogFragment loadingDialogFragment;
+
+    public HomeFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Init maplibre
         MapLibre.getInstance(requireContext());
+        if (!MediaManagerStateUtil.isInitialized()) {
+            CloudinaryUtil.init(requireContext());
+            MediaManagerStateUtil.initialize();
+        }
     }
 
     @Override
@@ -92,12 +128,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
                              Bundle savedInstanceState) {
         viewBinding = FragmentHomeBinding.inflate(inflater, container, false);
 
+        placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
+
         mapView = viewBinding.mapView;
         gpsButton = viewBinding.gpsButton;
 
-        bottomSheet = viewBinding.bottomSheetContainer.bottomSheet;
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        placeInfoBottomSheet = viewBinding.placeInfoBottomSheetContainer.placeInfoBottomSheet;;
+        placeInfoBottomSheetBehavior = BottomSheetBehavior.from(placeInfoBottomSheet);
+        placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        locationPinBottomSheet = viewBinding.locationPinBottomSheetContainer.locationPinBottomSheet;
+        locationPinBottomSheetBehavior = BottomSheetBehavior.from(locationPinBottomSheet);
+        locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         // Khởi tạo launcher cho yêu cầu quyền
         requestPermissionsLauncher = registerForActivityResult(
@@ -117,12 +159,28 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        loadingDialogFragment = new LoadingDialogFragment();
+        loadingDialogFragment.show(requireActivity().getSupportFragmentManager(), "loading");
+
         mapView.onCreate(savedInstanceState);
 
         mapStyleUrl = String.format("%s/assets/goong_map_web.json?api_key=%s",
                 getString(R.string.goong_map_url),
                 getString(R.string.goong_map_key));
-        mapView.getMapAsync(this);
+
+        placeViewModel.getAllPlaces();
+        placeViewModel.getAllPlacesResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+            if (!data.isError()) {
+                List<PlaceDto> placeDtoList = data.getData();
+                if (placeDtoList.isEmpty()) {
+                    placeDtoList = new ArrayList<>();
+                }
+                placeList = objectMapper.mapList(placeDtoList, Place.class);
+            }
+            mapView.getMapAsync(this);
+            loadingDialogFragment.dismiss();
+        });
 
         gpsButton.setOnClickListener(v -> {
             if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
@@ -140,8 +198,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
                 checkPermissions();
             }
         });
-
-
     }
 
     @Override
@@ -165,43 +221,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
             style.addImage("icon2", icon2BitMap);
             style.addImage("icon3", icon3BitMap);
 
-            GeoJsonSource geoJsonSource = null;
-            try {
-                geoJsonSource = new GeoJsonSource("marker-source", String.valueOf(createGeoJson()));
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
+            if (!placeList.isEmpty()) {
+                addPlaceImageToMap(requireContext(), style, placeList);
+                drawPlaceMarker(symbolManager, placeList);
             }
-            style.addSource(geoJsonSource);
-
-            SymbolLayer markerLayer = new SymbolLayer("marker-layer", "marker-source");
-            markerLayer.setProperties(
-                    PropertyFactory.iconImage(Expression.get("icon"))
-//                        PropertyFactory.iconSize(Expression.switchCase(
-//                                Expression.eq(Expression.get("selected"), true),
-//                                Expression.literal(1.5f),
-//                                Expression.literal(1.0f))
-//                        PropertyFactory.textField(Expression.get("title")),
-//                        PropertyFactory.textSize(12f),
-//                        PropertyFactory.textAnchor(Property.TEXT_ANCHOR_TOP),
-//                        PropertyFactory.textOffset(new Float[]{0f, 1.5f}))
-            );
-            markerLayer.setFilter(Expression.gte(Expression.zoom(), 12));
-            style.addLayer(markerLayer);
-
-            symbolManager.addClickListener(symbol -> {
-                String title = "maker-non";
-                if (symbol.getData() != null)
-                    title = symbol.getData().getAsJsonObject().get("title").getAsString();
-                Toast.makeText(requireContext(), title, Toast.LENGTH_SHORT).show();
-                symbol.setIconImage("icon3");
-                symbolManager.update(symbol);
-                return true;
-            });
-
-            map.addOnMapClickListener(latLng -> {
-                addMarkerAtLocation(latLng, map, symbolManager);
-                return true;
-            });
 
             if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
                 initializeLocationComponent(style, map);
@@ -213,6 +236,40 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
                                 .build()), 1000
                 );
             }
+
+            symbolManager.addClickListener(symbol -> {
+                if (currentMarker != null) {
+                    symbolManager.delete(currentMarker);
+                    currentMarker = null;
+                }
+
+                focusOnLocation(symbol.getLatLng(), map, 17, -200);
+
+                Gson gson = new Gson();
+                String title = "no-title";
+                String name = "no-name";
+                Place place = null;
+                if (symbol.getData() != null) {
+                    title = symbol.getData().getAsJsonObject().get("title").getAsString();
+                    if (title.equals("Place Marker") && symbol.getData().getAsJsonObject().get("place") != null) {
+                        place = gson.fromJson(symbol.getData().getAsJsonObject().get("place"), Place.class);
+                        name = place.getName();
+                    } else {
+                        name = "Location Pin";
+                    }
+                }
+
+                if (place != null) {
+                    showPlaceInfoBottomSheet(place);
+                }
+//                Toast.makeText(requireContext(), title + ": " + name, Toast.LENGTH_SHORT).show();
+                return true;
+            });
+
+            map.addOnMapClickListener(latLng -> {
+                addMarkerAtLocation(latLng, map, symbolManager);
+                return true;
+            });
 
             mapStyle = style;
         });
@@ -331,7 +388,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
         @Override
         public void onSuccess(LocationEngineResult result) {
             currentLocation = result.getLastLocation();
-            if (currentLocation != null) {
+            if (currentLocation != null && !placeList.isEmpty()) {
+                for (Place place: placeList) {
+                    float[] results = new float[1];
+                    Location.distanceBetween(
+                            currentLocation.getLatitude(), currentLocation.getLongitude(),
+                            place.getLatitude(), place.getLongitude(),
+                            results
+                    );
+                    float distanceInMeters = results[0];
+                    if (distanceInMeters <= place.getCheckInRange()) {
+                        Log.d("UserLocation", "Place can check-in: " + place.getName());
+                    }
+                }
+
                 Log.d("UserLocation", "Lat: " + currentLocation.getLatitude() + ", Lng: " + currentLocation.getLongitude());
             }
         }
@@ -342,71 +412,215 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
         }
     };
 
-    private JSONObject createGeoJsonFeature(double lat, double lng, String title, String iconName) throws JSONException {
-        JSONObject feature = new JSONObject();
-        feature.put("type", "Feature");
-        feature.put("properties", new JSONObject()
-                .put("title", title)
-                .put("icon", iconName));
-        feature.put("geometry", new JSONObject()
-                .put("type", "Point")
-                .put("coordinates", new JSONArray().put(lng).put(lat)));
-        return feature;
-    }
-
-    private JSONObject createGeoJson() throws JSONException {
-        JSONArray features = new JSONArray();
-        features.put(createGeoJsonFeature(10.7769, 106.7009, "Marker 1", "icon1"));
-        features.put(createGeoJsonFeature(10.7809, 106.7039, "Marker 2", "icon2"));
-        features.put(createGeoJsonFeature(10.7709, 106.6959, "Marker 3", "icon3"));
-
-        JSONObject geoJson = new JSONObject();
-        geoJson.put("type", "FeatureCollection");
-        geoJson.put("features", features);
-        return geoJson;
-    }
-
-    private void addMarkerAtLocation(LatLng latLng, MapLibreMap mapLibreMap, SymbolManager symbolManager) {
+    private void addMarkerAtLocation(LatLng latLng, MapLibreMap map, SymbolManager symbolManager) {
         if (currentMarker != null) {
             symbolManager.delete(currentMarker);
             currentMarker = null;
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         } else {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            TextView placeLong = bottomSheet.findViewById(R.id.place_long);
-            TextView placeLat = bottomSheet.findViewById(R.id.place_lat);
-            placeLong.setText(String.valueOf(latLng.getLongitude()));
-            placeLat.setText(String.valueOf(latLng.getLatitude()));
+            showLocationPinBottomSheet(latLng);
 
             JsonObject data = new JsonObject();
-            data.addProperty("title", "My Marker");
-            data.addProperty("description", "This is a sample marker description");
+            data.addProperty("title", "Location Marker");
             currentMarker = symbolManager.create(new SymbolOptions()
                     .withLatLng(latLng)
                     .withIconImage("marker-icon")
                     .withData(data)
-                    .withTextField("Mark")
-                    .withTextFont(new String[] {"Roboto Medium"})
-                    .withTextSize(16f)
-                    .withTextColor(String.valueOf(R.color.black4))
-                    .withTextAnchor(Property.TEXT_ANCHOR_LEFT)
-                    .withTextOffset(new Float[]{0f, 2.5f})
             );
 
-            double targetZoom = mapLibreMap.getCameraPosition().zoom > 12 ? mapLibreMap.getCameraPosition().zoom : 12;
-
-            CameraPosition position = new CameraPosition.Builder()
-                    .target(latLng)
-                    .zoom(targetZoom)
-                    .build();
-            mapLibreMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 1000);
+            focusOnLocation(latLng, map, 15);
         }
     }
 
-    private void addMarker(LatLng latLng, MapLibreMap mapLibreMap, SymbolManager symbolManager) {
+    public void focusOnLocation(LatLng latLng, MapLibreMap mapLibreMap, double zoom) {
+        double targetZoom = Math.max(mapLibreMap.getCameraPosition().zoom, zoom);
+
+        CameraPosition position = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(targetZoom)
+                .build();
+        mapLibreMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 1000);
+    }
+
+    public void focusOnLocation(LatLng latLng, MapLibreMap mapLibreMap, double zoom, int offsetY) {
+        double currentZoom = mapLibreMap.getCameraPosition().zoom;
+        double targetZoom = Math.max(currentZoom, zoom);
+
+        CameraPosition zoomPosition = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(targetZoom)
+                .build();
+
+        mapLibreMap.animateCamera(CameraUpdateFactory.newCameraPosition(zoomPosition), 500, new MapLibreMap.CancelableCallback() {
+            @Override
+            public void onFinish() {
+                Projection projection = mapLibreMap.getProjection();
+                PointF screenPoint = projection.toScreenLocation(latLng);
+
+                screenPoint.y -= offsetY;
+
+                LatLng adjustedLatLng = projection.fromScreenLocation(screenPoint);
+
+                CameraPosition offsetPosition = new CameraPosition.Builder()
+                        .target(adjustedLatLng)
+                        .zoom(targetZoom)
+                        .build();
+
+                mapLibreMap.animateCamera(CameraUpdateFactory.newCameraPosition(offsetPosition), 500);
+            }
+
+            @Override
+            public void onCancel() {
+            }
+        });
+    }
+
+    private void addPlaceImageToMap(Context context, Style style, List<Place> placeList) {
+        for (Place place : placeList) {
+            String transformUrl = MediaManager.get().url()
+                    .transformation(new Transformation<>()
+                            .width(160)
+                            .height(160)
+                            .crop("thumb")
+                            .radius("max")
+                            .background("transparent")
+                            .fetchFormat("png"))
+                    .generate(place.getCoverImagePublicId());
+            BitMapUtil.getBitMapFromUrl(context, transformUrl, bitmap -> {
+                style.addImage(place.getCoverImagePublicId(), bitmap);
+            });
+        }
+    }
+
+    private void drawPlaceMarker(SymbolManager symbolManager, List<Place> placeList) {
+        for (Place place : placeList) {
+            addPlaceMarker(symbolManager, place);
+        }
+    }
+
+    private void addPlaceMarker(SymbolManager symbolManager, Place place) {
+        Gson gson = new Gson();
+        JsonObject placeJson = gson.toJsonTree(place).getAsJsonObject();
+        JsonObject data = new JsonObject();
+        data.addProperty("title", "Place Marker");
+        data.add("place", placeJson);
+
         symbolManager.create(new SymbolOptions()
-                .withLatLng(latLng)
-                .withIconImage("marker-icon")
+                .withLatLng(new LatLng(place.getLatitude(), place.getLongitude()))
+                .withIconImage(place.getCoverImagePublicId())
+                .withData(data)
+                .withTextField(place.getName())
+                .withTextFont(new String[]{"Roboto Medium"})
+                .withTextSize(16f)
+                .withTextColor(ColorHexUtil.getColorHexString(ContextCompat.getColor(requireContext(), R.color.black4)))
+                .withTextHaloColor(ColorHexUtil.getColorHexString(ContextCompat.getColor(requireContext(), R.color.white1)))
+                .withTextHaloWidth(5.0f)
+                .withTextHaloBlur(0.0f)
+                .withTextAnchor(Property.TEXT_ANCHOR_TOP_LEFT)
+                .withTextOffset(new Float[]{0f, 2f})
         );
+    }
+
+    private void showPlaceInfoBottomSheet(Place place) {
+        placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        // Place info tab
+        // View pager
+        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(this);
+        ViewPager2 viewPager = placeInfoBottomSheet.findViewById(R.id.view_pager);
+        viewPager.setAdapter(placeInfoTabAdapter);
+        ViewPager2HeightAdjuster.autoAdjustHeight(viewPager, true);
+
+        // Tab layout
+        TabLayout tabLayout = placeInfoBottomSheet.findViewById(R.id.tab_layout);
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            @SuppressLint("InflateParams") View customView = LayoutInflater.from(requireContext()).inflate(R.layout.tab_item, null);
+            TextView tabText = customView.findViewById(R.id.tab_text);
+            tabText.setTextAppearance(R.style.Text_TabLabel);
+
+            switch (position) {
+                case 0:
+                    tabText.setText("Tổng quan");
+                    tabText.setTextAppearance(R.style.Text_TabLabel_Active_Blue);
+                    break;
+                case 1:
+                    tabText.setText("Đánh giá");
+                    break;
+                case 2:
+                    tabText.setText("Ảnh");
+                    break;
+                case 3:
+                    tabText.setText("Giới thiệu");
+                    break;
+            }
+
+            tab.setCustomView(customView);
+        }).attach();
+
+        tabLayout.selectTab(tabLayout.getTabAt(0));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                TextView tabText = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab_text);
+                tabText.setTextAppearance(R.style.Text_TabLabel);
+            }
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                TextView tabText = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab_text);
+                tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(), R.color.blue2));
+                tabText.setTextAppearance(R.style.Text_TabLabel_Active_Blue);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        TextView placeName = placeInfoBottomSheet.findViewById(R.id.place_name);
+        placeName.setText(place.getName());
+
+        TextView placeAddress = placeInfoBottomSheet.findViewById(R.id.place_address_content);
+        placeAddress.setText(place.getAddress());
+
+        StarRatingView starRatingView = placeInfoBottomSheet.findViewById(R.id.place_rating_view);
+        starRatingView.setRating(4);
+
+        ImageView placeCoverImage = placeInfoBottomSheet.findViewById(R.id.place_cover_image);
+        String transformUrl = MediaManager.get().url()
+                .transformation(new Transformation<>()
+                        .width(800)
+                        .crop("scale"))
+                .generate(place.getCoverImagePublicId());
+        Glide.with(this)
+                .load(transformUrl)
+                .error(R.drawable.brown)
+                .into(placeCoverImage);
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showLocationPinBottomSheet(LatLng latLng) {
+        locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        TextView placeLong = locationPinBottomSheet.findViewById(R.id.location_pin_location_long);
+        TextView placeLat = locationPinBottomSheet.findViewById(R.id.location_pin_location_lat);
+        placeLong.setText("Kinh độ: "+ latLng.getLongitude());
+        placeLat.setText("Vĩ độ: "+ latLng.getLatitude());
+    }
+
+    private void updatePagerHeightForChild(View view, ViewPager2 viewPager) {
+        view.post(() -> {
+            int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(view.getWidth(), View.MeasureSpec.EXACTLY);
+            int hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            view.measure(wMeasureSpec, hMeasureSpec);
+
+            if (viewPager.getLayoutParams().height != view.getMeasuredHeight()) {
+                ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
+                layoutParams.height = view.getMeasuredHeight();
+                viewPager.setLayoutParams(layoutParams);
+            }
+        });
     }
 }
