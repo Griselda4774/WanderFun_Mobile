@@ -63,6 +63,15 @@
     <dimen name="place_info_rating_star_size_large_extra">40dp</dimen>
     <dimen name="place_info_title_text_size">18sp</dimen>
 
+<!--    Feedback-->
+    <dimen name="feedback_image_item_width">160dp</dimen>
+    <dimen name="feedback_image_item_height">90dp</dimen>
+    <dimen name="feedback_image_item_margin">4dp</dimen>
+    <dimen name="feedback_image_item_radius">8dp</dimen>
+
+<!--    Rating bar-->
+    <dimen name="rating_bar_height">8dp</dimen>
+
     <dimen name="title_content_margin">8dp</dimen>
     <dimen name="content_metric_margin">4dp</dimen>
     <dimen name="img_selector_icon_size">32dp</dimen>
