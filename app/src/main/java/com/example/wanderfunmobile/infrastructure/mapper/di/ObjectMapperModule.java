@@ -1,9 +1,14 @@
 package com.example.wanderfunmobile.infrastructure.mapper.di;
 
+import com.example.wanderfunmobile.application.dto.place.PlaceDto;
+import com.example.wanderfunmobile.domain.model.Place;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.infrastructure.mapper.ObjectMapperImpl;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+
+import java.time.LocalTime;
 
 import javax.inject.Singleton;
 
@@ -22,7 +27,10 @@ public class ObjectMapperModule {
         modelMapper.getConfiguration()
                 .setSkipNullEnabled(true)
                 .setFieldMatchingEnabled(true)
-                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);;
+                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
+                .setPropertyCondition(context -> context.getSource() != null)
+                .setMatchingStrategy(MatchingStrategies.STRICT);
+
         return modelMapper;
     }
 
