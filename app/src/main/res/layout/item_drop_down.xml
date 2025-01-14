@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/Text.Content"
-    android:paddingVertical="@dimen/input_padding"
-    android:paddingHorizontal="@dimen/item_padding"
+    android:paddingVertical="@dimen/item_padding_vertical"
+    android:paddingHorizontal="@dimen/item_padding_horizontal"
     android:background="@drawable/effect_ripple"/>

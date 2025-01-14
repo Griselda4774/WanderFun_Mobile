@@ -23,14 +23,16 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:id="@+id/rating_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
+                android:layout_marginEnd="@dimen/place_info_section_medium_margin"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toStartOf="@id/raring_bar_list">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -53,6 +55,16 @@
                     style="@style/Text.Description"/>
 
             </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/raring_bar_list"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rating_container"
+                app:layout_constraintTop_toTopOf="parent"
+                android:nestedScrollingEnabled="false"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -102,6 +114,29 @@
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_border_bottom"
+        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingVertical="@dimen/place_info_section_large_margin"
+        android:orientation="vertical"
+        android:gravity="start">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bài đánh giá"
+            android:textSize="@dimen/place_info_title_text_size"
+            style="@style/Text.Title"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
 
     </LinearLayout>
 

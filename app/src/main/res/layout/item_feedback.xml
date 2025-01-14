@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="start"
     android:paddingHorizontal="@dimen/app_horizontal_margin"
-    android:paddingVertical="@dimen/place_info_section_medium_margin"
+    android:paddingVertical="@dimen/item_padding_vertical"
     android:background="@drawable/bg_border_bottom">
 
     <LinearLayout
