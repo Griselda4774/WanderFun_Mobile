@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_button_highlight"
+        android:paddingVertical="8dp"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_plus"
+            app:tint="@color/white1"/>
+
+        <TextView
+            android:id="@+id/button"
+            android:layout_marginStart="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tạo mới"
+            style="@style/Text.Button.Highlight" />
+
+    </LinearLayout>
+
+</merge>
