@@ -42,6 +42,7 @@ public class StarRatingOutlineView extends ConstraintLayout {
         stars[4] = findViewById(R.id.star5);
 
         setRating(0);
+        enableIntent();
     }
 
     public int getRating() {
@@ -52,8 +53,12 @@ public class StarRatingOutlineView extends ConstraintLayout {
         rating = Math.max(0, Math.min(rating, 5));
         currentRating = rating;
 
-        for (int i = 0; i < rating; i++) {
-            stars[i].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star));
+        for (int i = 0; i < stars.length; i++) {
+            if (i < rating) {
+                stars[i].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star));
+            } else {
+                stars[i].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_outline));
+            }
         }
     }
 
@@ -61,7 +66,6 @@ public class StarRatingOutlineView extends ConstraintLayout {
         for (int i = 0; i < stars.length; i++) {
             final int finalI = i;
             stars[i].setOnClickListener(v -> {
-                setRating(finalI + 1);
                 Intent intent = new Intent(getContext(), FeedbackCreateActivity.class);
                 intent.putExtra("rating", finalI + 1);
                 getContext().startActivity(intent);

@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +38,7 @@ import com.example.wanderfunmobile.databinding.FragmentHomeBinding;
 import com.example.wanderfunmobile.domain.model.Place;
 import com.example.wanderfunmobile.infrastructure.ui.adapter.place.PlaceInfoTabAdapter;
 import com.example.wanderfunmobile.infrastructure.ui.custom.StarRatingView;
+import com.example.wanderfunmobile.infrastructure.util.ViewPager2HeightAdjuster;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.dialog.LoadingDialogFragment;
 import com.example.wanderfunmobile.infrastructure.util.BitMapUtil;
 import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
@@ -530,24 +530,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(this);
         ViewPager2 viewPager = placeInfoBottomSheet.findViewById(R.id.view_pager);
         viewPager.setAdapter(placeInfoTabAdapter);
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-
-                View currentView = viewPager.getChildAt(0);
-                if (currentView != null) {
-                    currentView.post(() -> {
-                        int height = currentView.getMeasuredHeight();
-                        if (height > 0) {
-                            ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-                            layoutParams.height = height;
-                            viewPager.setLayoutParams(layoutParams);
-                        }
-                    });
-                }
-            }
-        });
+        ViewPager2HeightAdjuster.autoAdjustHeight(viewPager, true);
 
         // Tab layout
         TabLayout tabLayout = placeInfoBottomSheet.findViewById(R.id.tab_layout);
@@ -625,5 +608,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         TextView placeLat = locationPinBottomSheet.findViewById(R.id.location_pin_location_lat);
         placeLong.setText("Kinh độ: "+ latLng.getLongitude());
         placeLat.setText("Vĩ độ: "+ latLng.getLatitude());
+    }
+
+    private void updatePagerHeightForChild(View view, ViewPager2 viewPager) {
+        view.post(() -> {
+            int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(view.getWidth(), View.MeasureSpec.EXACTLY);
+            int hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            view.measure(wMeasureSpec, hMeasureSpec);
+
+            if (viewPager.getLayoutParams().height != view.getMeasuredHeight()) {
+                ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
+                layoutParams.height = view.getMeasuredHeight();
+                viewPager.setLayoutParams(layoutParams);
+            }
+        });
     }
 }

@@ -1,5 +1,6 @@
 package com.example.wanderfunmobile.infrastructure.ui.activity.place;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -11,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityFeedbackCreateBinding;
+import com.example.wanderfunmobile.infrastructure.ui.custom.StarRatingOutlineView;
 
 public class FeedbackCreateActivity extends AppCompatActivity {
 
@@ -35,6 +37,10 @@ public class FeedbackCreateActivity extends AppCompatActivity {
             finish();
         });
 
-
+        StarRatingOutlineView starRating = viewBinding.starRatingOutlineView;
+        starRating.disableIntent();
+        Intent intent = getIntent();
+        int rating = intent.getIntExtra("rating", 0);
+        starRating.setRating(rating);
     }
 }

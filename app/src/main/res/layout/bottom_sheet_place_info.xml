@@ -252,25 +252,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/place_info_section_medium_margin"
-                    app:tabPaddingEnd="@dimen/app_horizontal_margin2"
-                    app:tabPaddingStart="@dimen/app_horizontal_margin2"
+                    android:background="@color/white1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tabBackground="@drawable/bg_border_bottom"
+                    app:tabGravity="fill"
                     app:tabIndicator="@drawable/tab_indicator"
                     app:tabIndicatorColor="@color/blue2"
-                    app:tabIndicatorGravity="bottom"
                     app:tabIndicatorFullWidth="false"
+                    app:tabIndicatorGravity="bottom"
                     app:tabMode="scrollable"
-                    app:tabGravity="fill"
-                    app:tabBackground="@drawable/bg_border_bottom"
-                    app:tabRippleColor="@null"
-                    android:background="@color/white1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:tabPaddingEnd="@dimen/app_horizontal_margin2"
+                    app:tabPaddingStart="@dimen/app_horizontal_margin2"
+                    app:tabRippleColor="@null" />
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/view_pager"
@@ -280,7 +282,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:nestedScrollingEnabled="false"
-                    android:isScrollContainer="false"/>
+                    android:isScrollContainer="false" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
