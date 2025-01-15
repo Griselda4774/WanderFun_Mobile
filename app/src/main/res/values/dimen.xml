@@ -74,7 +74,9 @@
 
 <!--    Item-->
     <dimen name="item_padding_horizontal">20dp</dimen>
+    <dimen name="item_padding_horizontal_small">8dp</dimen>
     <dimen name="item_padding_vertical">16dp</dimen>
+    <dimen name="item_padding_vertical_small">8dp</dimen>
 
     <dimen name="title_content_margin">8dp</dimen>
     <dimen name="content_metric_margin">4dp</dimen>

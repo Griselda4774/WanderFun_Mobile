@@ -18,14 +18,23 @@
         android:theme="@style/Theme.WanderFunMobile"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".infrastructure.ui.activity.album.AlbumDetailsActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
             android:name=".infrastructure.ui.activity.place.FeedbackCreateActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
         <activity
             android:name=".infrastructure.ui.activity.profile.EditProfileActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
             android:name=".infrastructure.ui.activity.profile.MyProfileActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".infrastructure.ui.activity.album.MyAlbumActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity

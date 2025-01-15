@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:padding="16dp"
     android:layout_marginHorizontal="@dimen/app_horizontal_margin"
-    android:layout_marginVertical="@dimen/item_padding_vertical"
+    android:layout_marginVertical="@dimen/item_padding_vertical_small"
     android:background="@drawable/bg_item_place"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -16,7 +16,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator">
 
         <ImageView
             android:id="@+id/place_cover_image"
