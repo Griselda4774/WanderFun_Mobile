@@ -1,5 +1,6 @@
 package com.example.wanderfunmobile.domain.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class Album {
@@ -13,6 +14,7 @@ public class Album {
     private String placeCoverImageUrl;
     private List<AlbumImage> albumImages;
     private Long userId;
+    private Date lastModified;
 
     public Album() {};
 
@@ -94,5 +96,13 @@ public class Album {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.FragmentProfileBinding;
 import com.example.wanderfunmobile.infrastructure.ui.activity.LoginActivity;
+import com.example.wanderfunmobile.infrastructure.ui.activity.album.MyAlbumActivity;
 import com.example.wanderfunmobile.infrastructure.ui.activity.profile.MyProfileActivity;
 import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
@@ -60,24 +61,35 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
         });
 
+        // My Albums
+        ConstraintLayout myAlbumsSection = viewBinding.albumSection;
+        myAlbumsSection.setOnClickListener(v -> {
+             Intent intent = new Intent(getActivity(), MyAlbumActivity.class);
+             startActivity(intent);
+        });
+
         // Logout
         ConstraintLayout logoutSection = viewBinding.logOutSection;
         logoutSection.setOnClickListener(v -> {
-            authViewModel.logout("Bearer " + SessionManager.getInstance(requireContext()).getAccessToken());
-        });
-
-        authViewModel.getLogoutResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (!data.isError()) {
-                Toast.makeText(requireContext(), data.getMessage(), Toast.LENGTH_SHORT).show();
+//            authViewModel.logout("Bearer " + SessionManager.getInstance(requireContext()).getAccessToken());
                 SessionManager.getInstance(requireContext()).logout();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 requireActivity().finish();
-            } else {
-                Toast.makeText(requireContext(), data.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
         });
+
+//        authViewModel.getLogoutResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+//            if (!data.isError()) {
+//                Toast.makeText(requireContext(), data.getMessage(), Toast.LENGTH_SHORT).show();
+//                SessionManager.getInstance(requireContext()).logout();
+//                Intent intent = new Intent(getActivity(), LoginActivity.class);
+//                startActivity(intent);
+//                requireActivity().finish();
+//            } else {
+//                Toast.makeText(requireContext(), data.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//
+//        });
     }
 
     @Override

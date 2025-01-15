@@ -2,6 +2,7 @@ package com.example.wanderfunmobile.application.dto.album;
 
 import com.example.wanderfunmobile.application.dto.albumimage.AlbumImageDto;
 
+import java.util.Date;
 import java.util.List;
 
 public class AlbumDto {
@@ -14,6 +15,7 @@ public class AlbumDto {
     private String placeName;
     private String placeCoverImageUrl;
     private List<AlbumImageDto> albumImages;
+    private Date lastModified;
 
     public AlbumDto() {};
 
@@ -87,5 +89,13 @@ public class AlbumDto {
 
     public void setAlbumImages(List<AlbumImageDto> albumImages) {
         this.albumImages = albumImages;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 }
