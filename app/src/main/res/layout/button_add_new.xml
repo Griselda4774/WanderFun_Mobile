@@ -11,14 +11,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
         android:orientation="horizontal"
-        android:background="@drawable/bg_button_highlight"
+        android:background="@drawable/bg_button_add_new"
         android:paddingVertical="8dp"
         android:clickable="true"
         android:stateListAnimator="@animator/touch_opacity_animator">
 
         <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:src="@drawable/ic_plus"
             app:tint="@color/white1"/>
 
@@ -28,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tạo mới"
+            android:textSize="14sp"
             style="@style/Text.Button.Highlight" />
 
     </LinearLayout>
