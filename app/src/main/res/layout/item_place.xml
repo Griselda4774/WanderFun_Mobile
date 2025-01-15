@@ -38,7 +38,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="Tp. Hồ Chí Minh"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 style="@style/Text.Title.Section"/>

@@ -64,7 +64,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/rating_container"
                 app:layout_constraintTop_toTopOf="parent"
-                android:nestedScrollingEnabled="false"/>
+                android:nestedScrollingEnabled="false"
+                android:orientation="vertical" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -136,7 +137,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
+            android:nestedScrollingEnabled="false"
+            android:orientation="vertical"/>
 
     </LinearLayout>
 

@@ -4,6 +4,7 @@
     android:id="@+id/rating_bar_item"
     android:layout_width="match_parent"
     android:layout_height="@dimen/rating_bar_height"
+    android:layout_marginVertical="@dimen/item_padding_vertical"
     android:background="@drawable/bg_rating_bar">
 
     <View
