@@ -7,4 +7,6 @@ android:shape="rectangle">
         android:centerColor="@color/green1"
         android:endColor="@color/blue1"
         android:type="linear" />
+    <corners
+        android:radius="16dp" />
 </shape>

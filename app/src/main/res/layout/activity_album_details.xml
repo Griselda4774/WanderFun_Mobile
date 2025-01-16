@@ -46,7 +46,8 @@
         android:id="@+id/description_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/section_margin"
+        android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+        android:layout_marginVertical="@dimen/section_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header">
@@ -84,11 +85,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/album_image_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="@dimen/section_margin"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+        android:layout_marginVertical="16dp"
         android:background="@drawable/cl_gradient_splash"
         android:padding="@dimen/item_padding_vertical"
-        app:layout_constraintBottom_toTopOf="@id/footer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description_section" />
@@ -98,18 +99,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/delete_button"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/app_horizontal_margin"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/edit_button"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <include layout="@layout/button_highlight_red" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -119,10 +120,10 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/app_horizontal_margin"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/delete_button"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <include layout="@layout/button_highlight" />
         </androidx.constraintlayout.widget.ConstraintLayout>
