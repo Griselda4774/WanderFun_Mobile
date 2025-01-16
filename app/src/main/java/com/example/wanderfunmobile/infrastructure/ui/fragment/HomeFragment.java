@@ -34,6 +34,7 @@ import com.cloudinary.Transformation;
 import com.cloudinary.android.MediaManager;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.application.dto.place.PlaceDto;
+import com.example.wanderfunmobile.application.dto.place.PlaceMiniDto;
 import com.example.wanderfunmobile.databinding.FragmentHomeBinding;
 import com.example.wanderfunmobile.domain.model.Place;
 import com.example.wanderfunmobile.infrastructure.ui.adapter.place.PlaceInfoTabAdapter;
@@ -172,7 +173,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         placeViewModel.getAllPlaces();
         placeViewModel.getAllPlacesResponseLiveData().observe(getViewLifecycleOwner(), data -> {
             if (!data.isError()) {
-                List<PlaceDto> placeDtoList = data.getData();
+                List<PlaceMiniDto> placeDtoList = data.getData();
                 if (placeDtoList.isEmpty()) {
                     placeDtoList = new ArrayList<>();
                 }
