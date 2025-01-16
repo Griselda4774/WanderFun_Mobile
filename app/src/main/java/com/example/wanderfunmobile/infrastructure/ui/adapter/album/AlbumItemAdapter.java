@@ -1,6 +1,7 @@
 package com.example.wanderfunmobile.infrastructure.ui.adapter.album;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.databinding.ItemAlbumCardBinding;
 import com.example.wanderfunmobile.domain.model.Album;
+import com.example.wanderfunmobile.infrastructure.ui.activity.album.AlbumDetailsActivity;
 
 import java.util.List;
 
@@ -49,7 +51,11 @@ public class AlbumItemAdapter extends RecyclerView.Adapter<AlbumItemAdapter.Albu
         public void bind(Album album) {
             itemAlbumCardBinding.albumName.setText(album.getName());
             itemAlbumCardBinding.albumUpdateDate.setText("Cập nhật lần cuối: " + (album.getLastModified() != null ? album.getLastModified().toString() : ""));
-
+            itemAlbumCardBinding.itemAlbumCard.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), AlbumDetailsActivity.class);
+                intent.putExtra("albumId", album.getId());
+                v.getContext().startActivity(intent);
+            });
         }
     }
 }
