@@ -67,7 +67,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/place_time_opening_icon"
             android:text="Đang mở cửa"
-            style="@style/Text.Content.Highlight.Green"/>
+            style="@style/Text.Content.Highlight.Green" />
 
         <View
             android:id="@+id/place_time_opening_dot"
@@ -77,7 +77,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/place_time_opening_text"
-            android:background="@drawable/bg_dot"/>
+            android:background="@drawable/bg_dot" />
 
         <TextView
             android:id="@+id/place_time_opening_time_close_text"
@@ -88,7 +88,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/place_time_opening_dot"
             android:text="Đóng cửa lúc"
-            style="@style/Text.Content"/>
+            style="@style/Text.Content" />
 
         <TextView
             android:id="@+id/place_time_opening_time_close"
@@ -99,7 +99,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/place_time_opening_time_close_text"
             android:text="21:00"
-            style="@style/Text.Content"/>
+            style="@style/Text.Content" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -130,7 +130,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/place_time_closing_icon"
             android:text="Đang đóng cửa"
-            style="@style/Text.Content.Highlight.Red"/>
+            style="@style/Text.Content.Highlight.Red" />
 
         <View
             android:id="@+id/place_time_closing_dot"
@@ -140,7 +140,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/place_time_closing_text"
-            android:background="@drawable/bg_dot"/>
+            android:background="@drawable/bg_dot" />
 
         <TextView
             android:id="@+id/place_time_closing_time_open_text"
@@ -151,7 +151,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/place_time_closing_dot"
             android:text="Mở cửa lúc"
-            style="@style/Text.Content"/>
+            style="@style/Text.Content" />
 
         <TextView
             android:id="@+id/place_time_closing_time_open"
@@ -162,7 +162,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/place_time_closing_time_open_text"
             android:text="07:00"
-            style="@style/Text.Content"/>
+            style="@style/Text.Content" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -320,5 +320,12 @@
             style="@style/Text.Content" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/place_description_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        android:orientation="vertical" />
 
 </LinearLayout>
