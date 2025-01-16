@@ -15,9 +15,9 @@ public class Album {
     private List<AlbumImage> albumImages;
     private Date lastModified;
     private Long userId;
-    private Date lastModified;
 
-    public Album() {};
+    public Album() {
+    }
 
     public Long getId() {
         return id;
@@ -105,13 +105,5 @@ public class Album {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
     }
 }
