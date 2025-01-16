@@ -1,8 +1,9 @@
 package com.example.wanderfunmobile.infrastructure.ui.activity.album;
 
-
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -35,7 +36,6 @@ public class MyAlbumActivity extends AppCompatActivity {
     @Inject
     ObjectMapper objectMapper;
     private ActivityMyAlbumsBinding viewBinding;
-    private AlbumViewModel albumViewModel;
     private AlbumItemAdapter albumItemAdapter;
 
     @SuppressLint("NotifyDataSetChanged")
@@ -43,7 +43,7 @@ public class MyAlbumActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewBinding = ActivityMyAlbumsBinding.inflate(getLayoutInflater());
-        albumViewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
+        AlbumViewModel albumViewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
 
 
         setContentView(viewBinding.getRoot());
@@ -78,8 +78,11 @@ public class MyAlbumActivity extends AppCompatActivity {
             finish();
         });
 
+        TextView addAlbumButton = viewBinding.footer.findViewById(R.id.button);
+        addAlbumButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddEditAlbumActivity.class);
+            startActivity(intent);
+        });
 
     }
-
-
 }

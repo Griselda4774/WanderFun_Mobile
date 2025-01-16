@@ -17,6 +17,10 @@
         android:theme="@style/Theme.WanderFunMobile"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".infrastructure.ui.activity.place.SearchPlaceActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
             android:name=".infrastructure.ui.activity.album.AddEditAlbumActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
