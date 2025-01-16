@@ -6,29 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 public class FeedbackCreateDto {
-    private String userName;
-    private String userAvatar;
     private float rating;
     private String comment;
     private List<FeedbackImageCreateDto> feedbackImages;
 
     public FeedbackCreateDto() {
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserAvatar() {
-        return userAvatar;
-    }
-
-    public void setUserAvatar(String userAvatar) {
-        this.userAvatar = userAvatar;
     }
 
     public float getRating() {

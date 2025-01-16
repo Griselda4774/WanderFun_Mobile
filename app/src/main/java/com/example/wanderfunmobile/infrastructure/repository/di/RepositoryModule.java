@@ -2,19 +2,22 @@ package com.example.wanderfunmobile.infrastructure.repository.di;
 
 import com.example.wanderfunmobile.application.repository.AlbumRepository;
 import com.example.wanderfunmobile.application.repository.AuthRepository;
+import com.example.wanderfunmobile.application.repository.LeaderboardRepository;
 import com.example.wanderfunmobile.application.repository.PlaceRepository;
 import com.example.wanderfunmobile.application.repository.TripRepository;
 import com.example.wanderfunmobile.application.repository.UserRepository;
-import com.example.wanderfunmobile.infrastructure.repository.AlbumRepositoryImpl;
-import com.example.wanderfunmobile.infrastructure.repository.AuthRepositoryImpl;
-import com.example.wanderfunmobile.infrastructure.repository.PlaceRepositoryImpl;
-import com.example.wanderfunmobile.infrastructure.repository.TripRepositoryImpl;
-import com.example.wanderfunmobile.infrastructure.repository.UserRepositoryImpl;
 import com.example.wanderfunmobile.infrastructure.api.backend.AlbumApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.AuthApi;
+import com.example.wanderfunmobile.infrastructure.api.backend.LeaderboardApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.PlaceApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.TripApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.UserApi;
+import com.example.wanderfunmobile.infrastructure.repository.AlbumRepositoryImpl;
+import com.example.wanderfunmobile.infrastructure.repository.AuthRepositoryImpl;
+import com.example.wanderfunmobile.infrastructure.repository.LeaderboardRepositoryImpl;
+import com.example.wanderfunmobile.infrastructure.repository.PlaceRepositoryImpl;
+import com.example.wanderfunmobile.infrastructure.repository.TripRepositoryImpl;
+import com.example.wanderfunmobile.infrastructure.repository.UserRepositoryImpl;
 
 import javax.inject.Singleton;
 
@@ -54,5 +57,11 @@ public class RepositoryModule {
     @Singleton
     public UserRepository provideUserRepository(UserApi userApi) {
         return new UserRepositoryImpl(userApi);
+    }
+
+    @Provides
+    @Singleton
+    public LeaderboardRepository provideLeaderboardRepository(LeaderboardApi leaderboardApi) {
+        return new LeaderboardRepositoryImpl(leaderboardApi);
     }
 }

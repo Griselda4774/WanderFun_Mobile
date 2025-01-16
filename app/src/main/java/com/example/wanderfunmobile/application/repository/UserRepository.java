@@ -8,6 +8,8 @@ import com.example.wanderfunmobile.application.dto.user.SelfInfoDto;
 
 public interface UserRepository {
     LiveData<ResponseDto<SelfInfoDto>> getSelfInfo(String bearerToken);
+
     LiveData<ResponseDto<SelfInfoDto>> updateSelfInfo(String bearerToken, ChangeInfoDto changeInfoDto);
+
     LiveData<ResponseDto<SelfInfoDto>> deleteSelf(String bearerToken);
 }

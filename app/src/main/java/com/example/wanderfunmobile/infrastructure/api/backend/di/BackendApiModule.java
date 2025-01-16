@@ -6,6 +6,7 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.infrastructure.api.backend.AlbumApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.AuthApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.CloudinaryApi;
+import com.example.wanderfunmobile.infrastructure.api.backend.LeaderboardApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.PlaceApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.TripApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.UserApi;
@@ -121,5 +122,20 @@ public class BackendApiModule {
                         .build())
                 .build()
                 .create(UserApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public LeaderboardApi provideLeaderboardApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(LeaderboardApi.class);
     }
 }
