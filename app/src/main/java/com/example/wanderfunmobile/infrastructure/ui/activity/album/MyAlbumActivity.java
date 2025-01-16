@@ -21,7 +21,6 @@ import com.example.wanderfunmobile.infrastructure.ui.adapter.album.AlbumItemAdap
 import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.AlbumViewModel;
-import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +31,12 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class MyAlbumActivity extends AppCompatActivity {
-    ActivityMyAlbumsBinding viewBinding;
-    AlbumViewModel albumViewModel;
-    AlbumItemAdapter albumItemAdapter;
     List<Album> albumList = new ArrayList<>();
-
     @Inject
     ObjectMapper objectMapper;
+    private ActivityMyAlbumsBinding viewBinding;
+    private AlbumViewModel albumViewModel;
+    private AlbumItemAdapter albumItemAdapter;
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -56,23 +54,22 @@ public class MyAlbumActivity extends AppCompatActivity {
         });
 
 
-
         albumViewModel.getAllAlbums("Bearer " + SessionManager.getInstance(this).getAccessToken());
         albumViewModel.getAllAlbumsResponseLiveData().observe(this, albumResponseDto -> {
-            if (!albumResponseDto.isError()) {
-                List<AlbumDto> albumListDto = albumResponseDto.getData();
-                if (albumListDto.isEmpty()) {
-                    albumListDto = new ArrayList<>();
+                    if (!albumResponseDto.isError()) {
+                        List<AlbumDto> albumListDto = albumResponseDto.getData();
+                        if (albumListDto.isEmpty()) {
+                            albumListDto = new ArrayList<>();
+                        }
+                        albumList = objectMapper.mapList(albumListDto, Album.class);
+                        RecyclerView recyclerView = viewBinding.albumCardList.findViewById(R.id.album_card_list);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+                        albumItemAdapter = new AlbumItemAdapter(albumList);
+                        recyclerView.setAdapter(albumItemAdapter);
+                    }
+
                 }
-                albumList = objectMapper.mapList(albumListDto, Album.class);
-                RecyclerView recyclerView = viewBinding.albumCardList.findViewById(R.id.album_card_list);
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-                albumItemAdapter = new AlbumItemAdapter(albumList);
-                recyclerView.setAdapter(albumItemAdapter);
-            }
-
-        }
 
         );
 
