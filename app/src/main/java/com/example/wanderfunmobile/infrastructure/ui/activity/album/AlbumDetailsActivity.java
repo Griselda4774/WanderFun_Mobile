@@ -54,25 +54,8 @@ public class AlbumDetailsActivity extends AppCompatActivity {
             return insets;
         });
 
-        albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(this).getAccessToken(), getIntent().getLongExtra("albumId", 0));
-        albumViewModel.getAlbumByIdResponseLiveData().observe(this, albumResponseDto -> {
-            if (!albumResponseDto.isError()) {
-                List<AlbumImageDto> albumListDto = albumResponseDto.getData().getAlbumImages();
-
-                albumList = objectMapper.mapList(albumListDto, AlbumImage.class);
-
-                RecyclerView recyclerView = viewBinding.albumImageList.findViewById(R.id.album_image_list);
-                recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-                albumImageAdapter = new AlbumImageAdapter(albumList);
-                recyclerView.setAdapter(albumImageAdapter);
-
-                viewBinding.headerTitle.setText(albumResponseDto.getData().getName());
-                viewBinding.description.setText(albumResponseDto.getData().getDescription());
-                viewBinding.placeName.setText(albumResponseDto.getData().getPlaceName());
-
-            }
-
-        });
+        RecyclerView recyclerView = viewBinding.albumImageList.findViewById(R.id.album_image_list);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         TextView deleteButton = viewBinding.deleteButton.findViewById(R.id.button);
         deleteButton.setText("Xóa");
@@ -89,5 +72,24 @@ public class AlbumDetailsActivity extends AppCompatActivity {
             finish();
         });
 
+
+        albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(this).getAccessToken(), getIntent().getLongExtra("albumId", 0));
+        albumViewModel.getAlbumByIdResponseLiveData().observe(this, albumResponseDto -> {
+            if (!albumResponseDto.isError()) {
+                List<AlbumImageDto> albumListDto = albumResponseDto.getData().getAlbumImages();
+
+                albumList = objectMapper.mapList(albumListDto, AlbumImage.class);
+
+
+                albumImageAdapter = new AlbumImageAdapter(albumList);
+                recyclerView.setAdapter(albumImageAdapter);
+
+                viewBinding.headerTitle.setText(albumResponseDto.getData().getName());
+                viewBinding.description.setText(albumResponseDto.getData().getDescription());
+                viewBinding.placeName.setText(albumResponseDto.getData().getPlaceName());
+
+            }
+
+        });
     }
 }
