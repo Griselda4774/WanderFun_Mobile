@@ -131,18 +131,21 @@
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/album_image_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="16dp"
-            android:background="@drawable/cl_gradient_splash"
-            android:padding="@dimen/item_padding_vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/album_place_layout_main" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/album_image_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+        android:layout_marginVertical="16dp"
+        android:background="@drawable/cl_gradient_splash"
+        android:padding="@dimen/item_padding_vertical"
+        app:layout_constraintBottom_toTopOf="@id/action_section"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/form_section" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_section"
