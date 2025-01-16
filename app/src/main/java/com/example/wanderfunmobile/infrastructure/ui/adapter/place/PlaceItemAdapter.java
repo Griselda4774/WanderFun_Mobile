@@ -1,6 +1,6 @@
 package com.example.wanderfunmobile.infrastructure.ui.adapter.place;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -11,15 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.databinding.ItemPlaceBinding;
 import com.example.wanderfunmobile.domain.model.Place;
-import com.example.wanderfunmobile.infrastructure.ui.activity.album.AddEditAlbumActivity;
 
 import java.util.List;
 
 public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.PlaceItemViewHolder> {
     private final List<Place> placeList;
+    private final Activity activity;
 
-    public PlaceItemAdapter(List<Place> placeList) {
+    public PlaceItemAdapter(List<Place> placeList, Activity activity) {
         this.placeList = placeList;
+        this.activity = activity;
     }
 
     @NonNull
@@ -40,15 +41,12 @@ public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.Plac
         return placeList.size();
     }
 
-    public static class PlaceItemViewHolder extends RecyclerView.ViewHolder {
+    public class PlaceItemViewHolder extends RecyclerView.ViewHolder {
         final ItemPlaceBinding itemPlaceBinding;
-
-        Context context;
 
         public PlaceItemViewHolder(@NonNull ItemPlaceBinding binding) {
             super(binding.getRoot());
             this.itemPlaceBinding = binding;
-            this.context = binding.getRoot().getContext();
         }
 
         public void bind(Place place) {
@@ -63,9 +61,10 @@ public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.Plac
             }
 
             itemPlaceBinding.getRoot().setOnClickListener(v -> {
-                Intent intent = new Intent(context, AddEditAlbumActivity.class);
-                intent.putExtra("selected_place", place.getName());
-                context.startActivity(intent);
+                Intent intent = new Intent();
+                intent.putExtra("selected_place", place.getId());
+                activity.setResult(Activity.RESULT_OK, intent);
+                activity.finish();
             });
         }
     }

@@ -87,7 +87,7 @@ public class SearchPlaceActivity extends AppCompatActivity {
                     placeListDto = new ArrayList<>();
                 }
                 placeList = objectMapper.mapList(placeListDto, Place.class);
-                placeItemAdapter = new PlaceItemAdapter(placeList);
+                placeItemAdapter = new PlaceItemAdapter(placeList, this);
 
                 RecyclerView recyclerView = viewBinding.searchPlaceList;
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));

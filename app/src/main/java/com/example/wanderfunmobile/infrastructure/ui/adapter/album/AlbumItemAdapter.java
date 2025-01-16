@@ -15,7 +15,7 @@ import com.example.wanderfunmobile.infrastructure.ui.activity.album.AlbumDetails
 import java.util.List;
 
 public class AlbumItemAdapter extends RecyclerView.Adapter<AlbumItemAdapter.AlbumItemViewHolder> {
-    private final List<Album> albumsList;
+    private List<Album> albumsList;
 
     public AlbumItemAdapter(List<Album> albumsList) {
         this.albumsList = albumsList;
@@ -37,6 +37,11 @@ public class AlbumItemAdapter extends RecyclerView.Adapter<AlbumItemAdapter.Albu
     @Override
     public int getItemCount() {
         return albumsList.size();
+    }
+
+    public void updateAlbumList(List<Album> newAlbumList) {
+        this.albumsList = newAlbumList;
+        notifyDataSetChanged();
     }
 
     public static class AlbumItemViewHolder extends RecyclerView.ViewHolder {
