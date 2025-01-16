@@ -19,10 +19,12 @@ public class User {
     private String gender;
     private String phoneNumber;
     private int point;
-    private List<String> favoritePlaceIds;
+    private int rank;
+    private boolean isCreatedProfile;
+    private List<FavouritePlace> favouritePlaces;
     private List<Trip> trips;
     private List<Album> albums;
-    private boolean isCreatedProfile;
+    private List<CheckIn> checkIns;
 
     public User() {};
 
@@ -130,12 +132,28 @@ public class User {
         this.point = point;
     }
 
-    public List<String> getFavoritePlaceIds() {
-        return favoritePlaceIds;
+    public int getRank() {
+        return rank;
     }
 
-    public void setFavoritePlaceIds(List<String> favoritePlaceIds) {
-        this.favoritePlaceIds = favoritePlaceIds;
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public boolean isCreatedProfile() {
+        return isCreatedProfile;
+    }
+
+    public void setCreatedProfile(boolean createdProfile) {
+        isCreatedProfile = createdProfile;
+    }
+
+    public List<FavouritePlace> getFavouritePlaces() {
+        return favouritePlaces;
+    }
+
+    public void setFavouritePlaces(List<FavouritePlace> favouritePlaces) {
+        this.favouritePlaces = favouritePlaces;
     }
 
     public List<Trip> getTrips() {
@@ -154,11 +172,11 @@ public class User {
         this.albums = albums;
     }
 
-    public boolean isCreatedProfile() {
-        return isCreatedProfile;
+    public List<CheckIn> getCheckIns() {
+        return checkIns;
     }
 
-    public void setCreatedProfile(boolean createdProfile) {
-        isCreatedProfile = createdProfile;
+    public void setCheckIns(List<CheckIn> checkIns) {
+        this.checkIns = checkIns;
     }
 }

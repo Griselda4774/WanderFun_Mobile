@@ -1,22 +1,14 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.application.dto.favouriteplace;
 
-import java.util.Date;
-import java.util.List;
-
-public class Album {
+public class FavouritePlaceDto {
     private Long id;
-    private String name;
-    private String description;
     private Long placeId;
     private double placeLongitude;
     private double placeLatitude;
     private String placeName;
     private String placeCoverImageUrl;
-    private List<AlbumImage> albumImages;
-    private Date lastModified;
-    private Long userId;
 
-    public Album() {};
+    public FavouritePlaceDto() {};
 
     public Long getId() {
         return id;
@@ -24,22 +16,6 @@ public class Album {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Long getPlaceId() {
@@ -80,29 +56,5 @@ public class Album {
 
     public void setPlaceCoverImageUrl(String placeCoverImageUrl) {
         this.placeCoverImageUrl = placeCoverImageUrl;
-    }
-
-    public List<AlbumImage> getAlbumImages() {
-        return albumImages;
-    }
-
-    public void setAlbumImages(List<AlbumImage> albumImages) {
-        this.albumImages = albumImages;
-    }
-
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }
