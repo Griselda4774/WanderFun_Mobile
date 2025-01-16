@@ -40,11 +40,13 @@ public class EditProfileActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Back button
         ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
         backButton.setOnClickListener(v -> {
             finish();
         });
 
+        // Date picker
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
         builder.setTitleText("Chọn ngày");
         builder.setTheme(R.style.CustomMaterialDatePicker);
@@ -60,7 +62,7 @@ public class EditProfileActivity extends AppCompatActivity {
             dateEditText.setText(formattedDate);
         });
 
-
+        // Gender selector
         AutoCompleteTextView autoCompleteTextView = viewBinding.genderSelector.findViewById(R.id.auto_complete_text);
         String[] options = {"Nam", "Nữ", "Khác", "Không muốn đề cập"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item_drop_down, options) {

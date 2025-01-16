@@ -13,6 +13,7 @@ public class Album {
     private String placeName;
     private String placeCoverImageUrl;
     private List<AlbumImage> albumImages;
+    private Date lastModified;
     private Long userId;
     private Date lastModified;
 
@@ -88,6 +89,14 @@ public class Album {
 
     public void setAlbumImages(List<AlbumImage> albumImages) {
         this.albumImages = albumImages;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
     public Long getUserId() {

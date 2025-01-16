@@ -20,6 +20,8 @@ public class Place {
     private List<Section> description;
     private int checkInPoint;
     private float checkInRange;
+    private int checkInCount;
+    private float averageRating;
     private PlaceCategory category;
     private LocalTime timeOpen;
     private LocalTime timeClose;
@@ -125,6 +127,22 @@ public class Place {
 
     public void setCheckInRange(float checkInRange) {
         this.checkInRange = checkInRange;
+    }
+
+    public int getCheckInCount() {
+        return checkInCount;
+    }
+
+    public void setCheckInCount(int checkInCount) {
+        this.checkInCount = checkInCount;
+    }
+
+    public float getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(float averageRating) {
+        this.averageRating = averageRating;
     }
 
     public PlaceCategory getCategory() {

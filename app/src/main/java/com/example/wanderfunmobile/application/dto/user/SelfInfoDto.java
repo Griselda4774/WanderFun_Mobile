@@ -1,5 +1,7 @@
 package com.example.wanderfunmobile.application.dto.user;
 
+import com.example.wanderfunmobile.application.dto.checkin.CheckInDto;
+import com.example.wanderfunmobile.application.dto.favouriteplace.FavouritePlaceDto;
 import com.example.wanderfunmobile.domain.model.Album;
 import com.example.wanderfunmobile.domain.model.Trip;
 import com.example.wanderfunmobile.domain.model.enums.UserRole;
@@ -21,9 +23,12 @@ public class SelfInfoDto {
     private String gender;
     private String phoneNumber;
     private int point;
-    private List<String> favoritePlaceIds;
+    private int rank;
+    private List<FavouritePlaceDto> favoritePlaces;
     private List<Trip> trips;
     private List<Album> albums;
+    private List<CheckInDto> checkIns;
+
 
     public SelfInfoDto() {
     }
@@ -132,12 +137,20 @@ public class SelfInfoDto {
         this.point = point;
     }
 
-    public List<String> getFavoritePlaceIds() {
-        return favoritePlaceIds;
+    public int getRank() {
+        return rank;
     }
 
-    public void setFavoritePlaceIds(List<String> favoritePlaceIds) {
-        this.favoritePlaceIds = favoritePlaceIds;
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public List<FavouritePlaceDto> getFavoritePlaces() {
+        return favoritePlaces;
+    }
+
+    public void setFavoritePlaces(List<FavouritePlaceDto> favoritePlaces) {
+        this.favoritePlaces = favoritePlaces;
     }
 
     public List<Trip> getTrips() {
@@ -154,5 +167,13 @@ public class SelfInfoDto {
 
     public void setAlbums(List<Album> albums) {
         this.albums = albums;
+    }
+
+    public List<CheckInDto> getCheckIns() {
+        return checkIns;
+    }
+
+    public void setCheckIns(List<CheckInDto> checkIns) {
+        this.checkIns = checkIns;
     }
 }
