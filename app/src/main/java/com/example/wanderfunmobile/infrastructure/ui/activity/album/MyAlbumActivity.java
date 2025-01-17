@@ -1,8 +1,9 @@
 package com.example.wanderfunmobile.infrastructure.ui.activity.album;
 
-
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -35,8 +36,8 @@ public class MyAlbumActivity extends AppCompatActivity {
     @Inject
     ObjectMapper objectMapper;
     private ActivityMyAlbumsBinding viewBinding;
-    private AlbumViewModel albumViewModel;
     private AlbumItemAdapter albumItemAdapter;
+    private AlbumViewModel albumViewModel;
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -45,7 +46,6 @@ public class MyAlbumActivity extends AppCompatActivity {
         viewBinding = ActivityMyAlbumsBinding.inflate(getLayoutInflater());
         albumViewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
 
-
         setContentView(viewBinding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(viewBinding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -53,33 +53,37 @@ public class MyAlbumActivity extends AppCompatActivity {
             return insets;
         });
 
+        RecyclerView recyclerView = viewBinding.albumCardList.findViewById(R.id.album_card_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        albumItemAdapter = new AlbumItemAdapter(albumList);
+        recyclerView.setAdapter(albumItemAdapter);
 
-        albumViewModel.getAllAlbums("Bearer " + SessionManager.getInstance(this).getAccessToken());
-        albumViewModel.getAllAlbumsResponseLiveData().observe(this, albumResponseDto -> {
-                    if (!albumResponseDto.isError()) {
-                        List<AlbumDto> albumListDto = albumResponseDto.getData();
-                        if (albumListDto.isEmpty()) {
-                            albumListDto = new ArrayList<>();
-                        }
-                        albumList = objectMapper.mapList(albumListDto, Album.class);
-                        RecyclerView recyclerView = viewBinding.albumCardList.findViewById(R.id.album_card_list);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-                        albumItemAdapter = new AlbumItemAdapter(albumList);
-                        recyclerView.setAdapter(albumItemAdapter);
-                    }
-
-                }
-
-        );
+        fetchAlbumData();
 
         ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
         backButton.setOnClickListener(v -> {
             finish();
         });
 
+        TextView addAlbumButton = viewBinding.footer.findViewById(R.id.button);
+        addAlbumButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddEditAlbumActivity.class);
+            startActivity(intent);
+        });
 
     }
 
-
+    private void fetchAlbumData() {
+        albumViewModel.getAllAlbums("Bearer " + SessionManager.getInstance(this).getAccessToken());
+        albumViewModel.getAllAlbumsResponseLiveData().observe(this, albumResponseDto -> {
+            if (!albumResponseDto.isError()) {
+                List<AlbumDto> albumListDto = albumResponseDto.getData();
+                if (albumListDto.isEmpty()) {
+                    albumListDto = new ArrayList<>();
+                }
+                albumList = objectMapper.mapList(albumListDto, Album.class);
+                albumItemAdapter.updateAlbumList(albumList);
+            }
+        });
+    }
 }

@@ -1,38 +1,171 @@
 package com.example.wanderfunmobile.infrastructure.ui.activity.album;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.application.dto.album.AlbumCreateDto;
+import com.example.wanderfunmobile.application.dto.album.AlbumDto;
+import com.example.wanderfunmobile.application.dto.place.PlaceDto;
 import com.example.wanderfunmobile.databinding.ActivityAddEditAlbumBinding;
+import com.example.wanderfunmobile.infrastructure.ui.activity.place.SearchPlaceActivity;
+import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.presentation.viewmodel.AlbumViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
+
+import java.util.ArrayList;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class AddEditAlbumActivity extends AppCompatActivity {
-    ActivityAddEditAlbumBinding viewBinding;
-    AlbumViewModel albumViewModel;
+    private static final int REQUEST_CODE_SEARCH_PLACE = 1;
+    AlbumCreateDto albumCreateDto = new AlbumCreateDto();
+    private AlbumViewModel albumViewModel;
+    private PlaceViewModel placeViewModel;
+    private EditText albumPlace;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        viewBinding = ActivityAddEditAlbumBinding.inflate(getLayoutInflater());
+        Long albumId = getIntent().getLongExtra("albumId", 0);
+
+        ActivityAddEditAlbumBinding viewBinding = ActivityAddEditAlbumBinding.inflate(getLayoutInflater());
         albumViewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
+        placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
 
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_add_edit_album);
+        setContentView(viewBinding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        EditText albumName = viewBinding.albumNameLayout.findViewById(R.id.text_edittext);
+
+        EditText albumDescription = viewBinding.albumDescriptionLayout.findViewById(R.id.content_edittext);
+
+        albumPlace = viewBinding.albumPlaceLayout.findViewById(R.id.content_edittext);
+
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                // Handle the returned data
+                Long placeId = result.getData().getLongExtra("selected_place", 0);
+                if (placeId != 0) {
+                    placeViewModel.getPlaceById(placeId);
+                    placeViewModel.getPlaceByIdResponseLiveData().observe(this, response -> {
+                        if (!response.isError()) {
+                            PlaceDto placeDto = response.getData();
+
+                            albumCreateDto.setPlaceId(placeDto.getId());
+                            albumCreateDto.setPlaceName(placeDto.getName());
+                            albumCreateDto.setPlaceCoverImageUrl(placeDto.getCoverImageUrl());
+                            albumCreateDto.setPlaceLatitude(placeDto.getLatitude());
+                            albumCreateDto.setPlaceLongitude(placeDto.getLongitude());
+
+                            albumPlace.setText(placeDto.getName());
+                        }
+                    });
+                }
+            }
+        });
+
+        ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
+        backButton.setOnClickListener(v -> {
+            finish();
+        });
+
+        TextView headerTitle = viewBinding.headerTitle;
+
+        if (albumId != 0) {
+            albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(this).getAccessToken(), albumId);
+            albumViewModel.getAlbumByIdResponseLiveData().observe(this, response -> {
+                if (!response.isError()) {
+                    AlbumDto albumDto = response.getData();
+                    albumName.setText(albumDto.getName());
+                    albumDescription.setText(albumDto.getDescription());
+                    albumPlace.setText(albumDto.getPlaceName());
+                }
+            });
+            headerTitle.setText("Chỉnh sửa album");
+        } else {
+            headerTitle.setText("Tạo album mới");
+        }
+
+        TextView searchPlaceButton = viewBinding.searchPlaceButton.findViewById(R.id.button);
+        searchPlaceButton.setText("Chọn");
+
+
+        searchPlaceButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SearchPlaceActivity.class);
+            activityResultLauncher.launch(intent);
+        });
+
+        TextView cancelButton = viewBinding.cancelButton.findViewById(R.id.button);
+        cancelButton.setText("Hủy bỏ");
+        cancelButton.setOnClickListener(v -> {
+            finish();
+        });
+
+        TextView saveButton = viewBinding.saveButton.findViewById(R.id.button);
+        saveButton.setText("Lưu");
+        saveButton.setOnClickListener(v -> {
+            
+            albumCreateDto.setName(albumName.getText().toString());
+            albumCreateDto.setDescription(albumDescription.getText().toString());
+
+            if (albumId != 0) {
+                updateAlbum(albumCreateDto, albumId);
+            } else {
+                createAlbum(albumCreateDto);
+            }
+        });
+    }
+
+    private void createAlbum(AlbumCreateDto albumCreateDto) {
+        if (albumCreateDto.getAlbumImages() == null) {
+            albumCreateDto.setAlbumImages(new ArrayList<>());
+        }
+        albumViewModel.createAlbum("Bearer " + SessionManager.getInstance(this).getAccessToken(), albumCreateDto);
+        albumViewModel.createAlbumResponseLiveData().observe(this, response -> {
+            if (!response.isError()) {
+                Toast.makeText(this, "Tạo album thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            Toast.makeText(this, "Tạo album thất bại", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void updateAlbum(AlbumCreateDto albumCreateDto, Long albumId) {
+        if (albumCreateDto.getAlbumImages() == null) {
+            albumCreateDto.setAlbumImages(new ArrayList<>());
+        }
+        albumViewModel.updateAlbumById("Bearer " + SessionManager.getInstance(this).getAccessToken(), albumId, albumCreateDto);
+        albumViewModel.updateAlbumResponseLiveData().observe(this, response -> {
+            if (!response.isError()) {
+                Toast.makeText(this, "Cập nhật album thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            Toast.makeText(this, "Cập nhật album thất bại", Toast.LENGTH_SHORT).show();
         });
     }
 }
