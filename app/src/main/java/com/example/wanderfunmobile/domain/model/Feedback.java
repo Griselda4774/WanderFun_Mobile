@@ -1,15 +1,15 @@
 package com.example.wanderfunmobile.domain.model;
 
 import java.util.Date;
-import java.util.List;
 
 public class Feedback {
     private Long id;
     private String userName;
     private String userAvatar;
-    private float rating;
+    private int rating;
     private String comment;
-    private List<FeedbackImage> feedbackImages;
+    private String imageUrl;
+    private String imagePublicId;
     private Date time;
     private Long placeId;
 
@@ -40,11 +40,11 @@ public class Feedback {
         this.userAvatar = userAvatar;
     }
 
-    public float getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -56,12 +56,20 @@ public class Feedback {
         this.comment = comment;
     }
 
-    public List<FeedbackImage> getFeedbackImages() {
-        return feedbackImages;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setFeedbackImages(List<FeedbackImage> feedbackImages) {
-        this.feedbackImages = feedbackImages;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImagePublicId() {
+        return imagePublicId;
+    }
+
+    public void setImagePublicId(String imagePublicId) {
+        this.imagePublicId = imagePublicId;
     }
 
     public Date getTime() {

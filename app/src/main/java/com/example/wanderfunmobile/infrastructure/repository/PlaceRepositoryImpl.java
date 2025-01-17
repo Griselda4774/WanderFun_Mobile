@@ -239,7 +239,33 @@ public class PlaceRepositoryImpl implements PlaceRepository {
         } catch (Exception e) {
             Log.e(errorType, "Error during catch");
         }
-        
+
         return checkInPlaceResponseLiveData;
+    }
+
+    @Override
+    public LiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserId(String bearerToken, Long placeId) {
+        MutableLiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserIdResponseLiveData = new MutableLiveData<>();
+        String errorType = "PlaceRepositoryImpl getCheckInByPlaceIdAndUserId Error";
+        try {
+            Call<ResponseDto<CheckInDto>> call = placeApi.getCheckInByPlaceIdAndUserId(bearerToken, placeId);
+            call.enqueue(new Callback<ResponseDto<CheckInDto>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<CheckInDto>> call,
+                                       @NonNull Response<ResponseDto<CheckInDto>> response) {
+                    getCheckInByPlaceIdAndUserIdResponseLiveData.postValue(response.body());
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<CheckInDto>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e(errorType, "Error during onFailure");
+                }
+            });
+        } catch (Exception e) {
+            Log.e(errorType, "Error during catch");
+        }
+
+        return getCheckInByPlaceIdAndUserIdResponseLiveData;
     }
 }

@@ -1,19 +1,25 @@
 package com.example.wanderfunmobile.infrastructure.ui.adapter.place;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ItemFeedbackBinding;
 import com.example.wanderfunmobile.domain.model.Feedback;
+import com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingView;
+import com.example.wanderfunmobile.infrastructure.util.DateTimeUtil;
 
 import java.util.List;
 
 public class FeedbackItemAdapter extends RecyclerView.Adapter<FeedbackItemAdapter.FeedbackItemViewHolder> {
     private final List<Feedback> feedbackList;
+
     public FeedbackItemAdapter(List<Feedback> feedbackList) {
         this.feedbackList = feedbackList;
     }
@@ -45,6 +51,48 @@ public class FeedbackItemAdapter extends RecyclerView.Adapter<FeedbackItemAdapte
         }
 
         public void bind(Feedback feedback) {
+            // User avatar
+            ImageView userAvatar = binding.feedbackUserAvatar;
+            if (feedback.getUserAvatar() != null) {
+                Glide.with(binding.getRoot())
+                        .load(feedback.getUserAvatar())
+                        .error(R.drawable.brown)
+                        .into(userAvatar);
+            }
+
+            // User name
+            TextView userName = binding.feedbackUserName;
+            if (feedback.getUserName() != null && !feedback.getUserName().isEmpty()) {
+                userName.setText(feedback.getUserName());
+            }
+
+
+            // Rating
+            StarRatingView ratingView = binding.feedbackRating;
+            int roundedRating = (int) Math.floor(feedback.getRating());
+            ratingView.setRating(roundedRating);
+
+            // Time
+            TextView time = binding.feedbackTime;
+            if (feedback.getTime() != null) {
+                time.setText(DateTimeUtil.dateToString(feedback.getTime()));
+            }
+
+            // Comment
+            TextView comment = binding.feedbackComment;
+            if (feedback.getComment() != null && !feedback.getComment().isEmpty()) {
+                comment.setText(feedback.getComment());
+            }
+
+            // Image
+            ImageView image = binding.feedbackImage;
+            if (feedback.getImageUrl() != null && !feedback.getImageUrl().isEmpty()) {
+                Glide.with(binding.getRoot())
+                        .load(feedback.getImageUrl())
+                        .error(R.drawable.brown)
+                        .into(image);
+                image.setVisibility(ImageView.VISIBLE);
+            }
         }
     }
 }

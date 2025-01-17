@@ -16,7 +16,7 @@ public class ViewPager2HeightAdjuster {
 
         setInitialHeight(weakRef);
 
-        viewPager2.setOffscreenPageLimit(1);
+        viewPager2.setOffscreenPageLimit(3);
 
         ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -80,5 +80,3 @@ public class ViewPager2HeightAdjuster {
         });
     }
 }
-
-

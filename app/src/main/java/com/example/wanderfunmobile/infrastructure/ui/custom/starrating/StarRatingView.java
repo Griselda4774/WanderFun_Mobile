@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.infrastructure.ui.custom;
+package com.example.wanderfunmobile.infrastructure.ui.custom.starrating;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -42,11 +42,12 @@ public class StarRatingView extends LinearLayout {
         setRating(0);
         setIsClickable(true);
     }
+
     public void setRating(int rating) {
         rating = Math.max(0, Math.min(rating, 5));
 
         for (int i = 0; i < rating; i++) {
-           stars[i].setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.star)));
+            stars[i].setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.star)));
         }
     }
 

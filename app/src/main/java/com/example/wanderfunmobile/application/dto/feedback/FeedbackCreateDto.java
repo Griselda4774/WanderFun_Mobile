@@ -1,23 +1,19 @@
 package com.example.wanderfunmobile.application.dto.feedback;
 
-import com.example.wanderfunmobile.application.dto.feedbackimage.FeedbackImageCreateDto;
-
-import java.util.Date;
-import java.util.List;
-
 public class FeedbackCreateDto {
-    private float rating;
+    private int rating;
     private String comment;
-    private List<FeedbackImageCreateDto> feedbackImages;
+    private String imageUrl;
+    private String imagePublicId;
 
     public FeedbackCreateDto() {
     }
 
-    public float getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -29,11 +25,19 @@ public class FeedbackCreateDto {
         this.comment = comment;
     }
 
-    public List<FeedbackImageCreateDto> getFeedbackImages() {
-        return feedbackImages;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setFeedbackImages(List<FeedbackImageCreateDto> feedbackImages) {
-        this.feedbackImages = feedbackImages;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImagePublicId() {
+        return imagePublicId;
+    }
+
+    public void setImagePublicId(String imagePublicId) {
+        this.imagePublicId = imagePublicId;
     }
 }

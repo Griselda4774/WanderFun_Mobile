@@ -28,4 +28,6 @@ public interface PlaceRepository {
     LiveData<ResponseDto<FavouritePlaceDto>> deleteFavouritePlaceByIds(String bearerToken, List<Long> placeIds);
 
     LiveData<ResponseDto<CheckInDto>> checkInPlace(String bearerToken, Long placeId);
+
+    LiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserId(String bearerToken, Long placeId);
 }

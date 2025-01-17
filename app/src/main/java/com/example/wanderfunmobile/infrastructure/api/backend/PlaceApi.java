@@ -44,6 +44,10 @@ public interface PlaceApi {
     Call<ResponseDto<FavouritePlaceDto>> deleteFavouritePlaceByIds(@Header("Authorization") String bearerToken,
                                                                    @Body List<Long> placeIds);
 
+    @GET("place/checkin/{placeId}")
+    Call<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserId(@Header("Authorization") String bearerToken,
+                                                               @Path("placeId") Long placeId);
+
     @POST("place/checkin/{placeId}")
     Call<ResponseDto<CheckInDto>> checkInPlace(@Header("Authorization") String bearerToken,
                                                @Path("placeId") Long placeId);
