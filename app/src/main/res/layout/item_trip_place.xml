@@ -49,6 +49,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/bg_item_image_radius"
                 android:clipToOutline="true"
+                android:background="@drawable/bg_item_image_radius" />
                 android:scaleType="centerCrop"
                 android:src="@drawable/brown" />
 

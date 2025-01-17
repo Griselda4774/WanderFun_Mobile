@@ -4,16 +4,17 @@
     android:id="@+id/rating_bar_item"
     android:layout_width="match_parent"
     android:layout_height="@dimen/rating_bar_height"
-    android:layout_marginVertical="@dimen/item_padding_vertical"
+    android:layout_marginVertical="8dp"
     android:background="@drawable/bg_rating_bar">
 
     <View
+        android:id="@+id/rating_bar"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_percent="0.5"
-        android:background="@drawable/bg_rating_bar_highlight"/>
+        android:background="@drawable/bg_rating_bar_highlight" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.infrastructure.ui.custom;
+package com.example.wanderfunmobile.infrastructure.ui.custom.starrating;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,7 @@ import com.example.wanderfunmobile.infrastructure.ui.activity.place.FeedbackCrea
 public class StarRatingOutlineView extends ConstraintLayout {
     private final ImageView[] stars = new ImageView[5];
     private int currentRating = 0;
+    private Long placeId;
 
     public StarRatingOutlineView(Context context) {
         super(context);
@@ -62,12 +63,17 @@ public class StarRatingOutlineView extends ConstraintLayout {
         }
     }
 
+    public void setPlaceId(Long placeId) {
+        this.placeId = placeId;
+    }
+
     public void enableIntent() {
         for (int i = 0; i < stars.length; i++) {
             final int finalI = i;
             stars[i].setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), FeedbackCreateActivity.class);
                 intent.putExtra("rating", finalI + 1);
+                intent.putExtra("placeId", placeId);
                 getContext().startActivity(intent);
             });
 

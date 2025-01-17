@@ -37,6 +37,7 @@ public class PlaceViewModel extends ViewModel {
     private final MutableLiveData<ResponseDto<FavouritePlaceDto>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<ResponseDto<FavouritePlaceDto>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<ResponseDto<CheckInDto>> checkInPlaceResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserIdResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCheckingIn = new MutableLiveData<>();
 
@@ -70,6 +71,10 @@ public class PlaceViewModel extends ViewModel {
 
     public LiveData<ResponseDto<CheckInDto>> checkInPlaceResponseLiveData() {
         return checkInPlaceResponseLiveData;
+    }
+
+    public LiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserIdResponseLiveData() {
+        return getCheckInByPlaceIdAndUserIdResponseLiveData;
     }
 
     public LiveData<Boolean> getIsLoading() {
@@ -132,6 +137,14 @@ public class PlaceViewModel extends ViewModel {
         isLoading.setValue(true);
         placeRepository.deleteFavouritePlaceByIds(bearerToken, placeIds).observeForever(response -> {
             deleteFavouritePlaceByIdsResponseLiveData.setValue(response);
+            isLoading.setValue(false);
+        });
+    }
+
+    public void getCheckInByPlaceIdAndUserId(String bearerToken, Long placeId) {
+        isLoading.setValue(true);
+        placeRepository.getCheckInByPlaceIdAndUserId(bearerToken, placeId).observeForever(response -> {
+            getCheckInByPlaceIdAndUserIdResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }
