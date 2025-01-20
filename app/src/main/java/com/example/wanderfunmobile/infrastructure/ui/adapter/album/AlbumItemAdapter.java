@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.wanderfunmobile.databinding.ItemAlbumCardBinding;
 import com.example.wanderfunmobile.domain.model.Album;
 import com.example.wanderfunmobile.infrastructure.ui.activity.album.AlbumDetailsActivity;
+import com.example.wanderfunmobile.infrastructure.util.DateTimeUtil;
 
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class AlbumItemAdapter extends RecyclerView.Adapter<AlbumItemAdapter.Albu
         @SuppressLint("SetTextI18n")
         public void bind(Album album) {
             itemAlbumCardBinding.albumName.setText(album.getName());
-            itemAlbumCardBinding.albumUpdateDate.setText("Cập nhật lần cuối: " + (album.getLastModified() != null ? album.getLastModified().toString() : ""));
+            itemAlbumCardBinding.albumUpdateDate.setText("Cập nhật lần cuối: " + (album.getLastModified() != null ? DateTimeUtil.dateToString(album.getLastModified()) : ""));
             itemAlbumCardBinding.itemAlbumCard.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), AlbumDetailsActivity.class);
                 intent.putExtra("albumId", album.getId());
