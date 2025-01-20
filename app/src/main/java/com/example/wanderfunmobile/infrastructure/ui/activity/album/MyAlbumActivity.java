@@ -73,6 +73,12 @@ public class MyAlbumActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchAlbumData();
+    }
+
     private void fetchAlbumData() {
         albumViewModel.getAllAlbums("Bearer " + SessionManager.getInstance(this).getAccessToken());
         albumViewModel.getAllAlbumsResponseLiveData().observe(this, albumResponseDto -> {
