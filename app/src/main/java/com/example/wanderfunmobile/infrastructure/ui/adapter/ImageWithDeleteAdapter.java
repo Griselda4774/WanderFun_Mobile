@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ItemImageWithDeleteBinding;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class ImageWithDeleteAdapter extends RecyclerView.Adapter<ImageWithDelete
         return imageList.size();
     }
 
-    public static class ImageWithDeleteViewHolder extends RecyclerView.ViewHolder {
+    public class ImageWithDeleteViewHolder extends RecyclerView.ViewHolder {
         final ItemImageWithDeleteBinding itemImageWithDeleteBinding;
 
         public ImageWithDeleteViewHolder(@NonNull ItemImageWithDeleteBinding itemImageWithDeleteBinding) {
@@ -51,6 +52,15 @@ public class ImageWithDeleteAdapter extends RecyclerView.Adapter<ImageWithDelete
             Glide.with(itemImageWithDeleteBinding.image.getContext())
                     .load(image)
                     .into(itemImageWithDeleteBinding.image);
+
+            itemImageWithDeleteBinding.removeButtonContainer.findViewById(R.id.button).setOnClickListener(v -> {
+                int adapterPosition = getBindingAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    imageList.remove(adapterPosition);
+                    notifyItemRemoved(adapterPosition);
+                    notifyItemRangeChanged(adapterPosition, imageList.size());
+                }
+            });
         }
     }
 }

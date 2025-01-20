@@ -104,9 +104,16 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
         pickMultipleMedia = registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(9), uris -> {
             if (!uris.isEmpty()) {
-                imageList.addAll(uris);
-                imageWithDeleteAdapter = new ImageWithDeleteAdapter(imageList);
-                recyclerView.setAdapter(imageWithDeleteAdapter);
+                int previousSize = imageList.size(); // Track current size
+                imageList.addAll(uris); // Add new images to the list
+                if (imageWithDeleteAdapter == null) {
+                    // Initialize the adapter only once
+                    imageWithDeleteAdapter = new ImageWithDeleteAdapter(imageList);
+                    recyclerView.setAdapter(imageWithDeleteAdapter);
+                } else {
+                    // Notify adapter of new items added
+                    imageWithDeleteAdapter.notifyItemRangeInserted(previousSize, uris.size());
+                }
             } else {
                 Log.d("PhotoPicker", "No media selected");
             }

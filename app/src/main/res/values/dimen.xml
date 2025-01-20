@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    app-->
+    <!--    app-->
     <dimen name="app_horizontal_margin">20dp</dimen>
     <dimen name="app_horizontal_margin2">20dp</dimen>
 
-<!--    profile section-->
+    <!--    profile section-->
     <dimen name="section_margin">16dp</dimen>
     <dimen name="section_title_margin">24dp</dimen>
     <dimen name="section_padding_vertical">10dp</dimen>
     <dimen name="section_icon_size">24dp</dimen>
     <dimen name="section_next_icon_size">24dp</dimen>
 
-<!--    input-->
+    <!--    input-->
     <dimen name="input_title_icon_size">16dp</dimen>
     <dimen name="input_margin_vertical">8dp</dimen>
     <dimen name="input_padding">16dp</dimen>
     <dimen name="input_icon_size">20dp</dimen>
 
-<!--    button-->
+    <!--    button-->
     <dimen name="button_container_padding">32dp</dimen>
     <dimen name="button_margin">16dp</dimen>
     <dimen name="button_icon_size">20dp</dimen>
     <dimen name="rounded_button_size">60dp</dimen>
     <dimen name="back_button_padding">8dp</dimen>
+
     <style name="button_vertical_padding_extra_small">4dp</style>
+
     <style name="button_vertical_padding_small">8dp</style>
+
     <style name="button_vertical_padding">16dp</style>
 
 
-<!--    avatar-->
+    <!--    avatar-->
     <dimen name="big_avatar_size">120dp</dimen>
     <dimen name="medium_avatar_size">80dp</dimen>
+    <dimen name="small_medium_avatar_size">60dp</dimen>
     <dimen name="small_avatar_size">40dp</dimen>
 
-<!--    bottom sheet-->
+    <!--    bottom sheet-->
     <dimen name="bottom_sheet_radius">32dp</dimen>
     <dimen name="bottom_sheet_top_padding">4dp</dimen>
     <dimen name="bottom_sheet_drag_bar_width">100dp</dimen>
@@ -43,7 +47,7 @@
     <dimen name="bottom_sheet_button_vertical_padding">8dp</dimen>
     <dimen name="bottom_sheet_button_icon_text_margin">4dp</dimen>
 
-<!--    place info-->
+    <!--    place info-->
     <dimen name="place_info_icon_size_small">20dp</dimen>
     <dimen name="place_info_icon_size">24dp</dimen>
     <dimen name="place_info_icon_size_medium">28dp</dimen>
@@ -63,16 +67,16 @@
     <dimen name="place_info_rating_star_size_large_extra">40dp</dimen>
     <dimen name="place_info_title_text_size">18sp</dimen>
 
-<!--    Feedback-->
+    <!--    Feedback-->
     <dimen name="feedback_image_item_width">160dp</dimen>
     <dimen name="feedback_image_item_height">90dp</dimen>
     <dimen name="feedback_image_item_margin">4dp</dimen>
     <dimen name="feedback_image_item_radius">8dp</dimen>
 
-<!--    Rating bar-->
+    <!--    Rating bar-->
     <dimen name="rating_bar_height">8dp</dimen>
 
-<!--    Item-->
+    <!--    Item-->
     <dimen name="item_padding_horizontal">20dp</dimen>
     <dimen name="item_padding_horizontal_small">8dp</dimen>
     <dimen name="item_padding_vertical">16dp</dimen>
