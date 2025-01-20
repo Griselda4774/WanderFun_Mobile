@@ -96,6 +96,7 @@ public class AlbumDetailsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AddEditAlbumActivity.class);
             intent.putExtra("albumId", album.getId());
             startActivity(intent);
+            finish();
         });
 
         ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);

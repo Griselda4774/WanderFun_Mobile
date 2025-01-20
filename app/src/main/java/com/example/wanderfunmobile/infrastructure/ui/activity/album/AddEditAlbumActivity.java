@@ -3,13 +3,16 @@ package com.example.wanderfunmobile.infrastructure.ui.activity.album;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,6 +20,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.application.dto.album.AlbumCreateDto;
@@ -24,11 +29,13 @@ import com.example.wanderfunmobile.application.dto.album.AlbumDto;
 import com.example.wanderfunmobile.application.dto.place.PlaceDto;
 import com.example.wanderfunmobile.databinding.ActivityAddEditAlbumBinding;
 import com.example.wanderfunmobile.infrastructure.ui.activity.place.SearchPlaceActivity;
+import com.example.wanderfunmobile.infrastructure.ui.adapter.ImageWithDeleteAdapter;
 import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.presentation.viewmodel.AlbumViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -36,10 +43,13 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class AddEditAlbumActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SEARCH_PLACE = 1;
     AlbumCreateDto albumCreateDto = new AlbumCreateDto();
+    List<Uri> imageList = new ArrayList<>();
     private AlbumViewModel albumViewModel;
     private PlaceViewModel placeViewModel;
+    private ImageWithDeleteAdapter imageWithDeleteAdapter;
     private EditText albumPlace;
     private ActivityResultLauncher<Intent> activityResultLauncher;
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -66,6 +76,9 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
         albumPlace = viewBinding.albumPlaceLayout.findViewById(R.id.content_edittext);
 
+        RecyclerView recyclerView = viewBinding.albumImageList.findViewById(R.id.album_image_list);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 // Handle the returned data
@@ -86,6 +99,16 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        pickMultipleMedia = registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(9), uris -> {
+            if (!uris.isEmpty()) {
+                imageList.addAll(uris);
+                imageWithDeleteAdapter = new ImageWithDeleteAdapter(imageList);
+                recyclerView.setAdapter(imageWithDeleteAdapter);
+            } else {
+                Log.d("PhotoPicker", "No media selected");
             }
         });
 
@@ -120,6 +143,16 @@ public class AddEditAlbumActivity extends AppCompatActivity {
             activityResultLauncher.launch(intent);
         });
 
+        TextView addImageButton = viewBinding.addImageButton.findViewById(R.id.button);
+        addImageButton.setText("Thêm ảnh");
+        addImageButton.setOnClickListener(v -> {
+            pickMultipleMedia.launch(
+                    new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build()
+            );
+        });
+
         TextView cancelButton = viewBinding.cancelButton.findViewById(R.id.button);
         cancelButton.setText("Hủy bỏ");
         cancelButton.setOnClickListener(v -> {
@@ -129,7 +162,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         TextView saveButton = viewBinding.saveButton.findViewById(R.id.button);
         saveButton.setText("Lưu");
         saveButton.setOnClickListener(v -> {
-            
+
             albumCreateDto.setName(albumName.getText().toString());
             albumCreateDto.setDescription(albumDescription.getText().toString());
 
@@ -164,8 +197,9 @@ public class AddEditAlbumActivity extends AppCompatActivity {
             if (!response.isError()) {
                 Toast.makeText(this, "Cập nhật album thành công", Toast.LENGTH_SHORT).show();
                 finish();
+            } else {
+                Toast.makeText(this, "Cập nhật album thất bại", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(this, "Cập nhật album thất bại", Toast.LENGTH_SHORT).show();
         });
     }
 }

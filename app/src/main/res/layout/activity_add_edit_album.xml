@@ -133,18 +133,37 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/album_image_list"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/image_section"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/app_horizontal_margin"
-        android:layout_marginVertical="16dp"
-        android:background="@drawable/cl_gradient_splash"
-        android:padding="@dimen/item_padding_vertical"
         app:layout_constraintBottom_toTopOf="@id/action_section"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/form_section" />
+        app:layout_constraintTop_toBottomOf="@id/form_section">
+
+        <LinearLayout
+            android:id="@+id/add_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            app:layout_constraintBottom_toTopOf="@id/album_image_list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include layout="@layout/button_outlined_blue" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/album_image_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginVertical="16dp"
+            android:background="@drawable/cl_gradient_splash"
+            android:padding="@dimen/item_padding_vertical"
+
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
