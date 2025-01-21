@@ -68,7 +68,7 @@ public class ProfileFragment extends Fragment {
         // Logout
         ConstraintLayout logoutSection = viewBinding.logOutSection;
         logoutSection.setOnClickListener(v -> {
-            authViewModel.logout("Bearer " + SessionManager.getInstance(requireContext()).getAccessToken());
+            authViewModel.logout("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext().getApplicationContext()).getAccessToken());
 //            SessionManager.getInstance(requireContext()).logout();
 //            Intent intent = new Intent(getActivity(), LoginActivity.class);
 //            startActivity(intent);
@@ -78,7 +78,7 @@ public class ProfileFragment extends Fragment {
         authViewModel.getLogoutResponseLiveData().observe(getViewLifecycleOwner(), data -> {
             if (!data.isError()) {
                 Toast.makeText(requireContext(), data.getMessage(), Toast.LENGTH_SHORT).show();
-                SessionManager.getInstance(requireContext()).logout();
+                SessionManager.getInstance(requireActivity().getApplicationContext()).logout();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 requireActivity().finish();

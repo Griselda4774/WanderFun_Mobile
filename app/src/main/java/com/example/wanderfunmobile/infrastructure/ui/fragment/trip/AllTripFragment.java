@@ -55,7 +55,7 @@ public class AllTripFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        tripViewModel.getAllTrips("Bearer " + SessionManager.getInstance(getContext()).getAccessToken());
+        tripViewModel.getAllTrips("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken());
         tripViewModel.getAllTripsResponseLiveData().observe(getViewLifecycleOwner(), data -> {
             if (!data.isError()) {
                 tripList = objectMapper.mapList(data.getData(), Trip.class);

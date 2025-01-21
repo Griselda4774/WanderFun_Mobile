@@ -1,17 +1,20 @@
 package com.example.wanderfunmobile.infrastructure.ui.adapter.trip;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ItemTripBinding;
 import com.example.wanderfunmobile.domain.model.Trip;
+import com.example.wanderfunmobile.infrastructure.ui.activity.trip.TripDetailActivity;
 import com.example.wanderfunmobile.infrastructure.util.DateTimeUtil;
 
 import java.util.List;
@@ -76,6 +79,14 @@ public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripIt
             if (trip.getEndTime() != null) {
                 endTime.setText(DateTimeUtil.dateToString(trip.getEndTime()));
             }
+
+            // Intent
+            ConstraintLayout tripItem = binding.getRoot();
+            tripItem.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), TripDetailActivity.class);
+                intent.putExtra("tripId", trip.getId());
+                v.getContext().startActivity(intent);
+            });
         }
     }
 }

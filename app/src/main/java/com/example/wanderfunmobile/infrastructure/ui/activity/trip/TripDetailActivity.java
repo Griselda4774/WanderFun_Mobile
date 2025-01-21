@@ -7,13 +7,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityTripDetailBinding;
+import com.example.wanderfunmobile.domain.model.Trip;
+import com.example.wanderfunmobile.infrastructure.util.SessionManager;
+import com.example.wanderfunmobile.presentation.viewmodel.TripViewModel;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+
+@AndroidEntryPoint
 public class TripDetailActivity extends AppCompatActivity {
 
-    ActivityTripDetailBinding viewBinding;
+    private ActivityTripDetailBinding viewBinding;
+    private TripViewModel tripViewModel;
+    private Trip trip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +37,20 @@ public class TripDetailActivity extends AppCompatActivity {
             return insets;
         });
 
+        // ViewModel
+        tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
+
+        // Get trip info
+        Long tripId = getIntent().getLongExtra("tripId", -1);
+        if (tripId != -1) {
+            tripViewModel.getTripById("Bearer " + SessionManager.getInstance(getApplicationContext()), tripId);
+        }
+
+
+        // Back button
+        viewBinding.backButton.setOnClickListener(v -> finish());
+
+        // Header title
 
     }
 }

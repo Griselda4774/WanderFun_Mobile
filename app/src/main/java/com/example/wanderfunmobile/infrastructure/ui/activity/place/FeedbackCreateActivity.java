@@ -56,7 +56,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
 
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getSelfInfo("Bearer " + SessionManager.getInstance(this).getAccessToken());
+        userViewModel.getSelfInfo("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
         userViewModel.getSelfInfoResponseLiveData().observe(this, data -> {
             if (!data.isError()) {
                 user = objectMapper.map(data.getData(), User.class);
@@ -92,7 +92,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
             feedbackCreateDto.setRating(starRating.getRating());
             if (comment.getText() != null)
                 feedbackCreateDto.setComment(comment.getText().toString());
-            placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(this).getAccessToken(), feedbackCreateDto, placeId);
+            placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
             placeViewModel.createFeedbackResponseLiveData().observe(this, data -> {
                 if (!data.isError()) {
                     Intent intent1 = new Intent(this, MainActivity.class);

@@ -80,7 +80,7 @@ public class MyAlbumActivity extends AppCompatActivity {
     }
 
     private void fetchAlbumData() {
-        albumViewModel.getAllAlbums("Bearer " + SessionManager.getInstance(this).getAccessToken());
+        albumViewModel.getAllAlbums("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
         albumViewModel.getAllAlbumsResponseLiveData().observe(this, albumResponseDto -> {
             if (!albumResponseDto.isError()) {
                 List<AlbumDto> albumListDto = albumResponseDto.getData();

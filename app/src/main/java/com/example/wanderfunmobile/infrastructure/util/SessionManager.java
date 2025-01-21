@@ -3,8 +3,6 @@ package com.example.wanderfunmobile.infrastructure.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import retrofit2.http.Body;
-
 public class SessionManager {
 
     private static final String PREF_NAME = "UserSession";
