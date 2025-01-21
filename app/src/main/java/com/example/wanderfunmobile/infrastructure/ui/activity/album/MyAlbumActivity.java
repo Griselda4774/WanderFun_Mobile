@@ -79,6 +79,7 @@ public class MyAlbumActivity extends AppCompatActivity {
         fetchAlbumData();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void fetchAlbumData() {
         albumViewModel.getAllAlbums("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
         albumViewModel.getAllAlbumsResponseLiveData().observe(this, albumResponseDto -> {
@@ -87,8 +88,9 @@ public class MyAlbumActivity extends AppCompatActivity {
                 if (albumListDto.isEmpty()) {
                     albumListDto = new ArrayList<>();
                 }
-                albumList = objectMapper.mapList(albumListDto, Album.class);
-                albumItemAdapter.updateAlbumList(albumList);
+                albumList.clear();
+                albumList.addAll(objectMapper.mapList(albumListDto, Album.class));
+                albumItemAdapter.notifyDataSetChanged();
             }
         });
     }

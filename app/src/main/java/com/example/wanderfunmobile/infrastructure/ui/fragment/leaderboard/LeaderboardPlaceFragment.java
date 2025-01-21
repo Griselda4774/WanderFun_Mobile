@@ -58,7 +58,7 @@ public class LeaderboardPlaceFragment extends Fragment {
 
         leaderboardViewModel.getLeaderboardUser();
         leaderboardViewModel.getLeaderboardUserResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (!data.isError()) {
+            if (data != null && !data.isError()) {
                 List<LeaderboardUserDto> leaderboardUserDtoList = data.getData();
                 leaderboardUserList = objectMapper.mapList(leaderboardUserDtoList, LeaderboardUser.class);
                 recyclerView.setAdapter(new LeaderboardUserCardAdapter(leaderboardUserList));
