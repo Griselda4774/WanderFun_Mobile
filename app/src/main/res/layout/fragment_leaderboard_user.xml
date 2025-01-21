@@ -1,19 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/user_leaderboard_fragment"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/place_leaderboard_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".infrastructure.ui.fragment.leaderboard.LeaderboardUserFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User leaderboard"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_section"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/cl_gradient_blue"
+        app:layout_constraintBottom_toTopOf="@id/leaderboard_place_recycler_view"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintTop_toTopOf="parent">
 
+
+        <ImageView
+            android:id="@+id/first_place_avatar"
+            android:layout_width="@dimen/small_medium_avatar_size"
+            android:layout_height="@dimen/small_medium_avatar_size"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_img_rounded"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/brown"
+            app:layout_constraintBottom_toTopOf="@id/first_place_column"
+            app:layout_constraintEnd_toEndOf="@id/first_place_column"
+            app:layout_constraintStart_toStartOf="@id/first_place_column" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/first_place_column"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/cl_gradient_1st_place"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.2">
+
+            <!-- Medal -->
+            <ImageView
+                android:id="@+id/first_place_medal"
+                android:layout_width="@dimen/small_avatar_size"
+                android:layout_height="@dimen/small_avatar_size"
+                android:layout_marginVertical="16dp"
+                android:src="@drawable/ic_1st_place"
+                app:layout_constraintBottom_toTopOf="@id/first_place_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/first_place_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:fontFamily="@font/nunitosans_bold"
+                android:text="Đình Tâm"
+                android:textAlignment="center"
+                android:textColor="@color/orange5"
+                app:layout_constraintBottom_toTopOf="@id/first_place_score"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_place_medal" />
+
+            <TextView
+                android:id="@+id/first_place_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:fontFamily="@font/nunitosans_bold"
+                android:text="10.000"
+                android:textAlignment="center"
+                android:textColor="@color/orange5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_place_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/second_place_avatar"
+            android:layout_width="@dimen/small_medium_avatar_size"
+            android:layout_height="@dimen/small_medium_avatar_size"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_img_rounded"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/brown"
+            app:layout_constraintBottom_toTopOf="@id/second_place_column"
+            app:layout_constraintEnd_toEndOf="@id/second_place_column"
+            app:layout_constraintStart_toStartOf="@id/second_place_column" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/second_place_column"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/cl_gradient_2nd_place"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/first_place_column"
+            app:layout_constraintHeight_percent="0.6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.2">
+
+            <!-- Medal -->
+            <ImageView
+                android:id="@+id/second_place_medal"
+                android:layout_width="@dimen/small_avatar_size"
+                android:layout_height="@dimen/small_avatar_size"
+                android:layout_marginVertical="16dp"
+                android:src="@drawable/ic_2nd_place"
+                app:layout_constraintBottom_toTopOf="@id/second_place_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/second_place_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:fontFamily="@font/nunitosans_bold"
+                android:text="Đình Tâm"
+                android:textAlignment="center"
+                android:textColor="@color/blue5"
+                app:layout_constraintBottom_toTopOf="@id/second_place_score"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/second_place_medal" />
+
+            <TextView
+                android:id="@+id/second_place_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:fontFamily="@font/nunitosans_bold"
+                android:text="10.000"
+                android:textAlignment="center"
+                android:textColor="@color/blue5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/second_place_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/third_place_avatar"
+            android:layout_width="@dimen/small_medium_avatar_size"
+            android:layout_height="@dimen/small_medium_avatar_size"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_img_rounded"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/brown"
+            app:layout_constraintBottom_toTopOf="@id/third_place_column"
+            app:layout_constraintEnd_toEndOf="@id/third_place_column"
+            app:layout_constraintStart_toStartOf="@id/third_place_column" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/third_place_column"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/cl_gradient_3rd_place"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintStart_toEndOf="@id/first_place_column"
+            app:layout_constraintWidth_percent="0.2">
+
+            <!-- Medal -->
+            <ImageView
+                android:id="@+id/third_place_medal"
+                android:layout_width="@dimen/small_avatar_size"
+                android:layout_height="@dimen/small_avatar_size"
+                android:layout_marginVertical="16dp"
+                android:src="@drawable/ic_3rd_place"
+                app:layout_constraintBottom_toTopOf="@id/third_place_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/third_place_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:fontFamily="@font/nunitosans_bold"
+                android:text="Đình Tâm"
+                android:textAlignment="center"
+                android:textColor="@color/white2"
+                app:layout_constraintBottom_toTopOf="@id/third_place_score"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/third_place_medal" />
+
+            <TextView
+                android:id="@+id/third_place_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:fontFamily="@font/nunitosans_bold"
+                android:text="10.000"
+                android:textAlignment="center"
+                android:textColor="@color/white2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/third_place_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/leaderboard_user_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+        android:layout_marginVertical="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_section" />
 </androidx.constraintlayout.widget.ConstraintLayout>

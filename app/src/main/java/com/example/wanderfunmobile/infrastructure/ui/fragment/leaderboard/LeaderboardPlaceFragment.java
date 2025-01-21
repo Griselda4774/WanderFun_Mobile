@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,10 +14,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.wanderfunmobile.application.dto.leaderboard.LeaderboardUserDto;
+import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.application.dto.leaderboard.LeaderboardPlaceDto;
 import com.example.wanderfunmobile.databinding.FragmentLeaderboardPlaceBinding;
-import com.example.wanderfunmobile.domain.model.LeaderboardUser;
-import com.example.wanderfunmobile.infrastructure.ui.adapter.leaderboard.LeaderboardUserCardAdapter;
+import com.example.wanderfunmobile.domain.model.LeaderboardPlace;
+import com.example.wanderfunmobile.infrastructure.ui.adapter.leaderboard.LeaderboardPlaceCardAdapter;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.LeaderboardViewModel;
 
@@ -29,7 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class LeaderboardPlaceFragment extends Fragment {
     @Inject
     ObjectMapper objectMapper;
-    List<LeaderboardUser> leaderboardUserList;
+    List<LeaderboardPlace> leaderboardPlaceList;
     FragmentLeaderboardPlaceBinding viewBinding;
     LeaderboardViewModel leaderboardViewModel;
 
@@ -55,14 +58,26 @@ public class LeaderboardPlaceFragment extends Fragment {
 
         RecyclerView recyclerView = viewBinding.leaderboardPlaceRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        
+        TextView[] placeNames = {viewBinding.firstPlaceName, viewBinding.secondPlaceName, viewBinding.thirdPlaceName};
+        TextView[] placeScores = {viewBinding.firstPlaceScore, viewBinding.secondPlaceScore, viewBinding.thirdPlaceScore};
+        ImageView[] placeAvatars = {viewBinding.firstPlaceAvatar, viewBinding.secondPlaceAvatar, viewBinding.thirdPlaceAvatar};
 
-        leaderboardViewModel.getLeaderboardUser();
-        leaderboardViewModel.getLeaderboardUserResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+        leaderboardViewModel.getLeaderboardPlace();
+        leaderboardViewModel.getLeaderboardPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
             if (!data.isError()) {
-                List<LeaderboardUserDto> leaderboardUserDtoList = data.getData();
-                leaderboardUserList = objectMapper.mapList(leaderboardUserDtoList, LeaderboardUser.class);
-                recyclerView.setAdapter(new LeaderboardUserCardAdapter(leaderboardUserList));
+                List<LeaderboardPlaceDto> leaderboardPlaceDtoList = data.getData();
+                leaderboardPlaceList = objectMapper.mapList(leaderboardPlaceDtoList, LeaderboardPlace.class);
 
+                for (int i = 0; i < 3; i++) {
+                    placeNames[i].setText(leaderboardPlaceList.get(i).getName());
+                    placeScores[i].setText(leaderboardPlaceList.get(i).getCheckInCount());
+                    Glide.with(placeAvatars[i])
+                            .load(leaderboardPlaceList.get(i).getCoverImageUrl())
+                            .into(placeAvatars[i]);
+                }
+
+                recyclerView.setAdapter(new LeaderboardPlaceCardAdapter(leaderboardPlaceList.subList(3, leaderboardPlaceList.size())));
             }
         });
     }
