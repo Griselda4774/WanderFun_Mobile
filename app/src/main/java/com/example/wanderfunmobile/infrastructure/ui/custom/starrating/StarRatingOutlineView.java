@@ -17,6 +17,7 @@ public class StarRatingOutlineView extends ConstraintLayout {
     private final ImageView[] stars = new ImageView[5];
     private int currentRating = 0;
     private Long placeId;
+    private String placeName;
 
     public StarRatingOutlineView(Context context) {
         super(context);
@@ -67,6 +68,10 @@ public class StarRatingOutlineView extends ConstraintLayout {
         this.placeId = placeId;
     }
 
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
+    }
+
     public void enableIntent() {
         for (int i = 0; i < stars.length; i++) {
             final int finalI = i;
@@ -74,6 +79,7 @@ public class StarRatingOutlineView extends ConstraintLayout {
                 Intent intent = new Intent(getContext(), FeedbackCreateActivity.class);
                 intent.putExtra("rating", finalI + 1);
                 intent.putExtra("placeId", placeId);
+                intent.putExtra("placeName", placeName);
                 getContext().startActivity(intent);
             });
 

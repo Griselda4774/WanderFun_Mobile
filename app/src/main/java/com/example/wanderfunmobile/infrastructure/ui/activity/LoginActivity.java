@@ -82,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
         authViewModel.getLoginResponseLiveData().observe(this, loginResponse -> {
             if (!loginResponse.isError()) {
                 LoginResponseDto loginResponseDto = objectMapper.map(loginResponse.getData(), LoginResponseDto.class);
-                Toast.makeText(this, "Welcome " + loginResponseDto.getEmail(), Toast.LENGTH_SHORT).show();
                 SessionManager.getInstance(getApplicationContext()).login(
                         loginResponseDto.getId(),
                         loginResponseDto.getEmail(),
@@ -90,18 +89,19 @@ public class LoginActivity extends AppCompatActivity {
                         loginResponseDto.getTokenType(),
                         loginResponseDto.getAccessToken(),
                         loginResponseDto.getRefreshToken());
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Toast.makeText(getApplicationContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(this, "Error: " + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Lỗi: " + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
         TextView guestButton = viewBinding.guestButton;
         guestButton.setOnClickListener(v -> {
             SessionManager.getInstance(getApplicationContext()).logout();
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         });
