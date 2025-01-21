@@ -182,21 +182,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         selectionDialog = viewBinding.selectionDialog;
         selectionDialog.setOnAcceptListener(() -> {
             if (currentCheckInPlaceId != null) {
-                placeViewModel.getCheckInByPlaceIdAndUserId("Bearer " + SessionManager.getInstance(getContext()).getAccessToken(), currentCheckInPlaceId);
+                placeViewModel.getCheckInByPlaceIdAndUserId("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
             }
             placeViewModel.getCheckInByPlaceIdAndUserIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
                 if (!data.isError()) {
                     CheckIn checkIn = objectMapper.map(data.getData(), CheckIn.class);
                     if (System.currentTimeMillis() - checkIn.getLastCheckInTime().getTime() > 50000) {
                         canCheckIn = true;
-                        placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(getContext()).getAccessToken(), currentCheckInPlaceId);
+                        placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
                     } else {
                         canCheckIn = false;
                         Toast.makeText(requireContext(), "Bạn đã check-in tại đây trước đó", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     canCheckIn = true;
-                    placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(getContext()).getAccessToken(), currentCheckInPlaceId);
+                    placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
                 }
             });
             selectionDialog.hide();

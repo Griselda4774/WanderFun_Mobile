@@ -2,16 +2,15 @@ package com.example.wanderfunmobile.infrastructure.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.FragmentTripBinding;
@@ -23,9 +22,10 @@ import java.util.Objects;
 
 public class TripFragment extends Fragment {
 
-    FragmentTripBinding viewBinding;
+    private FragmentTripBinding viewBinding;
 
-    public TripFragment() {}
+    public TripFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

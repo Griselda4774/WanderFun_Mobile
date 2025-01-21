@@ -127,7 +127,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         TextView headerTitle = viewBinding.headerTitle;
 
         if (albumId != 0) {
-            albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(this).getAccessToken(), albumId);
+            albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), albumId);
             albumViewModel.getAlbumByIdResponseLiveData().observe(this, response -> {
                 if (!response.isError()) {
                     AlbumDto albumDto = response.getData();
@@ -185,7 +185,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         if (albumCreateDto.getAlbumImages() == null) {
             albumCreateDto.setAlbumImages(new ArrayList<>());
         }
-        albumViewModel.createAlbum("Bearer " + SessionManager.getInstance(this).getAccessToken(), albumCreateDto);
+        albumViewModel.createAlbum("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), albumCreateDto);
         albumViewModel.createAlbumResponseLiveData().observe(this, response -> {
             if (!response.isError()) {
                 Toast.makeText(this, "Tạo album thành công", Toast.LENGTH_SHORT).show();
@@ -199,7 +199,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         if (albumCreateDto.getAlbumImages() == null) {
             albumCreateDto.setAlbumImages(new ArrayList<>());
         }
-        albumViewModel.updateAlbumById("Bearer " + SessionManager.getInstance(this).getAccessToken(), albumId, albumCreateDto);
+        albumViewModel.updateAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), albumId, albumCreateDto);
         albumViewModel.updateAlbumResponseLiveData().observe(this, response -> {
             if (!response.isError()) {
                 Toast.makeText(this, "Cập nhật album thành công", Toast.LENGTH_SHORT).show();
