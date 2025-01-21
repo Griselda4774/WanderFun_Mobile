@@ -8,6 +8,15 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -19,32 +28,25 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.os.Looper;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.cloudinary.Transformation;
 import com.cloudinary.android.MediaManager;
 import com.example.wanderfunmobile.R;
-import com.example.wanderfunmobile.application.dto.place.PlaceDto;
 import com.example.wanderfunmobile.application.dto.place.PlaceMiniDto;
 import com.example.wanderfunmobile.databinding.FragmentHomeBinding;
+import com.example.wanderfunmobile.domain.model.CheckIn;
 import com.example.wanderfunmobile.domain.model.Place;
 import com.example.wanderfunmobile.infrastructure.ui.adapter.place.PlaceInfoTabAdapter;
-import com.example.wanderfunmobile.infrastructure.ui.custom.StarRatingView;
-import com.example.wanderfunmobile.infrastructure.util.ViewPager2HeightAdjuster;
-import com.example.wanderfunmobile.infrastructure.ui.fragment.dialog.LoadingDialogFragment;
+import com.example.wanderfunmobile.infrastructure.ui.custom.dialog.LoadingDialog;
+import com.example.wanderfunmobile.infrastructure.ui.custom.dialog.SelectionDialog;
+import com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingView;
 import com.example.wanderfunmobile.infrastructure.util.BitMapUtil;
 import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
 import com.example.wanderfunmobile.infrastructure.util.ColorHexUtil;
+import com.example.wanderfunmobile.infrastructure.util.DateTimeUtil;
 import com.example.wanderfunmobile.infrastructure.util.MediaManagerStateUtil;
+import com.example.wanderfunmobile.infrastructure.util.SessionManager;
+import com.example.wanderfunmobile.infrastructure.util.ViewPager2HeightAdjuster;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -75,6 +77,7 @@ import org.maplibre.android.plugins.annotation.SymbolManager;
 import org.maplibre.android.plugins.annotation.SymbolOptions;
 import org.maplibre.android.style.layers.Property;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -95,6 +98,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private PermissionsManager permissionsManager;
     private ActivityResultLauncher<String[]> requestPermissionsLauncher;
     private LocationComponent locationComponent;
+    private long lastUpdateTime = 0;
     private FragmentHomeBinding viewBinding;
     private String mapStyleUrl;
 
@@ -107,11 +111,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private BottomSheetBehavior<ConstraintLayout> placeInfoBottomSheetBehavior;
     private BottomSheetBehavior<ConstraintLayout> locationPinBottomSheetBehavior;
     private List<Place> placeList = new ArrayList<>();
+    private Place currentPlace;
     @Inject
     ObjectMapper objectMapper;
-    private LoadingDialogFragment loadingDialogFragment;
+    private LoadingDialog loadingDialog;
+    private SelectionDialog selectionDialog;
+    private boolean canCheckIn;
+    private Long currentCheckInPlaceId;
 
-    public HomeFragment() {}
+    public HomeFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -134,7 +143,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mapView = viewBinding.mapView;
         gpsButton = viewBinding.gpsButton;
 
-        placeInfoBottomSheet = viewBinding.placeInfoBottomSheetContainer.placeInfoBottomSheet;;
+        placeInfoBottomSheet = viewBinding.placeInfoBottomSheetContainer.placeInfoBottomSheet;
+
         placeInfoBottomSheetBehavior = BottomSheetBehavior.from(placeInfoBottomSheet);
         placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
@@ -161,8 +171,53 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loadingDialogFragment = new LoadingDialogFragment();
-        loadingDialogFragment.show(requireActivity().getSupportFragmentManager(), "loading");
+        placeViewModel.checkInPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+            if (!data.isError()) {
+                Toast.makeText(requireContext(), "Check-in thành công", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "Check-in thất bại", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        selectionDialog = viewBinding.selectionDialog;
+        selectionDialog.setOnAcceptListener(() -> {
+            if (currentCheckInPlaceId != null) {
+                placeViewModel.getCheckInByPlaceIdAndUserId("Bearer " + SessionManager.getInstance(getContext()).getAccessToken(), currentCheckInPlaceId);
+            }
+            placeViewModel.getCheckInByPlaceIdAndUserIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+                if (!data.isError()) {
+                    CheckIn checkIn = objectMapper.map(data.getData(), CheckIn.class);
+                    if (System.currentTimeMillis() - checkIn.getLastCheckInTime().getTime() > 50000) {
+                        canCheckIn = true;
+                        placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(getContext()).getAccessToken(), currentCheckInPlaceId);
+                    } else {
+                        canCheckIn = false;
+                        Toast.makeText(requireContext(), "Bạn đã check-in tại đây trước đó", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    canCheckIn = true;
+                    placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(getContext()).getAccessToken(), currentCheckInPlaceId);
+                }
+            });
+            selectionDialog.hide();
+            Log.d("SelectionDialog", "Accept");
+        });
+
+        selectionDialog.setOnRejectListener(() -> {
+            selectionDialog.hide();
+            Log.d("SelectionDialog", "Reject");
+        });
+
+        loadingDialog = viewBinding.loadingDialog;
+        placeViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading) {
+                loadingDialog.show();
+                loadingDialog.setVisibility(View.VISIBLE);
+            } else {
+                loadingDialog.hide();
+                loadingDialog.setVisibility(View.GONE);
+            }
+        });
 
         mapView.onCreate(savedInstanceState);
 
@@ -180,7 +235,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 placeList = objectMapper.mapList(placeDtoList, Place.class);
             }
             mapView.getMapAsync(this);
-            loadingDialogFragment.dismiss();
         });
 
         gpsButton.setOnClickListener(v -> {
@@ -261,7 +315,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 }
 
                 if (place != null) {
-                    showPlaceInfoBottomSheet(place);
+                    placeViewModel.getPlaceById(place.getId());
+                    placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+                        if (!data.isError()) {
+                            currentPlace = objectMapper.map(data.getData(), Place.class);
+                            showPlaceInfoBottomSheet(currentPlace);
+                        }
+                    });
                 }
 //                Toast.makeText(requireContext(), title + ": " + name, Toast.LENGTH_SHORT).show();
                 return true;
@@ -358,8 +418,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 LocationComponentActivationOptions.builder(requireContext(), style)
                         .locationComponentOptions(locationComponentOptions)
                         .useDefaultLocationEngine(true)
-                        .locationEngineRequest(new LocationEngineRequest.Builder(750)
-                                .setFastestInterval(750)
+                        .locationEngineRequest(new LocationEngineRequest.Builder(30000)
+                                .setFastestInterval(30000)
                                 .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
                                 .build())
                         .build();
@@ -388,9 +448,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private final LocationEngineCallback<LocationEngineResult> locationEngineCallback = new LocationEngineCallback<LocationEngineResult>() {
         @Override
         public void onSuccess(LocationEngineResult result) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastUpdateTime < 30000) {
+                return;
+            }
+            lastUpdateTime = currentTime;
             currentLocation = result.getLastLocation();
             if (currentLocation != null && !placeList.isEmpty()) {
-                for (Place place: placeList) {
+                for (Place place : placeList) {
                     float[] results = new float[1];
                     Location.distanceBetween(
                             currentLocation.getLatitude(), currentLocation.getLongitude(),
@@ -398,8 +463,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                             results
                     );
                     float distanceInMeters = results[0];
-                    if (distanceInMeters <= place.getCheckInRange()) {
+                    if (distanceInMeters <= 20) {
                         Log.d("UserLocation", "Place can check-in: " + place.getName());
+                        currentCheckInPlaceId = place.getId();
+                        selectionDialog.show("Có thể check-in tại đây",
+                                "Địa điểm được tìm thấy là: " + place.getName(),
+                                "Bạn có muốn check-in tại đây?", "Có", "Không");
                     }
                 }
 
@@ -522,6 +591,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         );
     }
 
+    @SuppressLint("SetTextI18n")
     private void showPlaceInfoBottomSheet(Place place) {
         placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -586,7 +656,34 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         placeAddress.setText(place.getAddress());
 
         StarRatingView starRatingView = placeInfoBottomSheet.findViewById(R.id.place_rating_view);
-        starRatingView.setRating(4);
+        int roundedRating = (int) Math.floor(place.getAverageRating());
+        starRatingView.setRating(roundedRating);
+
+        TextView placeRating = placeInfoBottomSheet.findViewById(R.id.place_rating_score);
+        placeRating.setText(String.valueOf(place.getAverageRating()));
+
+        TextView placeRatingCount = placeInfoBottomSheet.findViewById(R.id.place_rating_count);
+        placeRatingCount.setText("(" + place.getFeedbacks().size() + ")");
+
+        ConstraintLayout placeTimeOpening = placeInfoBottomSheet.findViewById(R.id.place_time_opening);
+        TextView placeTimeOpeningTimeClose = placeInfoBottomSheet.findViewById(R.id.place_time_opening_time_close);
+        ConstraintLayout placeTimeClosing = placeInfoBottomSheet.findViewById(R.id.place_time_closing);
+        TextView placeTimeClosingTimeOpen = placeInfoBottomSheet.findViewById(R.id.place_time_closing_time_open);
+        if (place.getTimeOpen() != null && place.getTimeClose() != null) {
+            LocalTime currentTime = LocalTime.now();
+            if (place.getTimeClose().isBefore(currentTime) || place.getTimeOpen().isAfter(currentTime)) {
+                placeTimeClosing.setVisibility(View.VISIBLE);
+                placeTimeOpening.setVisibility(View.GONE);
+                placeTimeClosingTimeOpen.setText(place.getTimeOpen().toString());
+            } else {
+                placeTimeOpening.setVisibility(View.VISIBLE);
+                placeTimeClosing.setVisibility(View.GONE);
+                placeTimeOpeningTimeClose.setText(DateTimeUtil.localTimeToString(place.getTimeClose()));
+            }
+        } else {
+            placeTimeOpening.setVisibility(View.GONE);
+            placeTimeClosing.setVisibility(View.GONE);
+        }
 
         ImageView placeCoverImage = placeInfoBottomSheet.findViewById(R.id.place_cover_image);
         String transformUrl = MediaManager.get().url()
@@ -607,8 +704,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         TextView placeLong = locationPinBottomSheet.findViewById(R.id.location_pin_location_long);
         TextView placeLat = locationPinBottomSheet.findViewById(R.id.location_pin_location_lat);
-        placeLong.setText("Kinh độ: "+ latLng.getLongitude());
-        placeLat.setText("Vĩ độ: "+ latLng.getLatitude());
+        placeLong.setText("Kinh độ: " + latLng.getLongitude());
+        placeLat.setText("Vĩ độ: " + latLng.getLatitude());
     }
 
     private void updatePagerHeightForChild(View view, ViewPager2 viewPager) {

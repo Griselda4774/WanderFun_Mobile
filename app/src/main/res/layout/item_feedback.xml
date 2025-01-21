@@ -22,7 +22,7 @@
             android:background="@drawable/bg_img_rounded"
             android:scaleType="centerCrop"
             android:clipToOutline="true"
-            android:src="@drawable/brown"/>
+            android:src="@drawable/brown" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trần Đình Tâm"
-                style="@style/Text.Title.Section"/>
+                style="@style/Text.Title.Section" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -45,10 +45,10 @@
                 android:layout_gravity="start"
                 android:gravity="center">
 
-                <com.example.wanderfunmobile.infrastructure.ui.custom.StarRatingView
+                <com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingView
                     android:id="@+id/feedback_rating"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/feedback_time"
@@ -57,7 +57,7 @@
                     android:layout_marginStart="@dimen/place_info_section_small_margin"
                     android:text="Thời gian đánh giá"
                     android:textColor="@color/black1"
-                    style="@style/Text.Description"/>
+                    style="@style/Text.Description" />
 
             </LinearLayout>
 
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/place_info_section_medium_margin"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent rutrum lectus tortor, sed placerat nunc pulvinar eu. Nulla mattis dignissim."
-        style="@style/Text.Content"/>
+        style="@style/Text.Content" />
 
     <ImageView
         android:id="@+id/feedback_image"
@@ -81,6 +81,7 @@
         android:src="@drawable/brown"
         android:scaleType="centerCrop"
         android:clipToOutline="true"
-        android:background="@drawable/bg_radius"/>
+        android:visibility="gone"
+        android:background="@drawable/bg_radius" />
 
 </LinearLayout>

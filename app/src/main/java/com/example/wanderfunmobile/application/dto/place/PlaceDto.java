@@ -1,9 +1,9 @@
 package com.example.wanderfunmobile.application.dto.place;
 
+import com.example.wanderfunmobile.application.dto.feedback.FeedbackDto;
+import com.example.wanderfunmobile.application.dto.placeimage.PlaceImageDto;
 import com.example.wanderfunmobile.domain.model.Section;
 import com.example.wanderfunmobile.domain.model.enums.PlaceCategory;
-import com.example.wanderfunmobile.application.dto.feedbackimage.FeedbackImageDto;
-import com.example.wanderfunmobile.application.dto.placeimage.PlaceImageDto;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -30,7 +30,7 @@ public class PlaceDto {
     private String operator;
     private String link;
     private List<PlaceImageDto> placeImages;
-    private List<FeedbackImageDto> feedbacks;
+    private List<FeedbackDto> feedbacks;
 
     public PlaceDto() {
     }
@@ -203,11 +203,11 @@ public class PlaceDto {
         this.placeImages = placeImages;
     }
 
-    public List<FeedbackImageDto> getFeedbacks() {
+    public List<FeedbackDto> getFeedbacks() {
         return feedbacks;
     }
 
-    public void setFeedbacks(List<FeedbackImageDto> feedbacks) {
+    public void setFeedbacks(List<FeedbackDto> feedbacks) {
         this.feedbacks = feedbacks;
     }
 }

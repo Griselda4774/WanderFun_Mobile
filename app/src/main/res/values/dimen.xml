@@ -3,6 +3,10 @@
     <!--    app-->
     <dimen name="app_horizontal_margin">20dp</dimen>
     <dimen name="app_horizontal_margin2">20dp</dimen>
+    <dimen name="app_section_margin">16dp</dimen>
+    <dimen name="half_app_section_margin">8dp</dimen>
+    <dimen name="double_app_section_margin">32dp</dimen>
+
 
     <!--    profile section-->
     <dimen name="section_margin">16dp</dimen>
@@ -16,9 +20,11 @@
     <dimen name="input_margin_vertical">8dp</dimen>
     <dimen name="input_padding">16dp</dimen>
     <dimen name="input_icon_size">20dp</dimen>
+    <dimen name="input_title_margin">4dp</dimen>
 
     <!--    button-->
     <dimen name="button_container_padding">32dp</dimen>
+    <dimen name="thin_button_margin">16dp</dimen>
     <dimen name="button_margin">16dp</dimen>
     <dimen name="button_icon_size">20dp</dimen>
     <dimen name="rounded_button_size">60dp</dimen>
