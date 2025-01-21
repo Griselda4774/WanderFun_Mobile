@@ -1,8 +1,6 @@
 package com.example.wanderfunmobile.infrastructure.ui.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -20,12 +18,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.application.dto.auth.LoginDto;
 import com.example.wanderfunmobile.application.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
 import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
-import com.example.wanderfunmobile.application.dto.auth.LoginDto;
 
 import javax.inject.Inject;
 
@@ -85,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!loginResponse.isError()) {
                 LoginResponseDto loginResponseDto = objectMapper.map(loginResponse.getData(), LoginResponseDto.class);
                 Toast.makeText(this, "Welcome " + loginResponseDto.getEmail(), Toast.LENGTH_SHORT).show();
-                SessionManager.getInstance(this).login(
+                SessionManager.getInstance(getApplicationContext()).login(
                         loginResponseDto.getId(),
                         loginResponseDto.getEmail(),
                         loginResponseDto.getRole().name(),
@@ -102,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
 
         TextView guestButton = viewBinding.guestButton;
         guestButton.setOnClickListener(v -> {
-            SessionManager.getInstance(this).logout();
+            SessionManager.getInstance(getApplicationContext()).logout();
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

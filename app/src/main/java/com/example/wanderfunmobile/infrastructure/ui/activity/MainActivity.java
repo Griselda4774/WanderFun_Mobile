@@ -16,7 +16,6 @@ import com.example.wanderfunmobile.infrastructure.ui.fragment.LeaderboardFragmen
 import com.example.wanderfunmobile.infrastructure.ui.fragment.NotSignedInFragment;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.ProfileFragment;
 import com.example.wanderfunmobile.infrastructure.ui.fragment.TripFragment;
-import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
 import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.home_nav) {
                 selectedFragment = new HomeFragment();
             } else if (item.getItemId() == R.id.trip_nav) {
-                if (SessionManager.getInstance(this).isLoggedIn()) {
+                if (SessionManager.getInstance(getApplicationContext()).isLoggedIn()) {
                     selectedFragment = new TripFragment();
                 } else {
                     selectedFragment = new NotSignedInFragment();
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.leaderboard_nav) {
                 selectedFragment = new LeaderboardFragment();
             } else if (item.getItemId() == R.id.profile_nav) {
-                if (SessionManager.getInstance(this).isLoggedIn()) {
+                if (SessionManager.getInstance(getApplicationContext()).isLoggedIn()) {
                     selectedFragment = new ProfileFragment();
                 } else {
                     selectedFragment = new NotSignedInFragment();

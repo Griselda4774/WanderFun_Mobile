@@ -59,7 +59,7 @@ public class AlbumDetailsActivity extends AppCompatActivity {
         RecyclerView recyclerView = viewBinding.albumImageList.findViewById(R.id.album_image_list);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
-        albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(this).getAccessToken(), getIntent().getLongExtra("albumId", 0));
+        albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), getIntent().getLongExtra("albumId", 0));
         albumViewModel.getAlbumByIdResponseLiveData().observe(this, albumResponseDto -> {
             if (!albumResponseDto.isError()) {
                 List<AlbumImageDto> albumImageListDto = albumResponseDto.getData().getAlbumImages();
@@ -79,7 +79,7 @@ public class AlbumDetailsActivity extends AppCompatActivity {
         TextView deleteButton = viewBinding.deleteButton.findViewById(R.id.button);
         deleteButton.setText("Xóa");
         deleteButton.setOnClickListener(v -> {
-            albumViewModel.deleteAlbumById("Bearer " + SessionManager.getInstance(this).getAccessToken(), album.getId());
+            albumViewModel.deleteAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), album.getId());
             albumViewModel.deleteAlbumResponseLiveData().observe(this, response -> {
                 if (!response.isError()) {
                     Toast.makeText(this, "Xóa album thành công", Toast.LENGTH_SHORT).show();
