@@ -42,129 +42,144 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/form_section"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+        app:layout_constraintBottom_toTopOf="@id/action_section"
         app:layout_constraintTop_toBottomOf="@id/header">
 
-        <LinearLayout
-            android:id="@+id/album_name_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/album_name_label"
-                style="@style/Text.Title.Input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Tên album" />
-
-            <include layout="@layout/edittext_text" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/album_description_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/album_name_layout">
-
-            <TextView
-                android:id="@+id/album_description_label"
-                style="@style/Text.Title.Input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Mô tả" />
-
-            <include layout="@layout/edittext_content" />
-
-        </LinearLayout>
-
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/album_place_layout_main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
-            app:layout_constraintTop_toBottomOf="@id/album_description_layout">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:id="@+id/album_place_layout"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/form_section"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/search_place_button"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                app:layout_constraintBottom_toTopOf="@id/image_section"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/album_place_label"
-                    style="@style/Text.Title.Input"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/album_name_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="Địa điểm" />
+                    android:layout_marginVertical="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <include layout="@layout/edittext_content" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/album_name_label"
+                        style="@style/Text.Title.Input"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="Tên album" />
 
-            <LinearLayout
-                android:id="@+id/search_place_button"
-                android:layout_width="120dp"
+                    <include layout="@layout/edittext_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/album_description_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/album_name_layout">
+
+                    <TextView
+                        android:id="@+id/album_description_label"
+                        style="@style/Text.Title.Input"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="Mô tả" />
+
+                    <include layout="@layout/edittext_content" />
+
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/album_place_layout_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/album_description_layout">
+
+                    <LinearLayout
+                        android:id="@+id/album_place_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/search_place_button"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/album_place_label"
+                            style="@style/Text.Title.Input"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="Địa điểm" />
+
+                        <include layout="@layout/edittext_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/search_place_button"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/album_place_layout">
+
+                        <include layout="@layout/button_highlight" />
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/image_section"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                android:layout_marginVertical="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/album_place_layout">
+                app:layout_constraintTop_toBottomOf="@id/form_section">
 
-                <include layout="@layout/button_highlight" />
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/add_image_button"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    app:layout_constraintBottom_toTopOf="@id/album_image_list"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <include layout="@layout/button_outlined_blue" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/album_image_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="270dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="@drawable/cl_gradient_splash"
+                    android:padding="@dimen/item_padding_vertical"
+
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/image_section"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/app_horizontal_margin"
-        app:layout_constraintBottom_toTopOf="@id/action_section"
-        app:layout_constraintTop_toBottomOf="@id/form_section">
-
-        <LinearLayout
-            android:id="@+id/add_image_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="16dp"
-            app:layout_constraintBottom_toTopOf="@id/album_image_list"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <include layout="@layout/button_outlined_blue" />
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/album_image_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginVertical="16dp"
-            android:background="@drawable/cl_gradient_splash"
-            android:padding="@dimen/item_padding_vertical"
-
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+    </ScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_section"
