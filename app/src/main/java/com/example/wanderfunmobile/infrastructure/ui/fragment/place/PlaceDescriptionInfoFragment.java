@@ -62,7 +62,7 @@ public class PlaceDescriptionInfoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (!data.isError()) {
+            if (data != null && !data.isError()) {
                 place = objectMapper.map(data.getData(), Place.class);
                 descriptionList = place.getDescription();
                 setInfo();

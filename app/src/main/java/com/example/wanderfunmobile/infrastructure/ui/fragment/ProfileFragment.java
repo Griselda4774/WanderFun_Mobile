@@ -69,21 +69,21 @@ public class ProfileFragment extends Fragment {
         ConstraintLayout logoutSection = viewBinding.logOutSection;
         logoutSection.setOnClickListener(v -> {
             authViewModel.logout("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext().getApplicationContext()).getAccessToken());
-//            SessionManager.getInstance(requireContext()).logout();
-//            Intent intent = new Intent(getActivity(), LoginActivity.class);
-//            startActivity(intent);
-//            requireActivity().finish();
+            SessionManager.getInstance(requireActivity().getApplicationContext()).logout();
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+            requireActivity().finish();
         });
 
         authViewModel.getLogoutResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (!data.isError()) {
-                Toast.makeText(requireContext(), data.getMessage(), Toast.LENGTH_SHORT).show();
-                SessionManager.getInstance(requireActivity().getApplicationContext()).logout();
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-                requireActivity().finish();
+            if (data != null && !data.isError()) {
+                Toast.makeText(requireActivity().getApplicationContext(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+//                SessionManager.getInstance(requireActivity().getApplicationContext()).logout();
+//                Intent intent = new Intent(getActivity(), LoginActivity.class);
+//                startActivity(intent);
+//                requireActivity().finish();
             } else {
-                Toast.makeText(requireContext(), "Đăng xuất không thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity().getApplicationContext(), "Đăng xuất không thành công", Toast.LENGTH_SHORT).show();
             }
 
         });

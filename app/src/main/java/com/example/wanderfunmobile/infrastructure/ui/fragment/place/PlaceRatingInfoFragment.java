@@ -36,7 +36,7 @@ public class PlaceRatingInfoFragment extends Fragment {
 
     private FragmentPlaceRatingInfoBinding viewBinding;
     private Place place;
-    private List<Feedback> feedbackList;
+    private List<Feedback> feedbackList = new ArrayList<>();
     private List<Float> ratingList = new ArrayList<>(List.of(0f, 0f, 0f, 0f, 0f));
     private PlaceViewModel placeViewModel;
     @Inject
@@ -61,14 +61,21 @@ public class PlaceRatingInfoFragment extends Fragment {
         return viewBinding.getRoot();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        RecyclerView recyclerView = viewBinding.placeRatingList;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        FeedbackItemAdapter feedbackItemAdapter = new FeedbackItemAdapter(feedbackList);
+        recyclerView.setAdapter(feedbackItemAdapter);
+
         placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (!data.isError()) {
+            if (data != null && !data.isError()) {
                 place = objectMapper.map(data.getData(), Place.class);
-                feedbackList = place.getFeedbacks();
+                feedbackList.clear();
+                feedbackList.addAll(place.getFeedbacks());
                 if (!feedbackList.isEmpty()) {
                     float oneStar = 0, twoStar = 0, threeStar = 0, fourStar = 0, fiveStar = 0;
                     for (Feedback feedback : place.getFeedbacks()) {
@@ -99,7 +106,7 @@ public class PlaceRatingInfoFragment extends Fragment {
                 }
 
                 setInfo();
-                showFeedbackList();
+                feedbackItemAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -135,16 +142,8 @@ public class PlaceRatingInfoFragment extends Fragment {
         StarRatingOutlineView starRatingOutlineView = viewBinding.starRatingOutlineView;
         starRatingOutlineView.setRating(0);
         starRatingOutlineView.setPlaceId(place.getId());
+        starRatingOutlineView.setPlaceName(place.getName());
         starRatingOutlineView.enableIntent();
-
-
-    }
-
-    private void showFeedbackList() {
-        RecyclerView recyclerView = viewBinding.placeRatingList;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        FeedbackItemAdapter feedbackItemAdapter = new FeedbackItemAdapter(feedbackList);
-        recyclerView.setAdapter(feedbackItemAdapter);
     }
 
 }

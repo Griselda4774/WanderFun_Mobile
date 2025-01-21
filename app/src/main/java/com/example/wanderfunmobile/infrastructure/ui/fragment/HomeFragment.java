@@ -172,7 +172,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
 
         placeViewModel.checkInPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (!data.isError()) {
+            if (data != null && !data.isError()) {
                 Toast.makeText(requireContext(), "Check-in thành công", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(requireContext(), "Check-in thất bại", Toast.LENGTH_SHORT).show();
@@ -185,7 +185,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 placeViewModel.getCheckInByPlaceIdAndUserId("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
             }
             placeViewModel.getCheckInByPlaceIdAndUserIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-                if (!data.isError()) {
+                if (data != null && !data.isError()) {
                     CheckIn checkIn = objectMapper.map(data.getData(), CheckIn.class);
                     if (System.currentTimeMillis() - checkIn.getLastCheckInTime().getTime() > 50000) {
                         canCheckIn = true;
@@ -227,7 +227,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         placeViewModel.getAllPlaces();
         placeViewModel.getAllPlacesResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (!data.isError()) {
+            if (data != null && !data.isError()) {
                 List<PlaceMiniDto> placeDtoList = data.getData();
                 if (placeDtoList.isEmpty()) {
                     placeDtoList = new ArrayList<>();
@@ -317,7 +317,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 if (place != null) {
                     placeViewModel.getPlaceById(place.getId());
                     placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-                        if (!data.isError()) {
+                        if (data != null && !data.isError()) {
                             currentPlace = objectMapper.map(data.getData(), Place.class);
                             showPlaceInfoBottomSheet(currentPlace);
                         }

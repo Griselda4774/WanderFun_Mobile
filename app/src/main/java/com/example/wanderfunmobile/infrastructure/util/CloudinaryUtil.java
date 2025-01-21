@@ -24,12 +24,12 @@ public class CloudinaryUtil {
         MediaManager.init(context, config);
     }
 
-    public static void uploadImageToCloudinary(Context context, Uri imageUri, String fileName) {
+    public static void uploadImageToCloudinary(Context context, Uri imageUri, String fileName, String folderName) {
         try {
             File imageFile = resizeAndCompressImage(context, imageUri, fileName);
 
             MediaManager.get().upload(imageFile.getAbsolutePath())
-                    .option("folder", "your_folder_name") // Tùy chọn: Đặt thư mục lưu trữ trên Cloudinary
+                    .option("folder", folderName)
                     .callback(new UploadCallback() {
                         @Override
                         public void onStart(String requestId) {

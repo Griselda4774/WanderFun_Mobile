@@ -1,5 +1,6 @@
 package com.example.wanderfunmobile.infrastructure.ui.fragment.trip;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.TripViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,7 +32,9 @@ public class AllTripFragment extends Fragment {
 
     FragmentAllTripBinding viewBinding;
     private TripViewModel tripViewModel;
-    private List<Trip> tripList;
+    private RecyclerView recyclerView;
+    private TripItemAdapter tripItemAdapter;
+    private List<Trip> tripList = new ArrayList<>();
 
     @Inject
     ObjectMapper objectMapper;
@@ -51,15 +55,22 @@ public class AllTripFragment extends Fragment {
         return viewBinding.getRoot();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        recyclerView = viewBinding.tripList;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        tripItemAdapter = new TripItemAdapter(tripList);
+        recyclerView.setAdapter(tripItemAdapter);
+
         tripViewModel.getAllTrips("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken());
         tripViewModel.getAllTripsResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (!data.isError()) {
-                tripList = objectMapper.mapList(data.getData(), Trip.class);
-                showTripList();
+            if (data != null && !data.isError()) {
+                tripList.clear();
+                tripList.addAll(objectMapper.mapList(data.getData(), Trip.class));
+                tripItemAdapter.notifyDataSetChanged();
             }
         });
     }
