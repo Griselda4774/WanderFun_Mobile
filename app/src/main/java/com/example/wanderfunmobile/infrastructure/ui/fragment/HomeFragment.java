@@ -41,10 +41,8 @@ import com.example.wanderfunmobile.infrastructure.ui.custom.dialog.LoadingDialog
 import com.example.wanderfunmobile.infrastructure.ui.custom.dialog.SelectionDialog;
 import com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingView;
 import com.example.wanderfunmobile.infrastructure.util.BitMapUtil;
-import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
 import com.example.wanderfunmobile.infrastructure.util.ColorHexUtil;
 import com.example.wanderfunmobile.infrastructure.util.DateTimeUtil;
-import com.example.wanderfunmobile.infrastructure.util.MediaManagerStateUtil;
 import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.infrastructure.util.ViewPager2HeightAdjuster;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
@@ -127,10 +125,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         // Init maplibre
         MapLibre.getInstance(requireContext());
-        if (!MediaManagerStateUtil.isInitialized()) {
-            CloudinaryUtil.init(requireContext());
-            MediaManagerStateUtil.initialize();
-        }
     }
 
     @Override

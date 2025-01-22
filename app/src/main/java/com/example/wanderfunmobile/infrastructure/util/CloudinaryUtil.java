@@ -9,6 +9,7 @@ import android.util.Log;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
 import com.cloudinary.android.callback.UploadCallback;
+import com.example.wanderfunmobile.application.dto.cloudinary.CloudinaryImageDto;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,11 +25,17 @@ public class CloudinaryUtil {
         MediaManager.init(context, config);
     }
 
-    public static void uploadImageToCloudinary(Context context, Uri imageUri, String fileName, String folderName) {
+    public interface CloudinaryCallback {
+        void onSuccess(CloudinaryImageDto result);
+
+        void onError(String error);
+    }
+
+    public static void uploadImageToCloudinary(Context context, Uri imageUri, String fileName, String folderName, CloudinaryCallback callback) {
         try {
             File imageFile = resizeAndCompressImage(context, imageUri, fileName);
-
             MediaManager.get().upload(imageFile.getAbsolutePath())
+                    .unsigned("unsigned_preset")
                     .option("folder", folderName)
                     .callback(new UploadCallback() {
                         @Override
@@ -43,8 +50,22 @@ public class CloudinaryUtil {
 
                         @Override
                         public void onSuccess(String requestId, Map resultData) {
+                            String publicId = (String) resultData.get("public_id");
+                            String url = (String) resultData.get("url");
+                            CloudinaryImageDto cloudinaryImageDto = new CloudinaryImageDto();
+                            cloudinaryImageDto.setPublicId(publicId);
+                            cloudinaryImageDto.setUrl(url);
                             String secureUrl = (String) resultData.get("secure_url");
                             Log.d("Cloudinary", "Upload success: " + secureUrl);
+                            callback.onSuccess(cloudinaryImageDto);
+                            if (imageFile.exists()) {
+                                boolean deleted = imageFile.delete();
+                                if (deleted) {
+                                    Log.d("Cloudinary", "Temporary file deleted successfully.");
+                                } else {
+                                    Log.e("Cloudinary", "Failed to delete temporary file.");
+                                }
+                            }
                         }
 
                         @Override
@@ -59,13 +80,14 @@ public class CloudinaryUtil {
                     }).dispatch();
         } catch (IOException e) {
             Log.e("Cloudinary", "Error converting URI: " + e.getMessage());
+            callback.onError(e.getMessage());
         }
     }
 
     private static File resizeAndCompressImage(Context context, Uri uri, String fileName) throws IOException {
         ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), uri);
         Bitmap bitmap = ImageDecoder.decodeBitmap(source);
-        File tempFile = File.createTempFile(fileName + "-compressed", ".jpg", context.getCacheDir());
+        File tempFile = File.createTempFile(fileName, ".jpg", context.getCacheDir());
 
         FileOutputStream fos = new FileOutputStream(tempFile);
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
