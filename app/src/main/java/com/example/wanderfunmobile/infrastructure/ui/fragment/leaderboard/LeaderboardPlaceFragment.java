@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,13 +14,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.wanderfunmobile.application.dto.leaderboard.LeaderboardUserDto;
+import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.application.dto.leaderboard.LeaderboardPlaceDto;
 import com.example.wanderfunmobile.databinding.FragmentLeaderboardPlaceBinding;
-import com.example.wanderfunmobile.domain.model.LeaderboardUser;
-import com.example.wanderfunmobile.infrastructure.ui.adapter.leaderboard.LeaderboardUserCardAdapter;
+import com.example.wanderfunmobile.domain.model.LeaderboardPlace;
+import com.example.wanderfunmobile.infrastructure.ui.adapter.leaderboard.LeaderboardPlaceCardAdapter;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.LeaderboardViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,7 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class LeaderboardPlaceFragment extends Fragment {
     @Inject
     ObjectMapper objectMapper;
-    List<LeaderboardUser> leaderboardUserList;
+    List<LeaderboardPlace> leaderboardPlaceList;
     FragmentLeaderboardPlaceBinding viewBinding;
     LeaderboardViewModel leaderboardViewModel;
 
@@ -56,13 +61,41 @@ public class LeaderboardPlaceFragment extends Fragment {
         RecyclerView recyclerView = viewBinding.leaderboardPlaceRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        leaderboardViewModel.getLeaderboardUser();
-        leaderboardViewModel.getLeaderboardUserResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (data != null && !data.isError()) {
-                List<LeaderboardUserDto> leaderboardUserDtoList = data.getData();
-                leaderboardUserList = objectMapper.mapList(leaderboardUserDtoList, LeaderboardUser.class);
-                recyclerView.setAdapter(new LeaderboardUserCardAdapter(leaderboardUserList));
+        TextView[] placeNames = {viewBinding.firstPlaceName, viewBinding.secondPlaceName, viewBinding.thirdPlaceName};
+        TextView[] placeScores = {viewBinding.firstPlaceScore, viewBinding.secondPlaceScore, viewBinding.thirdPlaceScore};
+        ImageView[] placeAvatars = {viewBinding.firstPlaceAvatar, viewBinding.secondPlaceAvatar, viewBinding.thirdPlaceAvatar};
 
+        leaderboardViewModel.getLeaderboardPlace();
+        leaderboardViewModel.getLeaderboardPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+            if (!data.isError()) {
+                List<LeaderboardPlaceDto> leaderboardPlaceDtoList = data.getData();
+                leaderboardPlaceList = objectMapper.mapList(leaderboardPlaceDtoList, LeaderboardPlace.class);
+
+                // Handle top 3 places safely
+                for (int i = 0; i < placeNames.length; i++) {
+                    if (i < leaderboardPlaceList.size()) {
+                        placeNames[i].setText(leaderboardPlaceList.get(i).getName());
+                        placeScores[i].setText(String.valueOf(leaderboardPlaceList.get(i).getCheckInCount())); // Assuming check-in count is a number
+                        Glide.with(placeAvatars[i])
+                                .load(leaderboardPlaceList.get(i).getCoverImageUrl())
+                                .into(placeAvatars[i]);
+                    } else {
+                        // Handle missing data: hide views or set placeholders
+                        placeNames[i].setText("N/A");
+                        placeScores[i].setText("0");
+                        placeAvatars[i].setImageResource(R.drawable.brown); // Replace with your placeholder drawable
+                    }
+                }
+
+                // Handle the remaining list for the RecyclerView
+                if (leaderboardPlaceList.size() > 3) {
+                    recyclerView.setAdapter(new LeaderboardPlaceCardAdapter(
+                            leaderboardPlaceList.subList(3, leaderboardPlaceList.size())
+                    ));
+                } else {
+                    // Set an empty adapter or show a placeholder message
+                    recyclerView.setAdapter(new LeaderboardPlaceCardAdapter(new ArrayList<>()));
+                }
             }
         });
     }

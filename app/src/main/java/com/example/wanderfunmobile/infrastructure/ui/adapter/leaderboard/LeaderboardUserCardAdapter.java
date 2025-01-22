@@ -49,7 +49,7 @@ public class LeaderboardUserCardAdapter extends RecyclerView.Adapter<Leaderboard
 
         @SuppressLint("SetTextI18n")
         public void bind(LeaderboardUser user) {
-            itemLeaderboardCardBinding.textRankNumber.setText(user.getRank());
+            itemLeaderboardCardBinding.textRankNumber.setText("#" + user.getRank());
             itemLeaderboardCardBinding.textName.setText(user.getFirstName() + " " + user.getLastName());
             itemLeaderboardCardBinding.textScore.setText(user.getPoint());
 
