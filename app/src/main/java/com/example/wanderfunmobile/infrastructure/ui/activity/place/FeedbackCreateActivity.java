@@ -28,7 +28,6 @@ import com.example.wanderfunmobile.application.dto.cloudinary.CloudinaryImageDto
 import com.example.wanderfunmobile.application.dto.feedback.FeedbackCreateDto;
 import com.example.wanderfunmobile.databinding.ActivityFeedbackCreateBinding;
 import com.example.wanderfunmobile.domain.model.User;
-import com.example.wanderfunmobile.infrastructure.ui.activity.MainActivity;
 import com.example.wanderfunmobile.infrastructure.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingOutlineView;
 import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
@@ -141,6 +140,12 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         // Get place name
         String placeName = intent.getStringExtra("placeName");
 
+        // Header title
+        TextView headerTitle = viewBinding.headerTitle;
+        if (placeName != null && !placeName.isEmpty()) {
+            headerTitle.setText(placeName);
+        }
+
         // Submit button
         TextView submitButton = viewBinding.submitButton.findViewById(R.id.button);
         submitButton.setText("Đăng");
@@ -168,6 +173,8 @@ public class FeedbackCreateActivity extends AppCompatActivity {
                         placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
                     }
                 });
+            } else {
+                placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
             }
         });
 
@@ -175,8 +182,6 @@ public class FeedbackCreateActivity extends AppCompatActivity {
             if (data != null && !data.isError()) {
                 hideLoadingDialog();
                 Toast.makeText(getApplicationContext(), "Tạo đánh giá thành công", Toast.LENGTH_SHORT).show();
-                Intent intent1 = new Intent(this, MainActivity.class);
-                startActivity(intent1);
                 finish();
             } else {
                 hideLoadingDialog();
