@@ -1,9 +1,12 @@
 package com.example.wanderfunmobile.infrastructure.ui.fragment.leaderboard;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.application.dto.leaderboard.LeaderboardUserDto;
 import com.example.wanderfunmobile.databinding.FragmentLeaderboardUserBinding;
 import com.example.wanderfunmobile.domain.model.LeaderboardUser;
@@ -19,6 +24,7 @@ import com.example.wanderfunmobile.infrastructure.ui.adapter.leaderboard.Leaderb
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.LeaderboardViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,6 +55,7 @@ public class LeaderboardUserFragment extends Fragment {
         return viewBinding.getRoot();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -56,13 +63,40 @@ public class LeaderboardUserFragment extends Fragment {
         RecyclerView recyclerView = viewBinding.leaderboardUserRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        TextView[] userNames = {viewBinding.firstPlaceName, viewBinding.secondPlaceName, viewBinding.thirdPlaceName};
+        TextView[] userScores = {viewBinding.firstPlaceScore, viewBinding.secondPlaceScore, viewBinding.thirdPlaceScore};
+        ImageView[] userAvatars = {viewBinding.firstPlaceAvatar, viewBinding.secondPlaceAvatar, viewBinding.thirdPlaceAvatar};
+
         leaderboardViewModel.getLeaderboardUser();
         leaderboardViewModel.getLeaderboardUserResponseLiveData().observe(getViewLifecycleOwner(), data -> {
             if (!data.isError()) {
                 List<LeaderboardUserDto> leaderboardUserDtoList = data.getData();
                 leaderboardUserList = objectMapper.mapList(leaderboardUserDtoList, LeaderboardUser.class);
-                recyclerView.setAdapter(new LeaderboardUserCardAdapter(leaderboardUserList));
 
+                // Handle top 3 users safely
+                for (int i = 0; i < userNames.length; i++) {
+                    if (i < leaderboardUserList.size()) {
+                        userNames[i].setText(leaderboardUserList.get(i).getFirstName() + " " + leaderboardUserList.get(i).getLastName());
+                        userScores[i].setText(leaderboardUserList.get(i).getPoint() + " điểm");
+                        Glide.with(userAvatars[i])
+                                .load(leaderboardUserList.get(i).getAvatarUrl())
+                                .into(userAvatars[i]);
+                    } else {
+                        userNames[i].setText("N/A");
+                        userScores[i].setText("0");
+                        userAvatars[i].setImageResource(R.drawable.brown); // Replace with your placeholder drawable
+                    }
+                }
+
+                // Handle the remaining list for the RecyclerView
+                if (leaderboardUserList.size() > 3) {
+                    recyclerView.setAdapter(new LeaderboardUserCardAdapter(
+                            leaderboardUserList.subList(3, leaderboardUserList.size())
+                    ));
+                } else {
+                    // Set an empty adapter or show a placeholder message
+                    recyclerView.setAdapter(new LeaderboardUserCardAdapter(new ArrayList<>()));
+                }
             }
         });
     }

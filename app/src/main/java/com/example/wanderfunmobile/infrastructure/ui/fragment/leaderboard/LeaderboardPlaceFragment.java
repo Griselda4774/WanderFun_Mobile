@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.application.dto.leaderboard.LeaderboardPlaceDto;
 import com.example.wanderfunmobile.databinding.FragmentLeaderboardPlaceBinding;
 import com.example.wanderfunmobile.domain.model.LeaderboardPlace;
@@ -22,6 +23,7 @@ import com.example.wanderfunmobile.infrastructure.ui.adapter.leaderboard.Leaderb
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.LeaderboardViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,7 +60,7 @@ public class LeaderboardPlaceFragment extends Fragment {
 
         RecyclerView recyclerView = viewBinding.leaderboardPlaceRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        
+
         TextView[] placeNames = {viewBinding.firstPlaceName, viewBinding.secondPlaceName, viewBinding.thirdPlaceName};
         TextView[] placeScores = {viewBinding.firstPlaceScore, viewBinding.secondPlaceScore, viewBinding.thirdPlaceScore};
         ImageView[] placeAvatars = {viewBinding.firstPlaceAvatar, viewBinding.secondPlaceAvatar, viewBinding.thirdPlaceAvatar};
@@ -69,15 +71,31 @@ public class LeaderboardPlaceFragment extends Fragment {
                 List<LeaderboardPlaceDto> leaderboardPlaceDtoList = data.getData();
                 leaderboardPlaceList = objectMapper.mapList(leaderboardPlaceDtoList, LeaderboardPlace.class);
 
-                for (int i = 0; i < 3; i++) {
-                    placeNames[i].setText(leaderboardPlaceList.get(i).getName());
-                    placeScores[i].setText(leaderboardPlaceList.get(i).getCheckInCount());
-                    Glide.with(placeAvatars[i])
-                            .load(leaderboardPlaceList.get(i).getCoverImageUrl())
-                            .into(placeAvatars[i]);
+                // Handle top 3 places safely
+                for (int i = 0; i < placeNames.length; i++) {
+                    if (i < leaderboardPlaceList.size()) {
+                        placeNames[i].setText(leaderboardPlaceList.get(i).getName());
+                        placeScores[i].setText(String.valueOf(leaderboardPlaceList.get(i).getCheckInCount())); // Assuming check-in count is a number
+                        Glide.with(placeAvatars[i])
+                                .load(leaderboardPlaceList.get(i).getCoverImageUrl())
+                                .into(placeAvatars[i]);
+                    } else {
+                        // Handle missing data: hide views or set placeholders
+                        placeNames[i].setText("N/A");
+                        placeScores[i].setText("0");
+                        placeAvatars[i].setImageResource(R.drawable.brown); // Replace with your placeholder drawable
+                    }
                 }
 
-                recyclerView.setAdapter(new LeaderboardPlaceCardAdapter(leaderboardPlaceList.subList(3, leaderboardPlaceList.size())));
+                // Handle the remaining list for the RecyclerView
+                if (leaderboardPlaceList.size() > 3) {
+                    recyclerView.setAdapter(new LeaderboardPlaceCardAdapter(
+                            leaderboardPlaceList.subList(3, leaderboardPlaceList.size())
+                    ));
+                } else {
+                    // Set an empty adapter or show a placeholder message
+                    recyclerView.setAdapter(new LeaderboardPlaceCardAdapter(new ArrayList<>()));
+                }
             }
         });
     }
