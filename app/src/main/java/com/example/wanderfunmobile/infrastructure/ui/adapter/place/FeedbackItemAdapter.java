@@ -1,6 +1,7 @@
 package com.example.wanderfunmobile.infrastructure.ui.adapter.place;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -81,7 +82,10 @@ public class FeedbackItemAdapter extends RecyclerView.Adapter<FeedbackItemAdapte
             // Comment
             TextView comment = binding.feedbackComment;
             if (feedback.getComment() != null && !feedback.getComment().isEmpty()) {
+                comment.setVisibility(View.VISIBLE);
                 comment.setText(feedback.getComment());
+            } else {
+                comment.setVisibility(View.GONE);
             }
 
             // Image

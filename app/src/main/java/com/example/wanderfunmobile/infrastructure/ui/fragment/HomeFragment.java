@@ -33,6 +33,8 @@ import com.cloudinary.Transformation;
 import com.cloudinary.android.MediaManager;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.application.dto.place.PlaceMiniDto;
+import com.example.wanderfunmobile.databinding.BottomSheetLocationPinBinding;
+import com.example.wanderfunmobile.databinding.BottomSheetPlaceInfoBinding;
 import com.example.wanderfunmobile.databinding.FragmentHomeBinding;
 import com.example.wanderfunmobile.domain.model.CheckIn;
 import com.example.wanderfunmobile.domain.model.Place;
@@ -41,10 +43,8 @@ import com.example.wanderfunmobile.infrastructure.ui.custom.dialog.LoadingDialog
 import com.example.wanderfunmobile.infrastructure.ui.custom.dialog.SelectionDialog;
 import com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingView;
 import com.example.wanderfunmobile.infrastructure.util.BitMapUtil;
-import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
 import com.example.wanderfunmobile.infrastructure.util.ColorHexUtil;
 import com.example.wanderfunmobile.infrastructure.util.DateTimeUtil;
-import com.example.wanderfunmobile.infrastructure.util.MediaManagerStateUtil;
 import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.infrastructure.util.ViewPager2HeightAdjuster;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
@@ -105,13 +105,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private LinearLayout gpsButton;
     private Location currentLocation;
 
-    private ConstraintLayout placeInfoBottomSheet;
-    private ConstraintLayout locationPinBottomSheet;
+    private BottomSheetPlaceInfoBinding placeInfoBottomSheetBinding;
+    private BottomSheetLocationPinBinding locationPinBottomSheetBinding;
 
     private BottomSheetBehavior<ConstraintLayout> placeInfoBottomSheetBehavior;
     private BottomSheetBehavior<ConstraintLayout> locationPinBottomSheetBehavior;
     private List<Place> placeList = new ArrayList<>();
-    private Place currentPlace;
+    private Place currentPlace = null;
     @Inject
     ObjectMapper objectMapper;
     private LoadingDialog loadingDialog;
@@ -127,10 +127,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         // Init maplibre
         MapLibre.getInstance(requireContext());
-        if (!MediaManagerStateUtil.isInitialized()) {
-            CloudinaryUtil.init(requireContext());
-            MediaManagerStateUtil.initialize();
-        }
     }
 
     @Override
@@ -143,13 +139,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mapView = viewBinding.mapView;
         gpsButton = viewBinding.gpsButton;
 
-        placeInfoBottomSheet = viewBinding.placeInfoBottomSheetContainer.placeInfoBottomSheet;
-
-        placeInfoBottomSheetBehavior = BottomSheetBehavior.from(placeInfoBottomSheet);
+        placeInfoBottomSheetBinding = viewBinding.placeInfoBottomSheetContainer;
+        placeInfoBottomSheetBehavior = BottomSheetBehavior.from(placeInfoBottomSheetBinding.getRoot());
         placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-        locationPinBottomSheet = viewBinding.locationPinBottomSheetContainer.locationPinBottomSheet;
-        locationPinBottomSheetBehavior = BottomSheetBehavior.from(locationPinBottomSheet);
+        locationPinBottomSheetBinding = viewBinding.locationPinBottomSheetContainer;
+        locationPinBottomSheetBehavior = BottomSheetBehavior.from(locationPinBottomSheetBinding.getRoot());
         locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         // Khởi tạo launcher cho yêu cầu quyền
@@ -171,34 +166,43 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        placeViewModel.checkInPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (data != null && !data.isError()) {
-                Toast.makeText(requireContext(), "Check-in thành công", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(requireContext(), "Check-in thất bại", Toast.LENGTH_SHORT).show();
+        // Place info bottom sheet
+        placeInfoBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    placeInfoBottomSheetBinding.placeInfoBottomSheetContent.smoothScrollTo(0, 0);
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    currentPlace = null;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
             }
         });
 
+        // Location pin info bottom sheet
+        locationPinBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    locationPinBottomSheetBinding.bottomSheetContent.smoothScrollTo(0, 0);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+        // Selection dialog
         selectionDialog = viewBinding.selectionDialog;
         selectionDialog.setOnAcceptListener(() -> {
             if (currentCheckInPlaceId != null) {
                 placeViewModel.getCheckInByPlaceIdAndUserId("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
             }
-            placeViewModel.getCheckInByPlaceIdAndUserIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-                if (data != null && !data.isError()) {
-                    CheckIn checkIn = objectMapper.map(data.getData(), CheckIn.class);
-                    if (System.currentTimeMillis() - checkIn.getLastCheckInTime().getTime() > 50000) {
-                        canCheckIn = true;
-                        placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
-                    } else {
-                        canCheckIn = false;
-                        Toast.makeText(requireContext(), "Bạn đã check-in tại đây trước đó", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    canCheckIn = true;
-                    placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
-                }
-            });
             selectionDialog.hide();
             Log.d("SelectionDialog", "Accept");
         });
@@ -208,6 +212,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             Log.d("SelectionDialog", "Reject");
         });
 
+        // Loading dialog
         loadingDialog = viewBinding.loadingDialog;
         placeViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (isLoading) {
@@ -218,9 +223,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 loadingDialog.setVisibility(View.GONE);
             }
         });
+        placeViewModel.getIsCheckingIn().observe(getViewLifecycleOwner(), isCheckingIn -> {
+            if (isCheckingIn) {
+                loadingDialog.show();
+                loadingDialog.setVisibility(View.VISIBLE);
+            } else {
+                loadingDialog.hide();
+                loadingDialog.setVisibility(View.GONE);
+            }
+        });
 
+        // Map
         mapView.onCreate(savedInstanceState);
-
         mapStyleUrl = String.format("%s/assets/goong_map_web.json?api_key=%s",
                 getString(R.string.goong_map_url),
                 getString(R.string.goong_map_key));
@@ -235,6 +249,37 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 placeList = objectMapper.mapList(placeDtoList, Place.class);
             }
             mapView.getMapAsync(this);
+        });
+
+        placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+            if (data != null && !data.isError()) {
+                currentPlace = objectMapper.map(data.getData(), Place.class);
+                showPlaceInfoBottomSheet(currentPlace);
+            }
+        });
+
+        placeViewModel.getCheckInByPlaceIdAndUserIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+            if (data != null && !data.isError()) {
+                CheckIn checkIn = objectMapper.map(data.getData(), CheckIn.class);
+                if (System.currentTimeMillis() - checkIn.getLastCheckInTime().getTime() > 50000) {
+                    canCheckIn = true;
+                    placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
+                } else {
+                    canCheckIn = false;
+                    Toast.makeText(requireContext(), "Bạn đã check-in tại đây trước đó", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                canCheckIn = true;
+                placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
+            }
+        });
+
+        placeViewModel.checkInPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+            if (data != null && !data.isError()) {
+                Toast.makeText(requireContext(), "Check-in thành công", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "Check-in thất bại", Toast.LENGTH_SHORT).show();
+            }
         });
 
         gpsButton.setOnClickListener(v -> {
@@ -266,16 +311,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     R.drawable.ic_location_pin, 100, 100);
             style.addImage("marker-icon", markerBitmap);
 
-            Bitmap icon1BitMap = BitMapUtil.convertVectorToBitmap(requireContext(),
-                    R.drawable.ic_home, 100, 100);
-            Bitmap icon2BitMap = BitMapUtil.convertVectorToBitmap(requireContext(),
-                    R.drawable.ic_suitcase, 100, 100);
-            Bitmap icon3BitMap = BitMapUtil.convertVectorToBitmap(requireContext(),
-                    R.drawable.ic_trophy, 100, 100);
-            style.addImage("icon1", icon1BitMap);
-            style.addImage("icon2", icon2BitMap);
-            style.addImage("icon3", icon3BitMap);
-
             if (!placeList.isEmpty()) {
                 addPlaceImageToMap(requireContext(), style, placeList);
                 drawPlaceMarker(symbolManager, placeList);
@@ -301,29 +336,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 focusOnLocation(symbol.getLatLng(), map, 17, -200);
 
                 Gson gson = new Gson();
-                String title = "no-title";
-                String name = "no-name";
+                String title;
                 Place place = null;
                 if (symbol.getData() != null) {
                     title = symbol.getData().getAsJsonObject().get("title").getAsString();
                     if (title.equals("Place Marker") && symbol.getData().getAsJsonObject().get("place") != null) {
                         place = gson.fromJson(symbol.getData().getAsJsonObject().get("place"), Place.class);
-                        name = place.getName();
-                    } else {
-                        name = "Location Pin";
                     }
                 }
 
                 if (place != null) {
                     placeViewModel.getPlaceById(place.getId());
-                    placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-                        if (data != null && !data.isError()) {
-                            currentPlace = objectMapper.map(data.getData(), Place.class);
-                            showPlaceInfoBottomSheet(currentPlace);
-                        }
-                    });
                 }
-//                Toast.makeText(requireContext(), title + ": " + name, Toast.LENGTH_SHORT).show();
                 return true;
             });
 
@@ -351,6 +375,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         super.onResume();
         if (mapView != null) {
             mapView.onResume();
+        }
+        if (currentPlace != null) {
+            placeViewModel.getPlaceById(currentPlace.getId());
+        } else {
+            placeViewModel.getAllPlaces();
         }
     }
 
@@ -599,12 +628,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         // Place info tab
         // View pager
         PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(this);
-        ViewPager2 viewPager = placeInfoBottomSheet.findViewById(R.id.view_pager);
+        ViewPager2 viewPager = placeInfoBottomSheetBinding.viewPager;
         viewPager.setAdapter(placeInfoTabAdapter);
         ViewPager2HeightAdjuster.autoAdjustHeight(viewPager, true);
 
         // Tab layout
-        TabLayout tabLayout = placeInfoBottomSheet.findViewById(R.id.tab_layout);
+        TabLayout tabLayout = placeInfoBottomSheetBinding.tabLayout;
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             @SuppressLint("InflateParams") View customView = LayoutInflater.from(requireContext()).inflate(R.layout.tab_item, null);
             TextView tabText = customView.findViewById(R.id.tab_text);
@@ -649,26 +678,26 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        TextView placeName = placeInfoBottomSheet.findViewById(R.id.place_name);
+        TextView placeName = placeInfoBottomSheetBinding.placeName;
         placeName.setText(place.getName());
 
-        TextView placeAddress = placeInfoBottomSheet.findViewById(R.id.place_address_content);
+        TextView placeAddress = placeInfoBottomSheetBinding.placeAddressContent;
         placeAddress.setText(place.getAddress());
 
-        StarRatingView starRatingView = placeInfoBottomSheet.findViewById(R.id.place_rating_view);
+        StarRatingView starRatingView = placeInfoBottomSheetBinding.placeRatingView;
         int roundedRating = (int) Math.floor(place.getAverageRating());
         starRatingView.setRating(roundedRating);
 
-        TextView placeRating = placeInfoBottomSheet.findViewById(R.id.place_rating_score);
+        TextView placeRating = placeInfoBottomSheetBinding.placeRatingScore;
         placeRating.setText(String.valueOf(place.getAverageRating()));
 
-        TextView placeRatingCount = placeInfoBottomSheet.findViewById(R.id.place_rating_count);
+        TextView placeRatingCount = placeInfoBottomSheetBinding.placeRatingCount;
         placeRatingCount.setText("(" + place.getFeedbacks().size() + ")");
 
-        ConstraintLayout placeTimeOpening = placeInfoBottomSheet.findViewById(R.id.place_time_opening);
-        TextView placeTimeOpeningTimeClose = placeInfoBottomSheet.findViewById(R.id.place_time_opening_time_close);
-        ConstraintLayout placeTimeClosing = placeInfoBottomSheet.findViewById(R.id.place_time_closing);
-        TextView placeTimeClosingTimeOpen = placeInfoBottomSheet.findViewById(R.id.place_time_closing_time_open);
+        ConstraintLayout placeTimeOpening = placeInfoBottomSheetBinding.placeTimeOpening;
+        TextView placeTimeOpeningTimeClose = placeInfoBottomSheetBinding.placeTimeOpeningTimeClose;
+        ConstraintLayout placeTimeClosing = placeInfoBottomSheetBinding.placeTimeClosing;
+        TextView placeTimeClosingTimeOpen = placeInfoBottomSheetBinding.placeTimeClosingTimeOpen;
         if (place.getTimeOpen() != null && place.getTimeClose() != null) {
             LocalTime currentTime = LocalTime.now();
             if (place.getTimeClose().isBefore(currentTime) || place.getTimeOpen().isAfter(currentTime)) {
@@ -685,7 +714,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             placeTimeClosing.setVisibility(View.GONE);
         }
 
-        ImageView placeCoverImage = placeInfoBottomSheet.findViewById(R.id.place_cover_image);
+        ImageView placeCoverImage = placeInfoBottomSheetBinding.placeCoverImage;
         String transformUrl = MediaManager.get().url()
                 .transformation(new Transformation<>()
                         .width(800)
@@ -702,23 +731,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-        TextView placeLong = locationPinBottomSheet.findViewById(R.id.location_pin_location_long);
-        TextView placeLat = locationPinBottomSheet.findViewById(R.id.location_pin_location_lat);
+        TextView placeLong = locationPinBottomSheetBinding.locationPinLocationLong;
+        TextView placeLat = locationPinBottomSheetBinding.locationPinLocationLat;
         placeLong.setText("Kinh độ: " + latLng.getLongitude());
         placeLat.setText("Vĩ độ: " + latLng.getLatitude());
-    }
-
-    private void updatePagerHeightForChild(View view, ViewPager2 viewPager) {
-        view.post(() -> {
-            int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(view.getWidth(), View.MeasureSpec.EXACTLY);
-            int hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-            view.measure(wMeasureSpec, hMeasureSpec);
-
-            if (viewPager.getLayoutParams().height != view.getMeasuredHeight()) {
-                ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-                layoutParams.height = view.getMeasuredHeight();
-                viewPager.setLayoutParams(layoutParams);
-            }
-        });
     }
 }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -23,13 +24,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.application.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.application.dto.feedback.FeedbackCreateDto;
 import com.example.wanderfunmobile.databinding.ActivityFeedbackCreateBinding;
 import com.example.wanderfunmobile.domain.model.User;
-import com.example.wanderfunmobile.infrastructure.ui.activity.MainActivity;
+import com.example.wanderfunmobile.infrastructure.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingOutlineView;
 import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
-import com.example.wanderfunmobile.infrastructure.util.MediaManagerStateUtil;
 import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
@@ -42,14 +43,15 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class FeedbackCreateActivity extends AppCompatActivity {
 
-    @Inject
-    ObjectMapper objectMapper;
     private ActivityFeedbackCreateBinding viewBinding;
     private PlaceViewModel placeViewModel;
     private UserViewModel userViewModel;
     private User user;
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private Uri imageUri;
+    private LoadingDialog loadingDialog;
+    @Inject
+    ObjectMapper objectMapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +66,6 @@ public class FeedbackCreateActivity extends AppCompatActivity {
             return insets;
         });
 
-        MediaManagerStateUtil.reset();
-
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getSelfInfo("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
@@ -76,11 +76,16 @@ public class FeedbackCreateActivity extends AppCompatActivity {
             }
         });
 
+        // Loading dialog
+        loadingDialog = viewBinding.loadingDialog;
+        hideLoadingDialog();
+
         // Feedback image
         ImageView feedbackImage = viewBinding.feedbackImage;
 
         // Remove image button
         ConstraintLayout removeImageButton = viewBinding.removeButton.findViewById(R.id.button);
+        removeImageButton.setVisibility(View.GONE);
         removeImageButton.setOnClickListener(v -> {
             removeImageButton.setVisibility(View.GONE);
             feedbackImage.setVisibility(ImageView.GONE);
@@ -117,7 +122,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
 
         // Add image button
         TextView addImageButton = viewBinding.addImageButton.findViewById(R.id.button);
-        addImageButton.setText("Thêm ảnh");
+        addImageButton.setText("Chọn ảnh");
         int paddingVertical = getResources().getDimensionPixelSize(R.dimen.button_vertical_padding_small);
         addImageButton.setPadding(
                 addImageButton.getPaddingLeft(),
@@ -135,25 +140,53 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         // Get place name
         String placeName = intent.getStringExtra("placeName");
 
+        // Header title
+        TextView headerTitle = viewBinding.headerTitle;
+        if (placeName != null && !placeName.isEmpty()) {
+            headerTitle.setText(placeName);
+        }
+
         // Submit button
         TextView submitButton = viewBinding.submitButton.findViewById(R.id.button);
         submitButton.setText("Đăng");
         submitButton.setOnClickListener(v -> {
+            showLoadingDialog();
             FeedbackCreateDto feedbackCreateDto = new FeedbackCreateDto();
             feedbackCreateDto.setRating(starRating.getRating());
             if (comment.getText() != null)
                 feedbackCreateDto.setComment(comment.getText().toString());
-            if (feedbackImage.getDrawable() != null && imageUri != null) {
-                String folderName = "wanderfun/feedback/places/" + placeName;
+            if (feedbackImage.getDrawable() != null && imageUri != null && placeName != null) {
+                String folderName = "/wanderfun/places/" + placeName.replaceAll("\\s", "") + "/feedbacks/user_" + user.getId().toString();
+                String fileName = "feedback_user_" + user.getId().toString() + "_" + System.currentTimeMillis();
+                CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), imageUri, fileName, folderName, new CloudinaryUtil.CloudinaryCallback() {
+                    @Override
+                    public void onSuccess(CloudinaryImageDto result) {
+                        feedbackCreateDto.setImageUrl(result.getUrl());
+                        feedbackCreateDto.setImagePublicId(result.getPublicId());
+                        placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        feedbackCreateDto.setImagePublicId(null);
+                        feedbackCreateDto.setImageUrl(null);
+                        placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
+                    }
+                });
+            } else {
+                placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
             }
-            placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
-            placeViewModel.createFeedbackResponseLiveData().observe(this, data -> {
-                if (data != null && !data.isError()) {
-                    Intent intent1 = new Intent(this, MainActivity.class);
-                    startActivity(intent1);
-                    finish();
-                }
-            });
+        });
+
+        placeViewModel.createFeedbackResponseLiveData().observe(this, data -> {
+            if (data != null && !data.isError()) {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Tạo đánh giá thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Tạo đánh giá thất bại", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -174,12 +207,13 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadToCloudinary(Uri imageUri, String fileName, String folderName) {
-        if (!MediaManagerStateUtil.isInitialized()) {
-            CloudinaryUtil.init(this);
-            MediaManagerStateUtil.initialize();
-        }
+    private void showLoadingDialog() {
+        loadingDialog.setVisibility(View.VISIBLE);
+        loadingDialog.show();
+    }
 
-        CloudinaryUtil.uploadImageToCloudinary(this, imageUri, fileName, folderName);
+    private void hideLoadingDialog() {
+        loadingDialog.setVisibility(View.GONE);
+        loadingDialog.hide();
     }
 }
