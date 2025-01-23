@@ -26,10 +26,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.application.dto.album.AlbumCreateDto;
 import com.example.wanderfunmobile.application.dto.album.AlbumDto;
+import com.example.wanderfunmobile.application.dto.albumimage.AlbumImageCreateDto;
+import com.example.wanderfunmobile.application.dto.albumimage.AlbumImageDto;
+import com.example.wanderfunmobile.application.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.application.dto.place.PlaceDto;
 import com.example.wanderfunmobile.databinding.ActivityAddEditAlbumBinding;
 import com.example.wanderfunmobile.infrastructure.ui.activity.place.SearchPlaceActivity;
 import com.example.wanderfunmobile.infrastructure.ui.adapter.ImageWithDeleteAdapter;
+import com.example.wanderfunmobile.infrastructure.util.CloudinaryUtil;
 import com.example.wanderfunmobile.infrastructure.util.SessionManager;
 import com.example.wanderfunmobile.presentation.viewmodel.AlbumViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
@@ -134,6 +138,13 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                     albumName.setText(albumDto.getName());
                     albumDescription.setText(albumDto.getDescription());
                     albumPlace.setText(albumDto.getPlaceName());
+
+                    for (AlbumImageDto albumImageDto : albumDto.getAlbumImages()) {
+                        imageList.add(Uri.parse(albumImageDto.getImageUrl()));
+                    }
+
+                    imageWithDeleteAdapter = new ImageWithDeleteAdapter(imageList);
+                    recyclerView.setAdapter(imageWithDeleteAdapter);
                 }
             });
             headerTitle.setText("Chỉnh sửa album");
@@ -182,6 +193,30 @@ public class AddEditAlbumActivity extends AppCompatActivity {
     }
 
     private void createAlbum(AlbumCreateDto albumCreateDto) {
+
+        if (imageList.size() > 0) {
+            String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getUserId().toString() + "/albums/" + albumCreateDto.getName();
+            String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getUserId().toString() + "_" + System.currentTimeMillis();
+            AlbumImageCreateDto albumImageCreateDto = new AlbumImageCreateDto();
+            for (Uri uri : imageList) {
+                CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), uri, folderName, fileName, new CloudinaryUtil.CloudinaryCallback() {
+                    @Override
+                    public void onSuccess(CloudinaryImageDto result) {
+                        albumImageCreateDto.setImageUrl(result.getUrl());
+                        albumImageCreateDto.setImagePublicId(result.getPublicId());
+                        albumCreateDto.getAlbumImages().add(albumImageCreateDto);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(AddEditAlbumActivity.this, "Tạo album thất bại, lỗi Cloudinary!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            }
+        }
+
+
         if (albumCreateDto.getAlbumImages() == null) {
             albumCreateDto.setAlbumImages(new ArrayList<>());
         }
@@ -196,6 +231,30 @@ public class AddEditAlbumActivity extends AppCompatActivity {
     }
 
     private void updateAlbum(AlbumCreateDto albumCreateDto, Long albumId) {
+
+        if (imageList.size() > 0) {
+            String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getUserId().toString() + "/albums/" + albumCreateDto.getName();
+            String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getUserId().toString() + "_" + System.currentTimeMillis();
+            AlbumImageCreateDto albumImageCreateDto = new AlbumImageCreateDto();
+            for (Uri uri : imageList) {
+                CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), uri, folderName, fileName, new CloudinaryUtil.CloudinaryCallback() {
+                    @Override
+                    public void onSuccess(CloudinaryImageDto result) {
+                        albumImageCreateDto.setImageUrl(result.getUrl());
+                        albumImageCreateDto.setImagePublicId(result.getPublicId());
+                        albumCreateDto.getAlbumImages().add(albumImageCreateDto);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(AddEditAlbumActivity.this, "Tạo album thất bại, lỗi Cloudinary!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            }
+        }
+
+
         if (albumCreateDto.getAlbumImages() == null) {
             albumCreateDto.setAlbumImages(new ArrayList<>());
         }
