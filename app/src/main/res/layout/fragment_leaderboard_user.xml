@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/cl_gradient_blue"
-        app:layout_constraintBottom_toTopOf="@id/leaderboard_place_recycler_view"
+        app:layout_constraintBottom_toTopOf="@id/leaderboard_user_recycler_view"
         app:layout_constraintHeight_percent="0.5"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -188,7 +188,7 @@
                 android:id="@+id/third_place_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
+                android:layout_marginVertical="8dp"
                 android:fontFamily="@font/nunitosans_bold"
                 android:text="Đình Tâm"
                 android:textAlignment="center"
@@ -202,7 +202,7 @@
                 android:id="@+id/third_place_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
+                android:layout_marginVertical="8dp"
                 android:fontFamily="@font/nunitosans_bold"
                 android:text="10.000"
                 android:textAlignment="center"
@@ -219,7 +219,6 @@
         android:id="@+id/leaderboard_user_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="@dimen/app_horizontal_margin"
         android:layout_marginVertical="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_section" />

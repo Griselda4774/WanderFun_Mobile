@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ItemLeaderboardCardBinding;
 import com.example.wanderfunmobile.domain.model.LeaderboardPlace;
 
@@ -49,13 +50,18 @@ public class LeaderboardPlaceCardAdapter extends RecyclerView.Adapter<Leaderboar
 
         @SuppressLint("SetTextI18n")
         public void bind(LeaderboardPlace place) {
-            itemLeaderboardCardBinding.textRankNumber.setText(place.getRank());
+            itemLeaderboardCardBinding.textRankNumber.setText(String.valueOf(place.getRank()));
             itemLeaderboardCardBinding.textName.setText(place.getName());
-            itemLeaderboardCardBinding.textScore.setText(place.getCheckInCount());
+            itemLeaderboardCardBinding.textScore.setText(place.getCheckInCount() + " lượt ghé");
 
-            Glide.with(itemLeaderboardCardBinding.getRoot())
-                    .load(place.getCoverImageUrl())
-                    .into(itemLeaderboardCardBinding.image);
+            if (place.getCoverImageUrl() != null) {
+                Glide.with(itemLeaderboardCardBinding.getRoot())
+                        .load(place.getCoverImageUrl())
+                        .into(itemLeaderboardCardBinding.image);
+            } else {
+                itemLeaderboardCardBinding.image.setImageResource(R.drawable.ic_grey_avatar);
+
+            }
         }
     }
 }

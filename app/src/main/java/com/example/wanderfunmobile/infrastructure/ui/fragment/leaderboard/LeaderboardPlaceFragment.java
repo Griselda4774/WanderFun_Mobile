@@ -76,14 +76,18 @@ public class LeaderboardPlaceFragment extends Fragment {
                     if (i < leaderboardPlaceList.size()) {
                         placeNames[i].setText(leaderboardPlaceList.get(i).getName());
                         placeScores[i].setText(String.valueOf(leaderboardPlaceList.get(i).getCheckInCount())); // Assuming check-in count is a number
-                        Glide.with(placeAvatars[i])
-                                .load(leaderboardPlaceList.get(i).getCoverImageUrl())
-                                .into(placeAvatars[i]);
+                        if (leaderboardPlaceList.get(i).getCoverImageUrl() != null) {
+                            Glide.with(placeAvatars[i])
+                                    .load(leaderboardPlaceList.get(i).getCoverImageUrl())
+                                    .into(placeAvatars[i]);
+                        } else {
+                            placeAvatars[i].setImageResource(R.drawable.ic_grey_avatar);
+                        }
                     } else {
                         // Handle missing data: hide views or set placeholders
                         placeNames[i].setText("N/A");
                         placeScores[i].setText("0");
-                        placeAvatars[i].setImageResource(R.drawable.brown); // Replace with your placeholder drawable
+                        placeAvatars[i].setImageResource(R.drawable.ic_grey_avatar);
                     }
                 }
 

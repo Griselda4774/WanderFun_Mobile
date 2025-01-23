@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ItemLeaderboardCardBinding;
 import com.example.wanderfunmobile.domain.model.LeaderboardUser;
 
@@ -51,11 +52,16 @@ public class LeaderboardUserCardAdapter extends RecyclerView.Adapter<Leaderboard
         public void bind(LeaderboardUser user) {
             itemLeaderboardCardBinding.textRankNumber.setText("#" + user.getRank());
             itemLeaderboardCardBinding.textName.setText(user.getFirstName() + " " + user.getLastName());
-            itemLeaderboardCardBinding.textScore.setText(user.getPoint());
+            itemLeaderboardCardBinding.textScore.setText(user.getPoint() + " điểm");
 
-            Glide.with(itemLeaderboardCardBinding.getRoot())
-                    .load(user.getAvatarUrl())
-                    .into(itemLeaderboardCardBinding.image);
+            if (user.getAvatarUrl() != null) {
+                Glide.with(itemLeaderboardCardBinding.getRoot())
+                        .load(user.getAvatarUrl())
+                        .into(itemLeaderboardCardBinding.image);
+            } else {
+                itemLeaderboardCardBinding.image.setImageResource(R.drawable.ic_grey_avatar);
+            }
+
         }
     }
 }
