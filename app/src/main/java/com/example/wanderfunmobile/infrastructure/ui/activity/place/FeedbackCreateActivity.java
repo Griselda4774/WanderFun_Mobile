@@ -82,6 +82,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
 
         // Feedback image
         ImageView feedbackImage = viewBinding.feedbackImage;
+        feedbackImage.setVisibility(ImageView.GONE);
 
         // Remove image button
         ConstraintLayout removeImageButton = viewBinding.removeButton.findViewById(R.id.button);

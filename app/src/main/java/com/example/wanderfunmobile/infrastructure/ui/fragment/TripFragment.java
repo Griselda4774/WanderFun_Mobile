@@ -1,10 +1,12 @@
 package com.example.wanderfunmobile.infrastructure.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.FragmentTripBinding;
+import com.example.wanderfunmobile.infrastructure.ui.activity.trip.AddEditTripActivity;
 import com.example.wanderfunmobile.infrastructure.ui.adapter.trip.TripTabAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -36,6 +39,12 @@ public class TripFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewBinding = FragmentTripBinding.inflate(inflater, container, false);
+        return viewBinding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         TripTabAdapter tripTabAdapter = new TripTabAdapter(this);
         viewBinding.viewPager.setAdapter(tripTabAdapter);
@@ -100,12 +109,11 @@ public class TripFragment extends Fragment {
             }
         });
 
-        return viewBinding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        LinearLayout addTrip = viewBinding.footer.findViewById(R.id.button);
+        addTrip.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), AddEditTripActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
