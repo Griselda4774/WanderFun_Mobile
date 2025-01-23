@@ -76,15 +76,14 @@ public class AllTripFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        tripViewModel.getAllTrips("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken());
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         viewBinding = null;
-    }
-
-    private void showTripList() {
-        RecyclerView recyclerView = viewBinding.tripList;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        TripItemAdapter tripItemAdapter = new TripItemAdapter(tripList);
-        recyclerView.setAdapter(tripItemAdapter);
     }
 }
