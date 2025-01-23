@@ -116,8 +116,7 @@
                 android:src="@drawable/brown"
                 android:scaleType="centerCrop"
                 android:clipToOutline="true"
-                android:background="@drawable/bg_radius"
-                android:visibility="gone" />
+                android:background="@drawable/bg_radius" />
 
             <LinearLayout
                 android:id="@+id/remove_button"
