@@ -78,13 +78,17 @@ public class LeaderboardUserFragment extends Fragment {
                     if (i < leaderboardUserList.size()) {
                         userNames[i].setText(leaderboardUserList.get(i).getFirstName() + " " + leaderboardUserList.get(i).getLastName());
                         userScores[i].setText(leaderboardUserList.get(i).getPoint() + " điểm");
-                        Glide.with(userAvatars[i])
-                                .load(leaderboardUserList.get(i).getAvatarUrl())
-                                .into(userAvatars[i]);
+                        if (leaderboardUserList.get(i).getAvatarUrl() != null) {
+                            Glide.with(userAvatars[i])
+                                    .load(leaderboardUserList.get(i).getAvatarUrl())
+                                    .into(userAvatars[i]);
+                        } else {
+                            userAvatars[i].setImageResource(R.drawable.ic_grey_avatar);
+                        }
                     } else {
                         userNames[i].setText("N/A");
                         userScores[i].setText("0");
-                        userAvatars[i].setImageResource(R.drawable.brown); // Replace with your placeholder drawable
+                        userAvatars[i].setImageResource(R.drawable.ic_grey_avatar);
                     }
                 }
 
