@@ -21,6 +21,7 @@ import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.TripViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -70,6 +71,7 @@ public class AllTripFragment extends Fragment {
             if (data != null && !data.isError()) {
                 tripList.clear();
                 tripList.addAll(objectMapper.mapList(data.getData(), Trip.class));
+                Collections.reverse(tripList);
                 tripItemAdapter.notifyDataSetChanged();
             }
         });

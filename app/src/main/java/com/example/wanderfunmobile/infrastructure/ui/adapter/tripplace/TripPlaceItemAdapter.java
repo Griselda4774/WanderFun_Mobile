@@ -2,13 +2,16 @@ package com.example.wanderfunmobile.infrastructure.ui.adapter.tripplace;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.databinding.ItemTripPlaceBinding;
 import com.example.wanderfunmobile.domain.model.TripPlace;
+import com.example.wanderfunmobile.infrastructure.util.DateTimeUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +39,7 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
         } else {
             holder.disableEdit();
         }
-        holder.bind(tripPlace);
+        holder.bind(tripPlace, position, this);
     }
 
     @Override
@@ -55,6 +58,11 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
         notifyItemMoved(fromPosition, toPosition);
     }
 
+    public void removeItem(int position) {
+        tripPlaceList.remove(position);
+        notifyItemRemoved(position);
+    }
+
     public static class TripPlaceItemViewHolder extends RecyclerView.ViewHolder {
         final ItemTripPlaceBinding binding;
 
@@ -63,13 +71,31 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
             this.binding = binding;
         }
 
-        public void bind(TripPlace tripPlace) {
+        @SuppressLint("SetTextI18n")
+        public void bind(TripPlace tripPlace, int position, TripPlaceItemAdapter adapter) {
+            if (tripPlace.getPlaceName() != null) {
+                binding.placeName.setText(tripPlace.getPlaceName());
+            }
+            if (tripPlace.getStartTime() != null) {
+                binding.startTime.setText("Từ " + DateTimeUtil.dateToString(tripPlace.getStartTime()));
+            }
+            if (tripPlace.getEndTime() != null) {
+                binding.endTime.setText("Đến " + DateTimeUtil.dateToString(tripPlace.getEndTime()));
+            }
+            if (tripPlace.getPlaceCoverImageUrl() != null) {
+                Glide.with(binding.getRoot().getContext()).load(tripPlace.getPlaceCoverImageUrl()).into(binding.placeCoverImage);
+            }
+            binding.removeButtonContainer.setOnClickListener(v -> {
+                adapter.removeItem(position);
+            });
         }
 
         public void enableEdit() {
+            binding.removeButtonContainer.setVisibility(View.VISIBLE);
         }
 
         public void disableEdit() {
+            binding.removeButtonContainer.setVisibility(View.GONE);
         }
     }
 }

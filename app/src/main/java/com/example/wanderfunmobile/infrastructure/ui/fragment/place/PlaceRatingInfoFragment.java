@@ -25,6 +25,7 @@ import com.example.wanderfunmobile.presentation.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -106,6 +107,7 @@ public class PlaceRatingInfoFragment extends Fragment {
                 }
 
                 setInfo();
+                Collections.reverse(feedbackList);
                 feedbackItemAdapter.notifyDataSetChanged();
             }
         });

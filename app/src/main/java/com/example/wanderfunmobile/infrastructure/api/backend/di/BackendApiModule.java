@@ -10,11 +10,13 @@ import com.example.wanderfunmobile.infrastructure.api.backend.LeaderboardApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.PlaceApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.TripApi;
 import com.example.wanderfunmobile.infrastructure.api.backend.UserApi;
+import com.example.wanderfunmobile.infrastructure.util.DateDeserializer;
 import com.example.wanderfunmobile.infrastructure.util.LocalTimeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -97,10 +99,14 @@ public class BackendApiModule {
     @Provides
     @Singleton
     public TripApi provideTripApi(@ApplicationContext Context context) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new DateDeserializer())
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+                .create();
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
