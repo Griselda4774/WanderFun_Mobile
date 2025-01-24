@@ -28,6 +28,13 @@
     <color name="green4">#1F9842</color>
     <color name="green5">#187733</color>
 
+    <color name="green3_10">#1A24B24C</color>
+    <color name="green3_20">#3324B24C</color>
+    <color name="green3_30">#4D24B24C</color>
+    <color name="green3_70">#B224B24C</color>
+    <color name="green3_80">#CC24B24C</color>
+    <color name="green3_90">#E624B24C</color>
+
     <!-- Blue Shades -->
     <color name="blue1">#005AF5</color>
     <color name="blue2">#004BCC</color>
