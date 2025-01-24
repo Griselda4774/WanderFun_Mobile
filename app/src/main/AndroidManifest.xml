@@ -17,6 +17,10 @@
         android:theme="@style/Theme.WanderFunMobile"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".infrastructure.ui.activity.trip.TripPlaceCreateActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
             android:name=".infrastructure.ui.activity.trip.AddEditTripActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />

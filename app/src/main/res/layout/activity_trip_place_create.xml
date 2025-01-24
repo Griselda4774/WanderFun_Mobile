@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/trip_detail_activity"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/trip_place_create_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".infrastructure.ui.activity.trip.TripDetailActivity">
+    tools:context=".infrastructure.ui.activity.trip.TripPlaceCreateActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
@@ -13,19 +13,17 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="@dimen/app_horizontal_margin">
 
         <TextView
-            android:id="@+id/name"
-            android:layout_width="0dp"
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tên chuyến đi aaaaaaaaaa aaaaaaaaaaaaa aaaaaa aaaaaaaaaaaaaaa"
+            android:text="Thêm địa điểm"
             style="@style/Text.Title"
-            android:layout_margin="@dimen/app_horizontal_margin2"
-            android:maxLines="1"
-            android:ellipsize="end"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/back_button"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -33,7 +31,6 @@
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/app_horizontal_margin2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -45,12 +42,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
-        android:id="@+id/body"
         android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/header"
-        app:layout_constraintBottom_toTopOf="@id/footer"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -59,23 +55,61 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="start"
-            android:paddingHorizontal="@dimen/app_horizontal_margin">
+            android:paddingBottom="@dimen/app_section_margin"
+            android:paddingHorizontal="@dimen/app_horizontal_margin"
+            android:clipChildren="false"
+            android:clipToOutline="false"
+            android:clipToPadding="false">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ảnh bìa"
-                style="@style/Text.Title.Input"
-                android:layout_marginBottom="@dimen/input_title_margin" />
-
-            <ImageView
-                android:id="@+id/image"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:src="@drawable/brown"
-                android:scaleType="centerCrop"
-                android:clipToOutline="true"
-                android:background="@drawable/bg_radius" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/app_section_margin"
+                android:orientation="vertical"
+                android:gravity="start">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Địa điểm"
+                    style="@style/Text.Title.Input"
+                    android:layout_marginBottom="@dimen/input_title_margin" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/place_name"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Content"
+                        android:textColor="@color/black5_30"
+                        android:text="Chọn địa điểm"
+                        android:background="@drawable/bg_edit_text"
+                        android:padding="@dimen/input_padding"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+                    <LinearLayout
+                        android:id="@+id/select_place_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginStart="16dp">
+
+                        <include layout="@layout/button_highlight" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -105,10 +139,13 @@
                         android:id="@+id/start_time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black5_30"
                         style="@style/Text.Content"
-                        android:text="01/01/2025"
+                        android:text="Chọn ngày"
                         android:background="@drawable/bg_edit_text"
-                        android:padding="@dimen/input_padding" />
+                        android:padding="@dimen/input_padding"
+                        android:clickable="true"
+                        android:stateListAnimator="@animator/touch_opacity_animator" />
 
                 </LinearLayout>
 
@@ -135,83 +172,55 @@
                         android:id="@+id/end_time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black5_30"
                         style="@style/Text.Content"
-                        android:text="01/01/2025"
+                        android:text="Chọn ngày"
                         android:background="@drawable/bg_edit_text"
-                        android:padding="@dimen/input_padding" />
+                        android:padding="@dimen/input_padding"
+                        android:clickable="true"
+                        android:stateListAnimator="@animator/touch_opacity_animator" />
 
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Địa điểm"
-                style="@style/Text.Title.Input"
-                android:layout_marginTop="@dimen/app_section_margin"
-                android:layout_marginBottom="@dimen/input_title_margin" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/trip_place_list"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/double_app_section_margin">
+
+                <LinearLayout
+                    android:id="@+id/cancel_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/half_app_section_margin">
+
+                    <include layout="@layout/button" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/confirm_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/half_app_section_margin">
+
+                    <include layout="@layout/button_highlight" />
+
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
-        android:layout_marginBottom="@dimen/app_section_margin"
-        android:layout_marginTop="@dimen/double_app_section_margin"
-        app:layout_constraintTop_toBottomOf="@id/body"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:id="@+id/delete_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_marginEnd="@dimen/half_app_section_margin">
-
-            <include layout="@layout/button_highlight_red" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/edit_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_marginStart="@dimen/half_app_section_margin">
-
-            <include layout="@layout/button_highlight" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <com.example.wanderfunmobile.infrastructure.ui.custom.dialog.LoadingDialog
-        android:id="@+id/loading_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <com.example.wanderfunmobile.infrastructure.ui.custom.dialog.SelectionDialog
-        android:id="@+id/selection_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

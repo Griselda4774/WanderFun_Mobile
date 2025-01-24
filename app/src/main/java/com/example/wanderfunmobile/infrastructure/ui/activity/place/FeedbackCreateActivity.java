@@ -60,7 +60,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         // Binding
         viewBinding = ActivityFeedbackCreateBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.feedback_create_activity), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(viewBinding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;

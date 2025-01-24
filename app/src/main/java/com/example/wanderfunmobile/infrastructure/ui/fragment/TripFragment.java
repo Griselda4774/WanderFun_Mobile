@@ -109,7 +109,7 @@ public class TripFragment extends Fragment {
             }
         });
 
-        LinearLayout addTrip = viewBinding.footer.findViewById(R.id.button);
+        LinearLayout addTrip = viewBinding.addTripButton.findViewById(R.id.button);
         addTrip.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), AddEditTripActivity.class);
             startActivity(intent);
