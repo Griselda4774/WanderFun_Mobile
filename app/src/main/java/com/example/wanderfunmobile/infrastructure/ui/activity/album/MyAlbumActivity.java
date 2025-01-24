@@ -3,7 +3,7 @@ package com.example.wanderfunmobile.infrastructure.ui.activity.album;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -65,7 +65,7 @@ public class MyAlbumActivity extends AppCompatActivity {
             finish();
         });
 
-        TextView addAlbumButton = viewBinding.footer.findViewById(R.id.button);
+        LinearLayout addAlbumButton = viewBinding.footer.findViewById(R.id.button);
         addAlbumButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddEditAlbumActivity.class);
             startActivity(intent);
