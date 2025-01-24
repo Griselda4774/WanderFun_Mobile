@@ -104,6 +104,37 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/open_all_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingVertical="@dimen/place_info_section_medium_margin"
+        android:background="@drawable/bg_border_bottom">
+
+        <ImageView
+            android:id="@+id/open_all_day_icon"
+            android:layout_width="@dimen/place_info_icon_size_medium"
+            android:layout_height="@dimen/place_info_icon_size_medium"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/ic_clock"
+            app:tint="@color/black4" />
+
+        <TextView
+            android:id="@+id/open_all_day_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/place_info_section_medium_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/open_all_day_icon"
+            android:text="Mở cả ngày"
+            style="@style/Text.Content.Highlight.Green" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/place_time_closing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -164,6 +195,36 @@
             android:text="07:00"
             style="@style/Text.Content" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/closing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingVertical="@dimen/place_info_section_medium_margin"
+        android:background="@drawable/bg_border_bottom">
+
+        <ImageView
+            android:id="@+id/closing_icon"
+            android:layout_width="@dimen/place_info_icon_size_medium"
+            android:layout_height="@dimen/place_info_icon_size_medium"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/ic_clock"
+            app:tint="@color/black4" />
+
+        <TextView
+            android:id="@+id/closing_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/place_info_section_medium_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/closing_icon"
+            android:text="Đang đóng cửa"
+            style="@style/Text.Content.Highlight.Red" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -284,12 +345,15 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
+            android:id="@+id/view_all_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/place_info_section_medium_margin"
             android:text="Xem tất cả bài đánh giá"
-            style="@style/Text.Content.Highlight" />
+            style="@style/Text.Content.Highlight"
+            android:clickable="true"
+            android:stateListAnimator="@animator/touch_opacity_animator" />
 
     </LinearLayout>
 
@@ -325,6 +389,7 @@
                 android:src="@drawable/brown" />
 
             <com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingOutlineView
+                android:id="@+id/star_rating_outline_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
