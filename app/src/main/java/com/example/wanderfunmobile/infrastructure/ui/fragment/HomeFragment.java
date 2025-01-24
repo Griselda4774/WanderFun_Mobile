@@ -698,20 +698,40 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         TextView placeTimeOpeningTimeClose = placeInfoBottomSheetBinding.placeTimeOpeningTimeClose;
         ConstraintLayout placeTimeClosing = placeInfoBottomSheetBinding.placeTimeClosing;
         TextView placeTimeClosingTimeOpen = placeInfoBottomSheetBinding.placeTimeClosingTimeOpen;
-        if (place.getTimeOpen() != null && place.getTimeClose() != null) {
-            LocalTime currentTime = LocalTime.now();
-            if (place.getTimeClose().isBefore(currentTime) || place.getTimeOpen().isAfter(currentTime)) {
-                placeTimeClosing.setVisibility(View.VISIBLE);
-                placeTimeOpening.setVisibility(View.GONE);
-                placeTimeClosingTimeOpen.setText(place.getTimeOpen().toString());
-            } else {
-                placeTimeOpening.setVisibility(View.VISIBLE);
-                placeTimeClosing.setVisibility(View.GONE);
-                placeTimeOpeningTimeClose.setText(DateTimeUtil.localTimeToString(place.getTimeClose()));
-            }
-        } else {
+        if (place.isClosing()) {
             placeTimeOpening.setVisibility(View.GONE);
             placeTimeClosing.setVisibility(View.GONE);
+            placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
+            placeInfoBottomSheetBinding.closing.setVisibility(View.VISIBLE);
+        } else {
+            if (place.isOpenAllDay()) {
+                placeTimeOpening.setVisibility(View.GONE);
+                placeTimeClosing.setVisibility(View.GONE);
+                placeInfoBottomSheetBinding.openAllDay.setVisibility(View.VISIBLE);
+                placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
+            } else {
+                if (place.getTimeOpen() != null && place.getTimeClose() != null) {
+                    LocalTime currentTime = LocalTime.now();
+                    if (place.getTimeClose().isBefore(currentTime) || place.getTimeOpen().isAfter(currentTime)) {
+                        placeTimeClosing.setVisibility(View.VISIBLE);
+                        placeTimeOpening.setVisibility(View.GONE);
+                        placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
+                        placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
+                        placeTimeClosingTimeOpen.setText(place.getTimeOpen().toString());
+                    } else {
+                        placeTimeOpening.setVisibility(View.VISIBLE);
+                        placeTimeClosing.setVisibility(View.GONE);
+                        placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
+                        placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
+                        placeTimeOpeningTimeClose.setText(DateTimeUtil.localTimeToString(place.getTimeClose()));
+                    }
+                } else {
+                    placeTimeOpening.setVisibility(View.GONE);
+                    placeTimeClosing.setVisibility(View.GONE);
+                    placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
+                    placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
+                }
+            }
         }
 
         ImageView placeCoverImage = placeInfoBottomSheetBinding.placeCoverImage;
@@ -735,5 +755,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         TextView placeLat = locationPinBottomSheetBinding.locationPinLocationLat;
         placeLong.setText("Kinh độ: " + latLng.getLongitude());
         placeLat.setText("Vĩ độ: " + latLng.getLatitude());
+    }
+
+    public void switchTab(int position) {
+        if (position >= 0 && position < placeInfoBottomSheetBinding.tabLayout.getTabCount()) {
+            TabLayout.Tab tab = placeInfoBottomSheetBinding.tabLayout.getTabAt(position);
+            if (tab != null) {
+                tab.select();
+            }
+        }
     }
 }

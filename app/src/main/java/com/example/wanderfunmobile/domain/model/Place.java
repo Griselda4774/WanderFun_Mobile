@@ -2,9 +2,7 @@ package com.example.wanderfunmobile.domain.model;
 
 import com.example.wanderfunmobile.domain.model.enums.PlaceCategory;
 
-import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 public class Place {
@@ -25,13 +23,18 @@ public class Place {
     private PlaceCategory category;
     private LocalTime timeOpen;
     private LocalTime timeClose;
+    private boolean isOpenAllDay;
+    private boolean isClosing;
     private String alternativeName;
     private String operator;
     private String link;
     private List<PlaceImage> placeImages;
     private List<Feedback> feedbacks;
 
-    public Place() {};
+    public Place() {
+    }
+
+    ;
 
     public Long getId() {
         return id;
@@ -167,6 +170,22 @@ public class Place {
 
     public void setTimeClose(LocalTime timeClose) {
         this.timeClose = timeClose;
+    }
+
+    public boolean isOpenAllDay() {
+        return isOpenAllDay;
+    }
+
+    public void setOpenAllDay(boolean openAllDay) {
+        isOpenAllDay = openAllDay;
+    }
+
+    public boolean isClosing() {
+        return isClosing;
+    }
+
+    public void setClosing(boolean closing) {
+        isClosing = closing;
     }
 
     public String getAlternativeName() {

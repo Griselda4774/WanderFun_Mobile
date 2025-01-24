@@ -148,6 +148,24 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/open_all_day"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/place_info_section_extra_small_margin">
+
+                    <TextView
+                        android:id="@+id/open_all_day_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="Mở cả ngày"
+                        style="@style/Text.Content.Highlight.Green" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/place_time_closing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -193,6 +211,23 @@
                         app:layout_constraintStart_toEndOf="@id/place_time_closing_time_open_text"
                         android:text="07:00"
                         style="@style/Text.Content" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/closing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/closing_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="Đang đóng cửa"
+                        style="@style/Text.Content.Highlight.Red" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
