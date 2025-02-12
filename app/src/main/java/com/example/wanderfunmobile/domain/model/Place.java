@@ -23,8 +23,8 @@ public class Place {
     private PlaceCategory category;
     private LocalTime timeOpen;
     private LocalTime timeClose;
-    private boolean isOpenAllDay;
-    private boolean isClosing;
+    private boolean openAllDay;
+    private boolean closing;
     private String alternativeName;
     private String operator;
     private String link;
@@ -173,19 +173,19 @@ public class Place {
     }
 
     public boolean isOpenAllDay() {
-        return isOpenAllDay;
+        return openAllDay;
     }
 
     public void setOpenAllDay(boolean openAllDay) {
-        isOpenAllDay = openAllDay;
+        this.openAllDay = openAllDay;
     }
 
     public boolean isClosing() {
-        return isClosing;
+        return closing;
     }
 
     public void setClosing(boolean closing) {
-        isClosing = closing;
+        this.closing = closing;
     }
 
     public String getAlternativeName() {

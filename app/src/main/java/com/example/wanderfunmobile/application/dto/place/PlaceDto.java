@@ -26,6 +26,8 @@ public class PlaceDto {
     private PlaceCategory category;
     private LocalTime timeOpen;
     private LocalTime timeClose;
+    private boolean openAllDay;
+    private boolean closing;
     private String alternativeName;
     private String operator;
     private String link;
@@ -169,6 +171,22 @@ public class PlaceDto {
 
     public void setTimeClose(LocalTime timeClose) {
         this.timeClose = timeClose;
+    }
+
+    public boolean isOpenAllDay() {
+        return openAllDay;
+    }
+
+    public void setOpenAllDay(boolean openAllDay) {
+        this.openAllDay = openAllDay;
+    }
+
+    public boolean isClosing() {
+        return closing;
+    }
+
+    public void setClosing(boolean closing) {
+        this.closing = closing;
     }
 
     public String getAlternativeName() {
