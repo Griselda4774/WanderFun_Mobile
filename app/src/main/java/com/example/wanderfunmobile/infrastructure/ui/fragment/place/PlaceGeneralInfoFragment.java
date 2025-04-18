@@ -94,9 +94,11 @@ public class PlaceGeneralInfoFragment extends Fragment {
                 feedbackList.clear();
                 List<Feedback> tempList = place.getFeedbacks();
                 Collections.reverse(tempList);
-                feedbackList.add(tempList.get(0));
-                feedbackList.add(tempList.get(1));
-                feedbackList.add(tempList.get(2));
+                if (tempList.size() < 3) {
+                    feedbackList.addAll(tempList);
+                } else {
+                    feedbackList.addAll(tempList.subList(0, 3));
+                }
                 float oneStar = 0, twoStar = 0, threeStar = 0, fourStar = 0, fiveStar = 0;
                 for (Feedback feedback : place.getFeedbacks()) {
                     switch (feedback.getRating()) {
