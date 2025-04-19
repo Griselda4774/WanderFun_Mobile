@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white1"
-    tools:context=".infrastructure.ui.fragment.TripFragment">
+    tools:context=".presentation.ui.fragment.TripFragment">
 
     <TextView
         android:id="@+id/header_title"

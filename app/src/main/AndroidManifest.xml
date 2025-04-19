@@ -17,55 +17,55 @@
         android:theme="@style/Theme.WanderFunMobile"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".infrastructure.ui.activity.trip.TripPlaceCreateActivity"
+            android:name=".presentation.ui.activity.trip.TripPlaceCreateActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.trip.AddEditTripActivity"
+            android:name=".presentation.ui.activity.trip.AddEditTripActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.trip.TripDetailActivity"
+            android:name=".presentation.ui.activity.trip.TripDetailActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.place.SearchPlaceActivity"
+            android:name=".presentation.ui.activity.place.SearchPlaceActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.album.AddEditAlbumActivity"
+            android:name=".presentation.ui.activity.album.AddEditAlbumActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.album.AlbumDetailsActivity"
+            android:name=".presentation.ui.activity.album.AlbumDetailsActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.place.FeedbackCreateActivity"
+            android:name=".presentation.ui.activity.place.FeedbackCreateActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.profile.EditProfileActivity"
+            android:name=".presentation.ui.activity.profile.EditProfileActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.profile.MyProfileActivity"
+            android:name=".presentation.ui.activity.profile.MyProfileActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.album.MyAlbumActivity"
+            android:name=".presentation.ui.activity.album.MyAlbumActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.RegisterActivity"
+            android:name=".presentation.ui.activity.RegisterActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.LoginActivity"
+            android:name=".presentation.ui.activity.LoginActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".infrastructure.ui.activity.SplashScreenActivity"
+            android:name=".presentation.ui.activity.SplashScreenActivity"
             android:exported="true"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
@@ -75,7 +75,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".infrastructure.ui.activity.MainActivity"
+            android:name=".presentation.ui.activity.MainActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
     </application>

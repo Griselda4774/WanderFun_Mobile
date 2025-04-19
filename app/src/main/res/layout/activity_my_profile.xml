@@ -6,7 +6,7 @@
     android:id="@+id/my_profile_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".infrastructure.ui.activity.profile.MyProfileActivity">
+    tools:context=".presentation.ui.activity.profile.MyProfileActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"

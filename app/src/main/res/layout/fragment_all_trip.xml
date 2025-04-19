@@ -4,7 +4,7 @@
     android:id="@+id/all_trip_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".infrastructure.ui.fragment.trip.AllTripFragment">
+    tools:context=".presentation.ui.fragment.trip.AllTripFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trip_list"

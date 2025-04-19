@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".infrastructure.ui.fragment.place.PlaceImageInfoFragment">
+    tools:context=".presentation.ui.fragment.place.PlaceImageInfoFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

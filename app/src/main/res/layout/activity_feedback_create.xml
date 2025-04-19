@@ -5,7 +5,7 @@
     android:id="@+id/feedback_create_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".infrastructure.ui.activity.place.FeedbackCreateActivity">
+    tools:context=".presentation.ui.activity.place.FeedbackCreateActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
@@ -82,7 +82,7 @@
 
         </LinearLayout>
 
-        <com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingOutlineView
+        <com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingOutlineView
             android:id="@+id/star_rating_outline_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
 
     </LinearLayout>
 
-    <com.example.wanderfunmobile.infrastructure.ui.custom.dialog.LoadingDialog
+    <com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog
         android:id="@+id/loading_dialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

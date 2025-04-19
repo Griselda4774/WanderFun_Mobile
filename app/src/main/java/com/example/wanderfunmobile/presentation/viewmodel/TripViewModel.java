@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.application.dto.ResponseDto;
-import com.example.wanderfunmobile.application.dto.trip.TripCreateDto;
-import com.example.wanderfunmobile.application.dto.trip.TripDto;
-import com.example.wanderfunmobile.application.repository.TripRepository;
+import com.example.wanderfunmobile.data.dto.ResponseDto;
+import com.example.wanderfunmobile.data.dto.trip.TripCreateDto;
+import com.example.wanderfunmobile.data.dto.trip.TripDto;
+import com.example.wanderfunmobile.data.repository.TripRepository;
 
 import java.util.List;
 

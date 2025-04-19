@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/past_trip_fragment"
-    tools:context=".infrastructure.ui.fragment.trip.PastTripFragment">
+    tools:context=".presentation.ui.fragment.trip.PastTripFragment">
 
     <TextView
         android:layout_width="wrap_content"

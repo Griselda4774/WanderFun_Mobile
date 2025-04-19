@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.application.dto.ResponseDto;
-import com.example.wanderfunmobile.application.dto.auth.TokenResponseDto;
-import com.example.wanderfunmobile.application.repository.AuthRepository;
-import com.example.wanderfunmobile.application.dto.auth.LoginDto;
-import com.example.wanderfunmobile.application.dto.auth.LoginResponseDto;
-import com.example.wanderfunmobile.application.dto.auth.RegisterDto;
+import com.example.wanderfunmobile.data.dto.ResponseDto;
+import com.example.wanderfunmobile.data.dto.auth.TokenResponseDto;
+import com.example.wanderfunmobile.data.repository.AuthRepository;
+import com.example.wanderfunmobile.data.dto.auth.LoginDto;
+import com.example.wanderfunmobile.data.dto.auth.LoginResponseDto;
+import com.example.wanderfunmobile.data.dto.auth.RegisterDto;
 
 import javax.inject.Inject;
 

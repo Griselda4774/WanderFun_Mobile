@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".infrastructure.ui.activity.trip.AddEditTripActivity">
+    tools:context=".presentation.ui.activity.trip.AddEditTripActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
@@ -209,7 +209,7 @@
 
     </ScrollView>
 
-    <com.example.wanderfunmobile.infrastructure.ui.custom.dialog.LoadingDialog
+    <com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog
         android:id="@+id/loading_dialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

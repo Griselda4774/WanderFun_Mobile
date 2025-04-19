@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="start"
-    tools:context=".infrastructure.ui.fragment.place.PlaceDescriptionInfoFragment">
+    tools:context=".presentation.ui.fragment.place.PlaceDescriptionInfoFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/place_address"

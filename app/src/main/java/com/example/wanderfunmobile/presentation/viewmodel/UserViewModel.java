@@ -3,10 +3,10 @@ package com.example.wanderfunmobile.presentation.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.application.dto.ResponseDto;
-import com.example.wanderfunmobile.application.dto.user.ChangeInfoDto;
-import com.example.wanderfunmobile.application.dto.user.SelfInfoDto;
-import com.example.wanderfunmobile.application.repository.UserRepository;
+import com.example.wanderfunmobile.data.dto.ResponseDto;
+import com.example.wanderfunmobile.data.dto.user.ChangeInfoDto;
+import com.example.wanderfunmobile.data.dto.user.SelfInfoDto;
+import com.example.wanderfunmobile.data.repository.UserRepository;
 
 import javax.inject.Inject;
 

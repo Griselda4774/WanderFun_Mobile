@@ -246,7 +246,7 @@
                         android:text="4.0"
                         style="@style/Text.Content" />
 
-                    <com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingView
+                    <com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingView
                         android:id="@+id/place_rating_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

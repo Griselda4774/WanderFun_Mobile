@@ -4,14 +4,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.application.dto.ResponseDto;
-import com.example.wanderfunmobile.application.dto.checkin.CheckInDto;
-import com.example.wanderfunmobile.application.dto.favouriteplace.FavouritePlaceDto;
-import com.example.wanderfunmobile.application.dto.feedback.FeedbackCreateDto;
-import com.example.wanderfunmobile.application.dto.feedback.FeedbackDto;
-import com.example.wanderfunmobile.application.dto.place.PlaceDto;
-import com.example.wanderfunmobile.application.dto.place.PlaceMiniDto;
-import com.example.wanderfunmobile.application.repository.PlaceRepository;
+import com.example.wanderfunmobile.data.dto.ResponseDto;
+import com.example.wanderfunmobile.data.dto.checkin.CheckInDto;
+import com.example.wanderfunmobile.data.dto.favouriteplace.FavouritePlaceDto;
+import com.example.wanderfunmobile.data.dto.feedback.FeedbackCreateDto;
+import com.example.wanderfunmobile.data.dto.feedback.FeedbackDto;
+import com.example.wanderfunmobile.data.dto.place.PlaceDto;
+import com.example.wanderfunmobile.data.repository.PlaceRepository;
 
 import java.util.List;
 
@@ -29,8 +28,9 @@ public class PlaceViewModel extends ViewModel {
         this.placeRepository = placeRepository;
     }
 
-    private final MutableLiveData<ResponseDto<List<PlaceMiniDto>>> getAllPlacesResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<List<PlaceMiniDto>>> searchPlacesByNameContainingResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ResponseDto<List<PlaceDto>>> getAllPlacesResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ResponseDto<List<PlaceDto>>> allPlacesByProvinceNameResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ResponseDto<List<PlaceDto>>> searchPlacesByNameContainingResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<ResponseDto<PlaceDto>> getPlaceByIdResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<ResponseDto<FeedbackDto>> createFeedbackResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<ResponseDto<List<FavouritePlaceDto>>> getAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
@@ -41,11 +41,15 @@ public class PlaceViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCheckingIn = new MutableLiveData<>();
 
-    public LiveData<ResponseDto<List<PlaceMiniDto>>> getAllPlacesResponseLiveData() {
+    public LiveData<ResponseDto<List<PlaceDto>>> getAllPlacesResponseLiveData() {
         return getAllPlacesResponseLiveData;
     }
 
-    public LiveData<ResponseDto<List<PlaceMiniDto>>> searchPlacesByNameContainingResponseLiveData() {
+    public LiveData<ResponseDto<List<PlaceDto>>> getAllPlacesByProvinceNameResponseLiveData() {
+        return allPlacesByProvinceNameResponseLiveData;
+    }
+
+    public LiveData<ResponseDto<List<PlaceDto>>> searchPlacesByNameContainingResponseLiveData() {
         return searchPlacesByNameContainingResponseLiveData;
     }
 
@@ -89,6 +93,14 @@ public class PlaceViewModel extends ViewModel {
         isLoading.setValue(true);
         placeRepository.getAllPlaces().observeForever(response -> {
             getAllPlacesResponseLiveData.setValue(response);
+            isLoading.setValue(false);
+        });
+    }
+
+    public void getAllPlacesByProvinceName(String provinceName) {
+        isLoading.setValue(true);
+        placeRepository.getAllPlacesByProvinceName(provinceName).observeForever(response -> {
+            allPlacesByProvinceNameResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }

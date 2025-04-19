@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.application.dto.ResponseDto;
-import com.example.wanderfunmobile.application.dto.album.AlbumCreateDto;
-import com.example.wanderfunmobile.application.dto.album.AlbumDto;
-import com.example.wanderfunmobile.application.repository.AlbumRepository;
+import com.example.wanderfunmobile.data.dto.ResponseDto;
+import com.example.wanderfunmobile.data.dto.album.AlbumCreateDto;
+import com.example.wanderfunmobile.data.dto.album.AlbumDto;
+import com.example.wanderfunmobile.data.repository.AlbumRepository;
 
 import java.util.List;
 

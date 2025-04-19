@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_gravity="start"
-    tools:context=".infrastructure.ui.fragment.place.PlaceRatingInfoFragment">
+    tools:context=".presentation.ui.fragment.place.PlaceRatingInfoFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,7 +42,7 @@
                     android:textSize="40sp"
                     style="@style/Text.Title.Section" />
 
-                <com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingView
+                <com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingView
                     android:id="@+id/star_rating_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -111,7 +111,7 @@
                 android:clipToOutline="true"
                 android:src="@drawable/brown" />
 
-            <com.example.wanderfunmobile.infrastructure.ui.custom.starrating.StarRatingOutlineView
+            <com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingOutlineView
                 android:id="@+id/star_rating_outline_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

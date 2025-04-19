@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".infrastructure.ui.activity.album.AddEditAlbumActivity">
+    tools:context=".presentation.ui.activity.album.AddEditAlbumActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"

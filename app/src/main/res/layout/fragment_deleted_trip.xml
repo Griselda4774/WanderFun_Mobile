@@ -5,7 +5,7 @@
     android:id="@+id/deleted_trip_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".infrastructure.ui.fragment.trip.DeletedTripFragment">
+    tools:context=".presentation.ui.fragment.trip.DeletedTripFragment">
 
     <TextView
         android:layout_width="wrap_content"
