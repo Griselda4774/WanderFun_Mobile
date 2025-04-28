@@ -1,23 +1,27 @@
 package com.example.wanderfunmobile.core.di;
 
-import com.example.wanderfunmobile.data.repository.AlbumRepository;
-import com.example.wanderfunmobile.data.repository.AuthRepository;
-import com.example.wanderfunmobile.data.repository.LeaderboardRepository;
-import com.example.wanderfunmobile.data.repository.PlaceRepository;
-import com.example.wanderfunmobile.data.repository.TripRepository;
-import com.example.wanderfunmobile.data.repository.UserRepository;
+import com.example.wanderfunmobile.data.api.backend.AddressApi;
+import com.example.wanderfunmobile.data.mapper.ObjectMapper;
+import com.example.wanderfunmobile.data.repository.AddressRepositoryImpl;
+import com.example.wanderfunmobile.domain.repository.AddressRepository;
+import com.example.wanderfunmobile.domain.repository.AlbumRepository;
+import com.example.wanderfunmobile.domain.repository.AuthRepository;
+import com.example.wanderfunmobile.domain.repository.LeaderboardRepository;
+import com.example.wanderfunmobile.domain.repository.PlaceRepository;
+import com.example.wanderfunmobile.domain.repository.TripRepository;
+import com.example.wanderfunmobile.domain.repository.UserRepository;
 import com.example.wanderfunmobile.data.api.backend.AlbumApi;
 import com.example.wanderfunmobile.data.api.backend.AuthApi;
 import com.example.wanderfunmobile.data.api.backend.LeaderboardApi;
 import com.example.wanderfunmobile.data.api.backend.PlaceApi;
 import com.example.wanderfunmobile.data.api.backend.TripApi;
 import com.example.wanderfunmobile.data.api.backend.UserApi;
-import com.example.wanderfunmobile.domain.repository.AlbumRepositoryImpl;
-import com.example.wanderfunmobile.domain.repository.AuthRepositoryImpl;
-import com.example.wanderfunmobile.domain.repository.LeaderboardRepositoryImpl;
-import com.example.wanderfunmobile.domain.repository.PlaceRepositoryImpl;
-import com.example.wanderfunmobile.domain.repository.TripRepositoryImpl;
-import com.example.wanderfunmobile.domain.repository.UserRepositoryImpl;
+import com.example.wanderfunmobile.data.repository.AlbumRepositoryImpl;
+import com.example.wanderfunmobile.data.repository.AuthRepositoryImpl;
+import com.example.wanderfunmobile.data.repository.LeaderboardRepositoryImpl;
+import com.example.wanderfunmobile.data.repository.PlaceRepositoryImpl;
+import com.example.wanderfunmobile.data.repository.TripRepositoryImpl;
+import com.example.wanderfunmobile.data.repository.UserRepositoryImpl;
 
 import javax.inject.Singleton;
 
@@ -33,6 +37,12 @@ public class RepositoryModule {
     @Singleton
     public AuthRepository provideAuthRepository(AuthApi authApi) {
         return new AuthRepositoryImpl(authApi);
+    }
+
+    @Provides
+    @Singleton
+    public AddressRepository provideAddressRepository(AddressApi addressApi, ObjectMapper objectMapper) {
+        return new AddressRepositoryImpl(addressApi, objectMapper);
     }
 
     @Provides

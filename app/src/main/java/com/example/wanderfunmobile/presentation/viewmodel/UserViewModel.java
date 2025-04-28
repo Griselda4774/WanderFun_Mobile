@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.wanderfunmobile.data.dto.ResponseDto;
 import com.example.wanderfunmobile.data.dto.user.ChangeInfoDto;
 import com.example.wanderfunmobile.data.dto.user.SelfInfoDto;
-import com.example.wanderfunmobile.data.repository.UserRepository;
+import com.example.wanderfunmobile.domain.repository.UserRepository;
 
 import javax.inject.Inject;
 

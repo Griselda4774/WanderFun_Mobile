@@ -17,7 +17,7 @@ import com.example.wanderfunmobile.databinding.FragmentPlaceGeneralInfoBinding;
 import com.example.wanderfunmobile.domain.model.Feedback;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.FeedbackItemAdapter;
-import com.example.wanderfunmobile.presentation.ui.fragment.HomeFragment;
+import com.example.wanderfunmobile.presentation.ui.fragment.ExploreFragment;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 
@@ -68,15 +68,15 @@ public class PlaceGeneralInfoFragment extends Fragment {
 
         viewBinding.viewAllGeneralInfo.setOnClickListener(v -> {
             Fragment parentFragment = getParentFragment();
-            if (parentFragment instanceof HomeFragment) {
-                ((HomeFragment) parentFragment).switchTab(3);
+            if (parentFragment instanceof ExploreFragment) {
+                ((ExploreFragment) parentFragment).switchTab(3);
             }
         });
 
         viewBinding.viewAllRating.setOnClickListener(v -> {
             Fragment parentFragment = getParentFragment();
-            if (parentFragment instanceof HomeFragment) {
-                ((HomeFragment) parentFragment).switchTab(1);
+            if (parentFragment instanceof ExploreFragment) {
+                ((ExploreFragment) parentFragment).switchTab(1);
             }
         });
 

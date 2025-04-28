@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.wanderfunmobile.data.dto.ResponseDto;
 import com.example.wanderfunmobile.data.dto.album.AlbumCreateDto;
 import com.example.wanderfunmobile.data.dto.album.AlbumDto;
-import com.example.wanderfunmobile.data.repository.AlbumRepository;
+import com.example.wanderfunmobile.domain.repository.AlbumRepository;
 
 import java.util.List;
 
