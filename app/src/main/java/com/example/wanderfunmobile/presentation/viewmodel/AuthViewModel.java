@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.wanderfunmobile.data.dto.ResponseDto;
 import com.example.wanderfunmobile.data.dto.auth.TokenResponseDto;
-import com.example.wanderfunmobile.data.repository.AuthRepository;
+import com.example.wanderfunmobile.domain.repository.AuthRepository;
 import com.example.wanderfunmobile.data.dto.auth.LoginDto;
 import com.example.wanderfunmobile.data.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.data.dto.auth.RegisterDto;

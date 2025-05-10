@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.wanderfunmobile.data.dto.ResponseDto;
 import com.example.wanderfunmobile.data.dto.leaderboard.LeaderboardPlaceDto;
 import com.example.wanderfunmobile.data.dto.leaderboard.LeaderboardUserDto;
-import com.example.wanderfunmobile.data.repository.LeaderboardRepository;
+import com.example.wanderfunmobile.domain.repository.LeaderboardRepository;
 
 import java.util.List;
 

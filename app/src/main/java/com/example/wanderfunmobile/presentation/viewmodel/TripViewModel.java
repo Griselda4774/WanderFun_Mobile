@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.wanderfunmobile.data.dto.ResponseDto;
 import com.example.wanderfunmobile.data.dto.trip.TripCreateDto;
 import com.example.wanderfunmobile.data.dto.trip.TripDto;
-import com.example.wanderfunmobile.data.repository.TripRepository;
+import com.example.wanderfunmobile.domain.repository.TripRepository;
 
 import java.util.List;
 
