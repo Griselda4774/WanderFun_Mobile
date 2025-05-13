@@ -117,8 +117,7 @@
         android:layout_height="wrap_content"
         android:maxHeight="600dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/brown" />
+        android:src="@drawable/chill_image" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
