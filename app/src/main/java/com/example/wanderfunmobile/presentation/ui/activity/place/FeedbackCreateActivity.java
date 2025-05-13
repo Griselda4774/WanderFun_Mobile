@@ -27,7 +27,7 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.data.dto.feedback.FeedbackCreateDto;
 import com.example.wanderfunmobile.databinding.ActivityFeedbackCreateBinding;
-import com.example.wanderfunmobile.domain.model.User;
+import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingOutlineView;
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
@@ -200,9 +200,9 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         }
         // Avatar
         ImageView userAvatar = viewBinding.userAvatar;
-        if (user != null && user.getAvatarUrl() != null) {
+        if (user != null && user.getAvatarImage().getImageUrl() != null) {
             Glide.with(viewBinding.getRoot())
-                    .load(user.getAvatarUrl())
+                    .load(user.getAvatarImage().getImageUrl())
                     .error(R.drawable.brown)
                     .into(userAvatar);
         }

@@ -33,8 +33,8 @@ import com.example.wanderfunmobile.data.dto.trip.TripCreateDto;
 import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceCreateDto;
 import com.example.wanderfunmobile.databinding.ActivityAddEditTripBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.domain.model.Trip;
-import com.example.wanderfunmobile.domain.model.TripPlace;
+import com.example.wanderfunmobile.domain.model.trips.Trip;
+import com.example.wanderfunmobile.domain.model.trips.TripPlace;
 import com.example.wanderfunmobile.presentation.ui.adapter.tripplace.TripPlaceItemAdapter;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
@@ -113,7 +113,7 @@ public class AddEditTripActivity extends AppCompatActivity {
                 trip = objectMapper.map(data.getData(), Trip.class);
                 setTripInfo();
                 tripPlaceList.clear();
-                tripPlaceList.addAll(trip.getTripPlaces());
+                tripPlaceList.addAll(trip.getTripPlaceList());
                 tripPlaceItemAdapter.notifyDataSetChanged();
             }
         });
@@ -237,7 +237,7 @@ public class AddEditTripActivity extends AppCompatActivity {
         addPlaceButton.setOnClickListener(v -> {
             Intent intent1 = new Intent(this, TripPlaceCreateActivity.class);
             if (!tripPlaceList.isEmpty()) {
-                intent1.putExtra("limit_start_time", DateTimeUtil.dateToString(tripPlaceList.get(tripPlaceList.size() - 1).getEndTime()));
+                intent1.putExtra("limit_start_time", DateTimeUtil.localDateToString(tripPlaceList.get(tripPlaceList.size() - 1).getEndTime()));
             }
             activityResultLauncher.launch(intent1);
         });
@@ -287,16 +287,16 @@ public class AddEditTripActivity extends AppCompatActivity {
             name.setText(trip.getName());
         }
 
-        if (trip != null && trip.getImageUrl() != null) {
-            viewBinding.image.setVisibility(View.VISIBLE);
-            viewBinding.removeImageButton.findViewById(R.id.button).setVisibility(View.VISIBLE);
-            Glide.with(this).load(trip.getImageUrl()).into(viewBinding.image);
-            viewBinding.imagePicker.setVisibility(View.GONE);
-        }
+//        if (trip != null && trip.getImageUrl() != null) {
+//            viewBinding.image.setVisibility(View.VISIBLE);
+//            viewBinding.removeImageButton.findViewById(R.id.button).setVisibility(View.VISIBLE);
+//            Glide.with(this).load(trip.getImageUrl()).into(viewBinding.image);
+//            viewBinding.imagePicker.setVisibility(View.GONE);
+//        }
 
-        if (trip != null && trip.getTripPlaces() != null) {
+        if (trip != null && trip.getTripPlaceList() != null) {
             tripPlaceList.clear();
-            tripPlaceList.addAll(trip.getTripPlaces());
+            tripPlaceList.addAll(trip.getTripPlaceList());
             tripPlaceItemAdapter.notifyDataSetChanged();
         }
     }

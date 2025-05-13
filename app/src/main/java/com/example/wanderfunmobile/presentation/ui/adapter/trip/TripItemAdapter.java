@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ItemTripBinding;
-import com.example.wanderfunmobile.domain.model.Trip;
+import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.presentation.ui.activity.trip.TripDetailActivity;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 
@@ -54,13 +54,13 @@ public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripIt
 
         public void bind(Trip trip) {
             // Image
-            ImageView image = binding.image;
-            if (trip.getImageUrl() != null && !trip.getImageUrl().isEmpty()) {
-                Glide.with(binding.getRoot())
-                        .load(trip.getImageUrl())
-                        .error(R.drawable.brown)
-                        .into(image);
-            }
+//            ImageView image = binding.image;
+//            if (trip.getImageUrl() != null && !trip.getImageUrl().isEmpty()) {
+//                Glide.with(binding.getRoot())
+//                        .load(trip.getImageUrl())
+//                        .error(R.drawable.brown)
+//                        .into(image);
+//            }
 
             // Name
             TextView name = binding.name;
@@ -71,13 +71,13 @@ public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripIt
             // Start time
             TextView startTime = binding.startTime;
             if (trip.getStartTime() != null) {
-                startTime.setText(DateTimeUtil.dateToString(trip.getStartTime()));
+                startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
             }
 
             // End time
             TextView endTime = binding.endTime;
             if (trip.getEndTime() != null) {
-                endTime.setText(DateTimeUtil.dateToString(trip.getEndTime()));
+                endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
             }
 
             // Intent

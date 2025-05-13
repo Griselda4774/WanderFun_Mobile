@@ -6,14 +6,15 @@
         android:title="Nhà" />
 
     <item
+        android:id="@+id/explore_nav"
+        android:icon="@drawable/ic_explore"
+        android:title="Khám phá" />
+
+    <item
         android:id="@+id/trip_nav"
         android:icon="@drawable/ic_suitcase"
         android:title="Chuyến đi" />
 
-    <item
-        android:id="@+id/leaderboard_nav"
-        android:icon="@drawable/ic_trophy"
-        android:title="BXH" />
 
     <item
         android:id="@+id/profile_nav"
