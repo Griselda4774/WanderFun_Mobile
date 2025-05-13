@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
+import com.example.wanderfunmobile.core.util.MediaManagerStateUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 
@@ -24,8 +25,9 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CloudinaryUtil.init(getApplicationContext());
-
+        if (!MediaManagerStateUtil.isInitialized()) {
+            CloudinaryUtil.init(getApplicationContext());
+        }
         if (SessionManager.getInstance(getApplicationContext()).isLoggedIn()) {
             authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
             authViewModel.refreshToken("Bearer " + SessionManager.getInstance(getApplicationContext()).getRefreshToken());
