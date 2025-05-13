@@ -3,7 +3,7 @@ package com.example.wanderfunmobile.data.dto.user;
 import com.example.wanderfunmobile.data.dto.checkin.CheckInDto;
 import com.example.wanderfunmobile.data.dto.favouriteplace.FavouritePlaceDto;
 import com.example.wanderfunmobile.domain.model.Album;
-import com.example.wanderfunmobile.domain.model.Trip;
+import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.domain.model.enums.UserRole;
 
 import java.util.Date;

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.databinding.ItemTripPlaceBinding;
-import com.example.wanderfunmobile.domain.model.TripPlace;
+import com.example.wanderfunmobile.domain.model.trips.TripPlace;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 
 import java.util.Collections;
@@ -73,17 +73,17 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
 
         @SuppressLint("SetTextI18n")
         public void bind(TripPlace tripPlace, int position, TripPlaceItemAdapter adapter) {
-            if (tripPlace.getPlaceName() != null) {
-                binding.placeName.setText(tripPlace.getPlaceName());
+            if (tripPlace.getPlace() != null && tripPlace.getPlace().getName() != null) {
+                binding.placeName.setText(tripPlace.getPlace().getName());
             }
             if (tripPlace.getStartTime() != null) {
-                binding.startTime.setText("Từ " + DateTimeUtil.dateToString(tripPlace.getStartTime()));
+                binding.startTime.setText("Từ " + DateTimeUtil.localDateToString(tripPlace.getStartTime()));
             }
             if (tripPlace.getEndTime() != null) {
-                binding.endTime.setText("Đến " + DateTimeUtil.dateToString(tripPlace.getEndTime()));
+                binding.endTime.setText("Đến " + DateTimeUtil.localDateToString(tripPlace.getEndTime()));
             }
-            if (tripPlace.getPlaceCoverImageUrl() != null) {
-                Glide.with(binding.getRoot().getContext()).load(tripPlace.getPlaceCoverImageUrl()).into(binding.placeCoverImage);
+            if (tripPlace.getPlace() != null && tripPlace.getPlace().getCoverImage() != null && tripPlace.getPlace().getCoverImage().getImageUrl() != null) {
+                Glide.with(binding.getRoot().getContext()).load(tripPlace.getPlace().getCoverImage().getImageUrl()).into(binding.placeCoverImage);
             }
             binding.removeButtonContainer.setOnClickListener(v -> {
                 adapter.removeItem(position);

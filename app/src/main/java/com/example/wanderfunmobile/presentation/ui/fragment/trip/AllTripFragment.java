@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.databinding.FragmentAllTripBinding;
-import com.example.wanderfunmobile.domain.model.Trip;
+import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.presentation.ui.adapter.trip.TripItemAdapter;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;

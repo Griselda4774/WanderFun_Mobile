@@ -20,8 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityTripDetailBinding;
-import com.example.wanderfunmobile.domain.model.Trip;
-import com.example.wanderfunmobile.domain.model.TripPlace;
+import com.example.wanderfunmobile.domain.model.trips.Trip;
+import com.example.wanderfunmobile.domain.model.trips.TripPlace;
 import com.example.wanderfunmobile.presentation.ui.adapter.tripplace.TripPlaceItemAdapter;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.SelectionDialog;
@@ -159,22 +159,22 @@ public class TripDetailActivity extends AppCompatActivity {
         }
 
         if (trip != null && trip.getStartTime() != null) {
-            viewBinding.startTime.setText(DateTimeUtil.dateToString(trip.getStartTime()));
+            viewBinding.startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
         }
 
         if (trip != null && trip.getEndTime() != null) {
-            viewBinding.endTime.setText(DateTimeUtil.dateToString(trip.getEndTime()));
+            viewBinding.endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
         }
 
-        if (trip != null && !trip.getTripPlaces().isEmpty()) {
+        if (trip != null && !trip.getTripPlaceList().isEmpty()) {
             tripPlaceList.clear();
-            tripPlaceList.addAll(trip.getTripPlaces());
+            tripPlaceList.addAll(trip.getTripPlaceList());
             tripPlaceItemAdapter.notifyDataSetChanged();
         }
 
-        if (trip != null && !trip.getImageUrl().isEmpty()) {
-            Glide.with(this).load(trip.getImageUrl()).into(viewBinding.image);
-        }
+//        if (trip != null && !trip.getImageUrl().isEmpty()) {
+//            Glide.with(this).load(trip.getImageUrl()).into(viewBinding.image);
+//        }
     }
 
 }
