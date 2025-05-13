@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityMainBinding;
 import com.example.wanderfunmobile.presentation.ui.fragment.ExploreFragment;
+import com.example.wanderfunmobile.presentation.ui.fragment.HomeFragment;
 import com.example.wanderfunmobile.presentation.ui.fragment.LeaderboardFragment;
 import com.example.wanderfunmobile.presentation.ui.fragment.NotSignedInFragment;
 import com.example.wanderfunmobile.presentation.ui.fragment.ProfileFragment;
@@ -105,21 +106,21 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = viewBinding.bottomNavigation;
 
         if (savedInstanceState == null) {
-            loadFragment("home", ExploreFragment::new);
+            loadFragment("home", HomeFragment::new);
         }
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.home_nav) {
-                loadFragment("home", ExploreFragment::new);
+                loadFragment("home", HomeFragment::new);
             } else if (id == R.id.trip_nav) {
                 if (SessionManager.getInstance(getApplicationContext()).isLoggedIn()) {
                     loadFragment("trip", TripFragment::new);
                 } else {
                     loadFragment("not_signed_in", NotSignedInFragment::new);
                 }
-            } else if (id == R.id.leaderboard_nav) {
-                loadFragment("leaderboard", LeaderboardFragment::new);
+            } else if (id == R.id.explore_nav) {
+                loadFragment("explore", ExploreFragment::new);
             } else if (id == R.id.profile_nav) {
                 if (SessionManager.getInstance(getApplicationContext()).isLoggedIn()) {
                     loadFragment("profile", ProfileFragment::new);

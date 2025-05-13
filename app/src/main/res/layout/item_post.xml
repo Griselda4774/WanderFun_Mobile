@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingVertical="@dimen/item_padding_vertical"
+    android:layout_marginTop="8dp"
     android:background="@drawable/bg_border_bottom">
 
     <LinearLayout
@@ -16,8 +17,8 @@
         android:layout_marginHorizontal="@dimen/app_horizontal_margin">
 
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:src="@drawable/ic_avatar" />
 
         <LinearLayout

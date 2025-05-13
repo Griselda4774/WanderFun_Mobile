@@ -6,7 +6,7 @@
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_search_bar"
+        android:background="@drawable/bg_search_bar_light"
         android:paddingHorizontal="@dimen/input_padding"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
