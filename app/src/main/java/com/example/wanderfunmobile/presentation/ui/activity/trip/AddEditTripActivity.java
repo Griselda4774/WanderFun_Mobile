@@ -29,10 +29,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
+import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
 import com.example.wanderfunmobile.data.dto.trip.TripCreateDto;
+import com.example.wanderfunmobile.data.dto.trip.TripDto;
 import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceCreateDto;
+import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceDto;
 import com.example.wanderfunmobile.databinding.ActivityAddEditTripBinding;
-import com.example.wanderfunmobile.domain.model.places.Place;
+import com.example.wanderfunmobile.domain.model.images.Image;
 import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.domain.model.trips.TripPlace;
 import com.example.wanderfunmobile.presentation.ui.adapter.tripplace.TripPlaceItemAdapter;
@@ -59,15 +62,14 @@ public class AddEditTripActivity extends AppCompatActivity {
     private Long tripId;
     private Trip trip;
     private TripViewModel tripViewModel;
-    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private LinearLayout imagePicker;
     private Uri imageUri;
     private TripPlaceItemAdapter tripPlaceItemAdapter;
     private TripCreateDto tripCreateDto;
-    private List<TripPlace> tripPlaceList = new ArrayList<>();
-    private TripPlaceCreateDto tempTripPlace;
+    private final List<TripPlaceCreateDto> tripPlaceCreateList = new ArrayList<>();
+    private final List<TripPlace> tripPlaceList = new ArrayList<>();
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private ActivityResultLauncher<Intent> activityResultLauncher;
-    private PlaceViewModel placeViewModel;
     private LoadingDialog loadingDialog;
 
     @Inject
@@ -90,30 +92,15 @@ public class AddEditTripActivity extends AppCompatActivity {
         loadingDialog = viewBinding.loadingDialog;
         hideLoadingDialog();
 
-        placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
-        placeViewModel.getPlaceByIdResponseLiveData().observe(this, data -> {
-            if (data != null && !data.isError() && data.getData() != null) {
-                Place place = objectMapper.map(data.getData(), Place.class);
-                if (tempTripPlace != null) {
-                    tempTripPlace.setPlaceLatitude(place.getLatitude());
-                    tempTripPlace.setPlaceLongitude(place.getLongitude());
-                    tempTripPlace.setPlaceName(place.getName());
-                    tempTripPlace.setPlaceCoverImageUrl(place.getCoverImage().getImageUrl());
-                    int previousSize = tripPlaceList.size();
-                    tripPlaceList.add(objectMapper.map(tempTripPlace, TripPlace.class));
-                    tripPlaceItemAdapter.notifyItemRangeInserted(previousSize, tripPlaceList.size());
-                    tempTripPlace = null;
-                }
-            }
-        });
+        PlaceViewModel placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
 
         tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
         tripViewModel.getTripByIdResponseLiveData().observe(this, data -> {
             if (data != null && !data.isError() && data.getData() != null) {
-                trip = objectMapper.map(data.getData(), Trip.class);
+                List<TripPlace> tripPlaces = objectMapper.mapList(data.getData().getTripPlaces(), TripPlace.class);
                 setTripInfo();
                 tripPlaceList.clear();
-                tripPlaceList.addAll(trip.getTripPlaceList());
+                tripPlaceList.addAll(tripPlaces);
                 tripPlaceItemAdapter.notifyDataSetChanged();
             }
         });
@@ -208,30 +195,44 @@ public class AddEditTripActivity extends AppCompatActivity {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 // Handle the returned data
-                Long placeId = result.getData().getLongExtra("selected_place", 0);
+                Long placeId = result.getData().getLongExtra("place_id", 0);
+                String placeName = result.getData().getStringExtra("place_name");
+                String placeCoverImage = result.getData().getStringExtra("place_cover_image");
                 String startTime = result.getData().getStringExtra("start_time");
                 String endTime = result.getData().getStringExtra("end_time");
-                tempTripPlace = new TripPlaceCreateDto();
+
+                TripPlaceCreateDto tripPlaceCreateDto = new TripPlaceCreateDto();
+                TripPlaceDto tripPlaceDto = new TripPlaceDto();
+                tripPlaceDto.setPlace(new MiniPlaceDto());
+                tripPlaceDto.getPlace().setCoverImage(new Image());
+
+                tripPlaceCreateDto.setPlaceId(placeId);
+
+                tripPlaceDto.getPlace().setId(placeId);
+                tripPlaceDto.getPlace().setName(placeName);
+                tripPlaceDto.getPlace().getCoverImage().setImageUrl(placeCoverImage);
+
                 if (startTime != null && !startTime.isEmpty()) {
-                    tempTripPlace.setStartTime(DateTimeUtil.stringToLocalDate(startTime));
+                    tripPlaceCreateDto.setStartTime(DateTimeUtil.stringToLocalDate(startTime));
+                    tripPlaceDto.setStartTime(DateTimeUtil.stringToLocalDate(startTime));
                 }
 
                 if (endTime != null && !endTime.isEmpty()) {
-                    tempTripPlace.setEndTime(DateTimeUtil.stringToLocalDate(endTime));
+                    tripPlaceCreateDto.setEndTime(DateTimeUtil.stringToLocalDate(endTime));
+                    tripPlaceDto.setEndTime(DateTimeUtil.stringToLocalDate(endTime));
                 }
-
-                if (placeId != 0) {
-                    placeViewModel.getPlaceById(placeId);
-                }
+                tripPlaceCreateList.add(tripPlaceCreateDto);
+                tripPlaceList.add(objectMapper.map(tripPlaceDto, TripPlace.class));
+                tripPlaceItemAdapter.notifyDataSetChanged();
             }
         });
 
         addPlaceButton.setOnClickListener(v -> {
-            Intent intent1 = new Intent(this, TripPlaceCreateActivity.class);
-            if (!tripPlaceList.isEmpty()) {
-                intent1.putExtra("limit_start_time", DateTimeUtil.localDateToString(tripPlaceList.get(tripPlaceList.size() - 1).getEndTime()));
+            Intent addIntent = new Intent(this, TripPlaceCreateActivity.class);
+            if (!tripPlaceCreateList.isEmpty()) {
+                addIntent.putExtra("limit_start_time", DateTimeUtil.localDateToString(tripPlaceCreateList.get(tripPlaceCreateList.size() - 1).getEndTime()));
             }
-            activityResultLauncher.launch(intent1);
+            activityResultLauncher.launch(addIntent);
         });
 
         EditText name = viewBinding.name.findViewById(R.id.text_edittext);
@@ -247,7 +248,8 @@ public class AddEditTripActivity extends AppCompatActivity {
             showLoadingDialog();
             tripCreateDto = new TripCreateDto();
             tripCreateDto.setName(name.getText().toString());
-            tripCreateDto.setTripPlaces(objectMapper.mapList(tripPlaceList, TripPlaceCreateDto.class));
+            tripCreateDto.setTripPlaceList(tripPlaceCreateList);
+
             if (image.getDrawable() != null && imageUri != null) {
                 String folderName = "/wanderfun/trips/" + name.getText().toString().replaceAll("\\s", "") + "/images";
                 String fileName = "image_" + System.currentTimeMillis();

@@ -156,7 +156,9 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
             if (selectedPlace != null && startTime != null && endTime != null) {
                 if (startTime.before(endTime)) {
                     Intent intent = new Intent();
-                    intent.putExtra("selected_place", selectedPlace.getId());
+                    intent.putExtra("place_id", selectedPlace.getId());
+                    intent.putExtra("place_name", selectedPlace.getName());
+                    intent.putExtra("place_cover_image", selectedPlace.getCoverImage().getImageUrl());
                     intent.putExtra("start_time", DateTimeUtil.dateToString(startTime));
                     intent.putExtra("end_time", DateTimeUtil.dateToString(endTime));
                     setResult(Activity.RESULT_OK, intent);

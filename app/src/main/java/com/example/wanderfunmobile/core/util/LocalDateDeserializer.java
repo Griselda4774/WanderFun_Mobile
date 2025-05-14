@@ -16,8 +16,14 @@ import java.util.Locale;
 
 public class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     @Override
-    public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return LocalDate.parse(json.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    public LocalDate deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        try {
+            return LocalDate.parse(json.getAsString(), FORMATTER);
+        } catch (Exception e) {
+            throw new JsonParseException("Failed to parse LocalDate: " + json.getAsString(), e);
+        }
     }
 }
