@@ -26,4 +26,5 @@ public class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
             throw new JsonParseException("Failed to parse LocalDate: " + json.getAsString(), e);
         }
     }
+
 }

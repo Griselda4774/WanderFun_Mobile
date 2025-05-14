@@ -1,6 +1,6 @@
 package com.example.wanderfunmobile.data.dto.trip;
 
-import com.example.wanderfunmobile.core.util.LocalDateDeserializer;
+import com.example.wanderfunmobile.core.util.LocalDateSerializer;
 import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceCreateDto;
 import com.google.gson.annotations.JsonAdapter;
 

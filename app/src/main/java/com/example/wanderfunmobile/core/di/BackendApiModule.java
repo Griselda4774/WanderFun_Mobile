@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.LocalDateDeserializer;
+import com.example.wanderfunmobile.core.util.LocalDateSerializer;
 import com.example.wanderfunmobile.data.api.backend.AddressApi;
 import com.example.wanderfunmobile.data.api.backend.AlbumApi;
 import com.example.wanderfunmobile.data.api.backend.AuthApi;
@@ -119,6 +120,7 @@ public class BackendApiModule {
     public TripApi provideTripApi(@ApplicationContext Context context) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+                .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
                 .setDateFormat("yyyy-MM-dd")
                 .create();
         String baseUrl = context.getString(R.string.base_url);
