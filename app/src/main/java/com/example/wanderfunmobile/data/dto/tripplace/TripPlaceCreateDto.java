@@ -1,5 +1,6 @@
 package com.example.wanderfunmobile.data.dto.tripplace;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class TripPlaceCreateDto {
@@ -7,8 +8,8 @@ public class TripPlaceCreateDto {
     private double placeLatitude;
     private String placeName;
     private String placeCoverImageUrl;
-    private Date startTime;
-    private Date endTime;
+    private LocalDate startTime;
+    private LocalDate endTime;
 
     public TripPlaceCreateDto() {};
 
@@ -44,19 +45,19 @@ public class TripPlaceCreateDto {
         this.placeCoverImageUrl = placeCoverImageUrl;
     }
 
-    public Date getStartTime() {
+    public LocalDate getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDate startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public LocalDate getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(LocalDate endTime) {
         this.endTime = endTime;
     }
 }

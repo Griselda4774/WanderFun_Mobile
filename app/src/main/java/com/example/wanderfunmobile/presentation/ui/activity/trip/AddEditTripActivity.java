@@ -213,19 +213,11 @@ public class AddEditTripActivity extends AppCompatActivity {
                 String endTime = result.getData().getStringExtra("end_time");
                 tempTripPlace = new TripPlaceCreateDto();
                 if (startTime != null && !startTime.isEmpty()) {
-                    try {
-                        tempTripPlace.setStartTime(DateTimeUtil.stringToDate(startTime));
-                    } catch (ParseException e) {
-                        tempTripPlace.setStartTime(null);
-                    }
+                    tempTripPlace.setStartTime(DateTimeUtil.stringToLocalDate(startTime));
                 }
 
                 if (endTime != null && !endTime.isEmpty()) {
-                    try {
-                        tempTripPlace.setEndTime(DateTimeUtil.stringToDate(endTime));
-                    } catch (ParseException e) {
-                        tempTripPlace.setEndTime(null);
-                    }
+                    tempTripPlace.setEndTime(DateTimeUtil.stringToLocalDate(endTime));
                 }
 
                 if (placeId != 0) {
