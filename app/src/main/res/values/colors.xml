@@ -10,9 +10,15 @@
     <color name="black4">#292929</color>
     <color name="black5">#141414</color>
 
+    <color name="black1_50">#80666666</color>
     <color name="black5_30">#4D141414</color>
+    <color name="black5_50">#80141414</color>
+    <color name="black5_70">#B2141414</color>
+    <color name="black5_80">#CC141414</color>
+    <color name="black5_90">#E6141414</color>
 
     <!-- White Shades -->
+    <color name="white0">#FFFFFF</color>
     <color name="white1">#F9F9F9</color>
     <color name="white2">#EBEBEB</color>
     <color name="white3">#D6D6D6</color>
