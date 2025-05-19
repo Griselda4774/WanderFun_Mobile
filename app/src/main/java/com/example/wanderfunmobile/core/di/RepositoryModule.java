@@ -1,13 +1,16 @@
 package com.example.wanderfunmobile.core.di;
 
 import com.example.wanderfunmobile.data.api.backend.AddressApi;
+import com.example.wanderfunmobile.data.api.backend.PostApi;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.data.repository.AddressRepositoryImpl;
+import com.example.wanderfunmobile.data.repository.PostRepositoryImpl;
 import com.example.wanderfunmobile.domain.repository.AddressRepository;
 import com.example.wanderfunmobile.domain.repository.AlbumRepository;
 import com.example.wanderfunmobile.domain.repository.AuthRepository;
 import com.example.wanderfunmobile.domain.repository.LeaderboardRepository;
 import com.example.wanderfunmobile.domain.repository.PlaceRepository;
+import com.example.wanderfunmobile.domain.repository.PostRepository;
 import com.example.wanderfunmobile.domain.repository.TripRepository;
 import com.example.wanderfunmobile.domain.repository.UserRepository;
 import com.example.wanderfunmobile.data.api.backend.AlbumApi;
@@ -73,5 +76,11 @@ public class RepositoryModule {
     @Singleton
     public LeaderboardRepository provideLeaderboardRepository(LeaderboardApi leaderboardApi) {
         return new LeaderboardRepositoryImpl(leaderboardApi);
+    }
+
+    @Provides
+    @Singleton
+    public PostRepository providePostRepository(PostApi postApi, ObjectMapper objectMapper) {
+        return new PostRepositoryImpl(postApi, objectMapper);
     }
 }

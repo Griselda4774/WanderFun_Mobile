@@ -9,6 +9,7 @@ import com.example.wanderfunmobile.data.api.backend.AuthApi;
 import com.example.wanderfunmobile.data.api.backend.CloudinaryApi;
 import com.example.wanderfunmobile.data.api.backend.LeaderboardApi;
 import com.example.wanderfunmobile.data.api.backend.PlaceApi;
+import com.example.wanderfunmobile.data.api.backend.PostApi;
 import com.example.wanderfunmobile.data.api.backend.TripApi;
 import com.example.wanderfunmobile.data.api.backend.UserApi;
 import com.example.wanderfunmobile.core.util.DateDeserializer;
@@ -159,5 +160,20 @@ public class BackendApiModule {
                         .build())
                 .build()
                 .create(LeaderboardApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public PostApi providePostApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(PostApi.class);
     }
 }
