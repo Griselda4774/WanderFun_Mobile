@@ -23,6 +23,8 @@ public class PostViewModel extends ViewModel {
     }
 
     private final MutableLiveData<Result<List<Post>>> findAllPostsByCursorLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<Post>>> findAllPostsWithSizeLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<Post>>> findAllPostsNoParamLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<Post>> findPostByIdLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<Post>> createPostLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<Post>> updatePostLiveData = new MutableLiveData<>();
@@ -32,6 +34,14 @@ public class PostViewModel extends ViewModel {
 
     public MutableLiveData<Result<List<Post>>> getFindAllPostsByCursorLiveData() {
         return findAllPostsByCursorLiveData;
+    }
+
+    public MutableLiveData<Result<List<Post>>> getFindAllPostsWithSizeLiveData() {
+        return findAllPostsWithSizeLiveData;
+    }
+
+    public MutableLiveData<Result<List<Post>>> getFindAllPostsNoParamLiveData() {
+        return findAllPostsNoParamLiveData;
     }
 
     public MutableLiveData<Result<Post>> getFindPostByIdLiveData() {
@@ -54,17 +64,33 @@ public class PostViewModel extends ViewModel {
         return isLoading;
     }
 
-    public void findAllPostsByCursor(String bearerToken, Long cursor, int size) {
+    public void findAllPostsByCursor(Long cursor, int size) {
         isLoading.setValue(true);
-        postRepository.findAllPostsByCursor(bearerToken, cursor, size).observeForever(result -> {
+        postRepository.findAllPostsByCursor(cursor, size).observeForever(result -> {
             isLoading.setValue(false);
             findAllPostsByCursorLiveData.setValue(result);
         });
     }
 
-    public void findPostById(String bearerToken, Long postId) {
+    public void findAllPostsWithSize(int size) {
         isLoading.setValue(true);
-        postRepository.findPostById(bearerToken, postId).observeForever(result -> {
+        postRepository.findAllPostsWithSize(size).observeForever(result -> {
+            isLoading.setValue(false);
+            findAllPostsWithSizeLiveData.setValue(result);
+        });
+    }
+
+    public void findAllPostsNoParam() {
+        isLoading.setValue(true);
+        postRepository.findAllPostsNoParam().observeForever(result -> {
+            isLoading.setValue(false);
+            findAllPostsNoParamLiveData.setValue(result);
+        });
+    }
+
+    public void findPostById(Long postId) {
+        isLoading.setValue(true);
+        postRepository.findPostById(postId).observeForever(result -> {
             isLoading.setValue(false);
             findPostByIdLiveData.setValue(result);
         });

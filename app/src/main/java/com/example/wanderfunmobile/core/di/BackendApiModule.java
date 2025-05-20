@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.LocalDateDeserializer;
 import com.example.wanderfunmobile.core.util.LocalDateSerializer;
+import com.example.wanderfunmobile.core.util.typeadapter.LocalDateTimeAdapter;
 import com.example.wanderfunmobile.data.api.backend.AddressApi;
 import com.example.wanderfunmobile.data.api.backend.AlbumApi;
 import com.example.wanderfunmobile.data.api.backend.AuthApi;
@@ -20,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -120,9 +122,8 @@ public class BackendApiModule {
     @Singleton
     public TripApi provideTripApi(@ApplicationContext Context context) {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-                .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-                .setDateFormat("yyyy-MM-dd")
+                .registerTypeAdapter(Date.class, new DateDeserializer())
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
                 .create();
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
@@ -170,9 +171,12 @@ public class BackendApiModule {
     @Singleton
     public PostApi providePostApi(@ApplicationContext Context context) {
         String baseUrl = context.getString(R.string.base_url);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
