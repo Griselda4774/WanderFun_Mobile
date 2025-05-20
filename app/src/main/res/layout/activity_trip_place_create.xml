@@ -112,6 +112,7 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/time_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/app_section_margin">
@@ -185,12 +186,42 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
+                android:id="@+id/note_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="start"
+                android:layout_marginVertical="@dimen/app_section_margin"
+                app:layout_constraintTop_toBottomOf="@id/time_container"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Title.Input"
+                    android:text="Ghi chú cho địa điểm"
+                    android:layout_marginBottom="@dimen/input_title_margin" />
+
+                <TextView
+                    android:id="@+id/place_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:textColor="@color/black5_30"
+                    style="@style/Text.Content"
+                    android:text="Thêm ghi chú cho địa điểm"
+                    android:background="@drawable/bg_edit_text"
+                    android:padding="@dimen/input_padding"
+                    android:clickable="true"
+                    android:stateListAnimator="@animator/touch_opacity_animator" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginTop="@dimen/double_app_section_margin">
+                android:gravity="center">
 
                 <LinearLayout
                     android:id="@+id/cancel_button"

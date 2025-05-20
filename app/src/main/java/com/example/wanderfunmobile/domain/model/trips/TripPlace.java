@@ -1,10 +1,15 @@
 package com.example.wanderfunmobile.domain.model.trips;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.example.wanderfunmobile.domain.model.places.Place;
 
 import java.time.LocalDate;
 
-public class TripPlace {
+public class TripPlace implements Parcelable {
     private Long id;
     private Place place;
     private Long tripId;
@@ -13,6 +18,8 @@ public class TripPlace {
     private String placeNotes;
 
     public TripPlace() {};
+
+    public TripPlace(Parcel in){}
 
     public Long getId() {
         return id;
@@ -61,4 +68,26 @@ public class TripPlace {
     public void setPlaceNotes(String placeNotes) {
         this.placeNotes = placeNotes;
     }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        // write data
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<TripPlace> CREATOR = new Creator<TripPlace>() {
+        @Override
+        public TripPlace createFromParcel(Parcel in) {
+            return new TripPlace(in);
+        }
+
+        @Override
+        public TripPlace[] newArray(int size) {
+            return new TripPlace[size];
+        }
+    };
 }

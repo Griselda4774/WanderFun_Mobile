@@ -91,6 +91,16 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
             }
         });
 
+        String placeName = getIntent().getStringExtra("selected_place_name");
+        String placeStartTime = getIntent().getStringExtra("selected_place_start_time");
+        String placeEndTime = getIntent().getStringExtra("selected_place_end_time");
+        String placeNote = getIntent().getStringExtra("selected_place_notes");
+        try {
+            setInfo(placeName, placeStartTime, placeEndTime, placeNote);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
         selectPlaceButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, SearchPlaceActivity.class);
             activityResultLauncher.launch(intent);
@@ -170,6 +180,23 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
                 Toast.makeText(this, "Vui lòng chọn địa điểm và thời gian", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void setInfo(String placeName, String startTimeString, String endTimeString, String placeNote) throws ParseException {
+        if (placeName != null && !placeName.isEmpty()) {
+            viewBinding.placeName.setText(placeName);
+        }
+        if (placeNote != null && !placeNote.isEmpty()) {
+            viewBinding.placeNote.setText(placeNote);
+        }
+        if (startTimeString != null && !startTimeString.isEmpty()) {
+            startTime = DateTimeUtil.stringToDate(startTimeString);
+            viewBinding.startTime.setText(startTimeString);
+        }
+        if (endTimeString != null && !endTimeString.isEmpty()) {
+            endTime = DateTimeUtil.stringToDate(endTimeString);
+            viewBinding.endTime.setText(endTimeString);
+        }
     }
 
     private MaterialDatePicker<Long> setMaxDate(MaterialDatePicker.Builder<Long> builder, Date date) {

@@ -173,6 +173,7 @@ public class TripDetailActivity extends AppCompatActivity {
         if (trip != null && !trip.getTripPlaceList().isEmpty()) {
             tripPlaceList.clear();
             tripPlaceList.addAll(trip.getTripPlaceList());
+            tripPlaceItemAdapter.setEditMode(false);
             tripPlaceItemAdapter.notifyDataSetChanged();
         }
 

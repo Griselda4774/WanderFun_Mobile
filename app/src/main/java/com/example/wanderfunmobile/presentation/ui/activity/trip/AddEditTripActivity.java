@@ -73,9 +73,27 @@ public class AddEditTripActivity extends AppCompatActivity {
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private LoadingDialog loadingDialog;
-
     @Inject
     ObjectMapper objectMapper;
+
+    private ActivityResultLauncher<Intent> editTripPlaceLauncher;
+
+    private void setupActivityResultLauncher() {
+        editTripPlaceLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        TripPlace updatedTripPlace = result.getData().getParcelableExtra("updatedTripPlace");
+                        int index = result.getData().getIntExtra("tripPlaceIndex", -1);
+
+                        if (updatedTripPlace != null && index >= 0 && index < tripPlaceList.size()) {
+                            tripPlaceList.set(index, updatedTripPlace);
+                            tripPlaceItemAdapter.notifyItemChanged(index);
+                        }
+                    }
+                }
+        );
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -227,6 +245,8 @@ public class AddEditTripActivity extends AppCompatActivity {
                 tripPlaceItemAdapter.notifyDataSetChanged();
             }
         });
+
+        setupActivityResultLauncher();
 
         addPlaceButton.setOnClickListener(v -> {
             Intent addIntent = new Intent(this, TripPlaceCreateActivity.class);

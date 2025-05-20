@@ -12,10 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:layout_marginVertical="@dimen/app_section_margin"
         android:background="@drawable/bg_item_place"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/swap_button">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -89,8 +91,6 @@
         android:id="@+id/remove_button_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-12dp"
-        android:layout_marginEnd="-12dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,35 +104,23 @@
         android:id="@+id/swap_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/app_section_margin"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/trip_place_card"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+        <ImageView
+            android:layout_width="@dimen/section_next_icon_size"
+            android:layout_height="@dimen/section_next_icon_size"
+            android:rotation="180"
+            android:src="@drawable/ic_swap_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:clickable="true"
-            android:stateListAnimator="@animator/touch_opacity_animator">
-
-            <ImageView
-                android:layout_width="@dimen/section_next_icon_size"
-                android:layout_height="@dimen/section_next_icon_size"
-                android:rotation="180"
-                android:src="@drawable/ic_swap_arrow"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/blue1" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="@color/blue1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

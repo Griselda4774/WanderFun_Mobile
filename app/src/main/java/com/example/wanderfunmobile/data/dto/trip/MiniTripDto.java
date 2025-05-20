@@ -1,5 +1,7 @@
 package com.example.wanderfunmobile.data.dto.trip;
 
+import com.example.wanderfunmobile.data.dto.user.MiniUserDto;
+
 import java.time.LocalDate;
 
 public class MiniTripDto {
