@@ -255,7 +255,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
         mapView.getMapAsync(this);
 
-//        placeViewModel.getAllPlaces();
+        placeViewModel.getAllPlaces();
         placeViewModel.getAllPlacesResponseLiveData().observe(getViewLifecycleOwner(), data -> {
             if (data != null && !data.isError()) {
                 List<PlaceDto> placeDtoList = data.getData();

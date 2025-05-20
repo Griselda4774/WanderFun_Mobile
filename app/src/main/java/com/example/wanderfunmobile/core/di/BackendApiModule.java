@@ -3,6 +3,8 @@ package com.example.wanderfunmobile.core.di;
 import android.content.Context;
 
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.LocalDateDeserializer;
+import com.example.wanderfunmobile.core.util.LocalDateSerializer;
 import com.example.wanderfunmobile.core.util.typeadapter.LocalDateTimeAdapter;
 import com.example.wanderfunmobile.data.api.backend.AddressApi;
 import com.example.wanderfunmobile.data.api.backend.AlbumApi;
@@ -18,6 +20,7 @@ import com.example.wanderfunmobile.core.util.LocalTimeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
@@ -119,8 +122,9 @@ public class BackendApiModule {
     @Singleton
     public TripApi provideTripApi(@ApplicationContext Context context) {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Date.class, new DateDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+                .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+                .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                .setDateFormat("yyyy-MM-dd")
                 .create();
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()

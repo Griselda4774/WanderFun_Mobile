@@ -1,8 +1,12 @@
 package com.example.wanderfunmobile.core.di;
 
+import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceCreateDto;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.data.mapper.impl.ObjectMapperImpl;
+import com.example.wanderfunmobile.domain.model.places.Place;
+import com.example.wanderfunmobile.domain.model.trips.TripPlace;
 
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 

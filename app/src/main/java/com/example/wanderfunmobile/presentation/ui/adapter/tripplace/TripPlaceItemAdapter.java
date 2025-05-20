@@ -1,6 +1,7 @@
 package com.example.wanderfunmobile.presentation.ui.adapter.tripplace;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,9 +86,26 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
             if (tripPlace.getPlace() != null && tripPlace.getPlace().getCoverImage() != null && tripPlace.getPlace().getCoverImage().getImageUrl() != null) {
                 Glide.with(binding.getRoot().getContext()).load(tripPlace.getPlace().getCoverImage().getImageUrl()).into(binding.placeCoverImage);
             }
+
             binding.removeButtonContainer.setOnClickListener(v -> {
                 adapter.removeItem(position);
+                Log.d("TripPlaceItemAdapter", "Item removed at position: " + position);
             });
+
+            // 🔀 Swap Button Visibility Logic
+            if (adapter.getItemCount() > 1 && position != adapter.getItemCount() - 1) {
+                binding.swapButton.setVisibility(View.VISIBLE);
+                binding.swapButton.setOnClickListener(v -> {
+                    int nextPos = position + 1;
+                    if (nextPos < adapter.getItemCount()) {
+                        Collections.swap(adapter.tripPlaceList, position, nextPos);
+                        adapter.notifyItemMoved(position, nextPos);
+                    }
+                });
+            } else {
+                binding.swapButton.setVisibility(View.GONE);
+            }
+
         }
 
         public void enableEdit() {
