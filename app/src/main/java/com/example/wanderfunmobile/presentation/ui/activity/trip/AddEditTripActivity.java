@@ -66,34 +66,12 @@ public class AddEditTripActivity extends AppCompatActivity {
     private Long tripId;
     private Trip trip;
     private TripViewModel tripViewModel;
-    private LinearLayout imagePicker;
-    private Uri imageUri;
     private TripPlaceItemAdapter tripPlaceItemAdapter;
     private final List<TripPlace> tripPlaceList = new ArrayList<>();
-    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private LoadingDialog loadingDialog;
     @Inject
     ObjectMapper objectMapper;
-
-    private ActivityResultLauncher<Intent> editTripPlaceLauncher;
-
-    private void setupActivityResultLauncher() {
-        editTripPlaceLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        TripPlace updatedTripPlace = result.getData().getParcelableExtra("updatedTripPlace");
-                        int index = result.getData().getIntExtra("tripPlaceIndex", -1);
-
-                        if (updatedTripPlace != null && index >= 0 && index < tripPlaceList.size()) {
-                            tripPlaceList.set(index, updatedTripPlace);
-                            tripPlaceItemAdapter.notifyItemChanged(index);
-                        }
-                    }
-                }
-        );
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -164,41 +142,6 @@ public class AddEditTripActivity extends AppCompatActivity {
             tripViewModel.getTripById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), tripId);
         }
 
-        // Image
-        ImageView image = viewBinding.image;
-        image.setVisibility(ImageView.GONE);
-
-        // Remove image button
-        ConstraintLayout removeImageButton = viewBinding.removeImageButton.findViewById(R.id.button);
-        removeImageButton.setVisibility(View.GONE);
-        removeImageButton.setOnClickListener(v -> {
-            removeImageButton.setVisibility(View.GONE);
-            image.setVisibility(ImageView.GONE);
-            image.setImageDrawable(null);
-            imageUri = null;
-            imagePicker.setVisibility(View.VISIBLE);
-        });
-
-        // Pick image
-        pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-            if (uri != null) {
-                imageUri = uri;
-                Glide.with(this).load(uri).into(viewBinding.image);
-                image.setVisibility(ImageView.VISIBLE);
-                removeImageButton.setVisibility(View.VISIBLE);
-                imagePicker.setVisibility(View.GONE);
-            } else {
-                Log.d("PhotoPicker", "No media selected");
-            }
-        });
-
-        // Image picker
-        imagePicker = viewBinding.imagePicker;
-        imagePicker.setVisibility(ImageView.VISIBLE);
-        imagePicker.setOnClickListener(v -> pickMedia.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                .build()));
-
         // Trip place list
         RecyclerView recyclerView = viewBinding.tripPlaceList;
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -246,8 +189,6 @@ public class AddEditTripActivity extends AppCompatActivity {
             }
         });
 
-        setupActivityResultLauncher();
-
         addPlaceButton.setOnClickListener(v -> {
             Intent addIntent = new Intent(this, TripPlaceCreateActivity.class);
             if (!tripPlaceList.isEmpty()) {
@@ -275,27 +216,7 @@ public class AddEditTripActivity extends AppCompatActivity {
             }
             tripCreateDto.setTripPlaceList(tripPlaceCreateList);
 
-            if (image.getDrawable() != null && imageUri != null) {
-                String folderName = "/wanderfun/trips/" + name.getText().toString().replaceAll("\\s", "") + "/images";
-                String fileName = "image_" + System.currentTimeMillis();
-                CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), imageUri, fileName, folderName, new CloudinaryUtil.CloudinaryCallback() {
-                    @Override
-                    public void onSuccess(CloudinaryImageDto result) {
-                        tripCreateDto.setImageUrl(result.getUrl());
-                        tripCreateDto.setImagePublicId(result.getPublicId());
-                        doAddOrUpdate(tripCreateDto);
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        tripCreateDto.setImagePublicId(null);
-                        tripCreateDto.setImageUrl(null);
-                        doAddOrUpdate(tripCreateDto);
-                    }
-                });
-            } else {
-                doAddOrUpdate(tripCreateDto);
-            }
+            doAddOrUpdate(tripCreateDto);
         });
     }
 
@@ -306,13 +227,6 @@ public class AddEditTripActivity extends AppCompatActivity {
             name.setText(trip.getName());
             tripPlaceItemAdapter.setEditMode(true);
         }
-
-//        if (trip != null && trip.getImageUrl() != null) {
-//            viewBinding.image.setVisibility(View.VISIBLE);
-//            viewBinding.removeImageButton.findViewById(R.id.button).setVisibility(View.VISIBLE);
-//            Glide.with(this).load(trip.getImageUrl()).into(viewBinding.image);
-//            viewBinding.imagePicker.setVisibility(View.GONE);
-//        }
 
         if (trip != null && trip.getTripPlaceList() != null) {
             //tripPlaceList.clear();

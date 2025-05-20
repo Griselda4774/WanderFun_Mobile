@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdapter.TripPlaceItemViewHolder> {
+
     private final List<TripPlace> tripPlaceList;
     private boolean editMode = false;
 
@@ -30,20 +31,14 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
 
     @NonNull
     @Override
-    public TripPlaceItemAdapter.TripPlaceItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TripPlaceItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemTripPlaceBinding binding = ItemTripPlaceBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new TripPlaceItemAdapter.TripPlaceItemViewHolder(binding);
+        return new TripPlaceItemViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TripPlaceItemAdapter.TripPlaceItemViewHolder holder, int position) {
-        TripPlace tripPlace = tripPlaceList.get(position);
-        if (editMode) {
-            holder.enableEdit();
-        } else {
-            holder.disableEdit();
-        }
-        holder.bind(tripPlace, position, this);
+    public void onBindViewHolder(@NonNull TripPlaceItemViewHolder holder, int position) {
+        holder.bind(tripPlaceList.get(position), editMode);
     }
 
     @Override
@@ -58,13 +53,25 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
     }
 
     public void removeItem(int position) {
-        tripPlaceList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemChanged(position - 1);
+        if (position >= 0 && position < tripPlaceList.size()) {
+            tripPlaceList.remove(position);
+            notifyItemRemoved(position);
+            if (position - 1 >= 0) notifyItemChanged(position - 1);
+        }
     }
 
-    public static class TripPlaceItemViewHolder extends RecyclerView.ViewHolder {
-        final ItemTripPlaceBinding binding;
+    public void swapItem(int currentPos) {
+        int nextPos = currentPos + 1;
+        if (nextPos < tripPlaceList.size()) {
+            Collections.swap(tripPlaceList, currentPos, nextPos);
+            notifyItemMoved(currentPos, nextPos);
+            notifyItemChanged(currentPos);
+            notifyItemChanged(nextPos);
+        }
+    }
+
+    class TripPlaceItemViewHolder extends RecyclerView.ViewHolder {
+        private final ItemTripPlaceBinding binding;
 
         public TripPlaceItemViewHolder(@NonNull ItemTripPlaceBinding binding) {
             super(binding.getRoot());
@@ -72,70 +79,67 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
         }
 
         @SuppressLint("SetTextI18n")
-        public void bind(TripPlace tripPlace, int position, TripPlaceItemAdapter adapter) {
-            if (tripPlace.getPlace() != null && tripPlace.getPlace().getName() != null) {
-                binding.placeName.setText(tripPlace.getPlace().getName());
-            }
-            if (tripPlace.getStartTime() != null) {
-                binding.startTime.setText("Từ " + DateTimeUtil.localDateToString(tripPlace.getStartTime()));
-            }
-            if (tripPlace.getEndTime() != null) {
-                binding.endTime.setText("Đến " + DateTimeUtil.localDateToString(tripPlace.getEndTime()));
-            }
-            if (tripPlace.getPlace() != null && tripPlace.getPlace().getCoverImage() != null && tripPlace.getPlace().getCoverImage().getImageUrl() != null) {
-                Glide.with(binding.getRoot().getContext()).load(tripPlace.getPlace().getCoverImage().getImageUrl()).into(binding.placeCoverImage);
+        public void bind(TripPlace tripPlace, boolean isEditMode) {
+            binding.placeName.setText(
+                    tripPlace.getPlace() != null ? tripPlace.getPlace().getName() : ""
+            );
+
+            binding.startTime.setText(
+                    tripPlace.getStartTime() != null ? "Từ " + DateTimeUtil.localDateToString(tripPlace.getStartTime()) : ""
+            );
+
+            binding.endTime.setText(
+                    tripPlace.getEndTime() != null ? "Đến " + DateTimeUtil.localDateToString(tripPlace.getEndTime()) : ""
+            );
+
+            if (tripPlace.getPlace() != null &&
+                    tripPlace.getPlace().getCoverImage() != null &&
+                    tripPlace.getPlace().getCoverImage().getImageUrl() != null) {
+                Glide.with(binding.getRoot().getContext())
+                        .load(tripPlace.getPlace().getCoverImage().getImageUrl())
+                        .into(binding.placeCoverImage);
+            } else {
+                binding.placeCoverImage.setImageDrawable(null); // optional fallback
             }
 
+            setupRemoveButton(isEditMode);
+            setupSwapButton(isEditMode);
+            setupEditClick(tripPlace, isEditMode);
+        }
+
+        private void setupRemoveButton(boolean isEditMode) {
+            binding.removeButtonContainer.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
             binding.removeButtonContainer.findViewById(R.id.button).setOnClickListener(v -> {
-                adapter.removeItem(position);
-                Log.d("TripPlaceItemAdapter", "Item removed at position: " + position);
-            });
-
-            // Swap Button Visibility Logic
-            if (adapter.editMode) {
-                int realPos = getBindingAdapterPosition();
-                int itemCount = adapter.getItemCount();
-
-                // Swap Button Visibility & Action
-                if (itemCount > 1 && realPos != RecyclerView.NO_POSITION && realPos < itemCount - 1) {
-                    binding.swapButton.setVisibility(View.VISIBLE);
-                    binding.swapButton.setOnClickListener(v -> {
-                        int currentPos = getBindingAdapterPosition();
-                        int nextPos = currentPos + 1;
-
-                        if (currentPos != RecyclerView.NO_POSITION && nextPos < adapter.getItemCount()) {
-                            Collections.swap(adapter.tripPlaceList, currentPos, nextPos);
-                            adapter.notifyItemMoved(currentPos, nextPos);
-
-                            adapter.notifyItemChanged(currentPos);
-                            adapter.notifyItemChanged(nextPos);
-                        }
-                    });
-                } else {
-                    binding.swapButton.setVisibility(View.GONE);
-                    binding.swapButton.setOnClickListener(null);
+                int pos = getBindingAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    removeItem(pos);
+                    Log.d("TripPlaceItemAdapter", "Item removed at position: " + pos);
                 }
-            }
-
-            if (adapter.editMode) {
-                binding.getRoot().setOnClickListener(v -> {
-                    Intent intent = new Intent(v.getContext(), TripPlaceCreateActivity.class);
-                    intent.putExtra("selected_place_name", tripPlace.getPlace().getName());
-                    intent.putExtra("selected_place_notes", tripPlace.getPlaceNotes());
-                    intent.putExtra("selected_place_start_time", DateTimeUtil.localDateToString(tripPlace.getStartTime()));
-                    intent.putExtra("selected_place_end_time", DateTimeUtil.localDateToString(tripPlace.getEndTime()));
-                    v.getContext().startActivity(intent);
-                });
-            }
+            });
         }
 
-        public void enableEdit() {
-            binding.removeButtonContainer.setVisibility(View.VISIBLE);
+        private void setupSwapButton(boolean isEditMode) {
+            int currentPos = getBindingAdapterPosition();
+            boolean canSwap = isEditMode && currentPos != RecyclerView.NO_POSITION && currentPos < getItemCount() - 1;
+
+            binding.swapButton.setVisibility(canSwap ? View.VISIBLE : View.GONE);
+            binding.swapButton.setOnClickListener(canSwap ? v -> swapItem(currentPos) : null);
         }
 
-        public void disableEdit() {
-            binding.removeButtonContainer.setVisibility(View.GONE);
+        private void setupEditClick(TripPlace tripPlace, boolean isEditMode) {
+            if (!isEditMode) {
+                binding.getRoot().setOnClickListener(null);
+                return;
+            }
+
+            binding.getRoot().setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), TripPlaceCreateActivity.class);
+                intent.putExtra("selected_place_name", tripPlace.getPlace().getName());
+                intent.putExtra("selected_place_notes", tripPlace.getPlaceNotes());
+                intent.putExtra("selected_place_start_time", DateTimeUtil.localDateToString(tripPlace.getStartTime()));
+                intent.putExtra("selected_place_end_time", DateTimeUtil.localDateToString(tripPlace.getEndTime()));
+                v.getContext().startActivity(intent);
+            });
         }
     }
 }
-
