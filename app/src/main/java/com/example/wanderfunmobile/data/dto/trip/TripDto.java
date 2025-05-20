@@ -13,7 +13,7 @@ public class TripDto {
     private String imagePublicId;
     private LocalDate startTime;
     private LocalDate endTime;
-    private List<TripPlaceDto> tripPlaces;
+    private List<TripPlaceDto> tripPlaceList;
 
     public TripDto() {
     }
@@ -66,11 +66,11 @@ public class TripDto {
         this.endTime = endTime;
     }
 
-    public List<TripPlaceDto> getTripPlaces() {
-        return tripPlaces;
+    public List<TripPlaceDto> getTripPlaceList() {
+        return tripPlaceList;
     }
 
-    public void setTripPlaces(List<TripPlaceDto> tripPlaces) {
-        this.tripPlaces = tripPlaces;
+    public void setTripPlaceList(List<TripPlaceDto> tripPlaceList) {
+        this.tripPlaceList = tripPlaceList;
     }
 }

@@ -13,6 +13,7 @@ import com.example.wanderfunmobile.data.dto.feedback.FeedbackCreateDto;
 import com.example.wanderfunmobile.data.dto.feedback.FeedbackDto;
 import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.data.api.backend.PlaceApi;
+import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.domain.repository.PlaceRepository;
 
 import java.util.List;

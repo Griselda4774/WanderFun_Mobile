@@ -11,6 +11,9 @@ public class TripPlaceDto {
     private LocalDate startTime;
     private LocalDate endTime;
     private Long tripId;
+    private String placeNotes;
+
+    public TripPlaceDto() {}
 
     public Long getId() {
         return id;
@@ -50,5 +53,13 @@ public class TripPlaceDto {
 
     public void setTripId(Long tripId) {
         this.tripId = tripId;
+    }
+
+    public String getPlaceNotes() {
+        return placeNotes;
+    }
+
+    public void setPlaceNotes(String placeNotes) {
+        this.placeNotes = placeNotes;
     }
 }

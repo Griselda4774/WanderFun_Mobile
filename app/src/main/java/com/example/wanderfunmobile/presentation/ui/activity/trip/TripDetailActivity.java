@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -88,7 +89,10 @@ public class TripDetailActivity extends AppCompatActivity {
 
 
         // Back button
-        viewBinding.backButton.setOnClickListener(v -> finish());
+        ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
+        backButton.setOnClickListener(v -> {
+            finish();
+        });
 
         // Selection dialog
         selectionDialog = viewBinding.selectionDialog;
@@ -176,5 +180,4 @@ public class TripDetailActivity extends AppCompatActivity {
 //            Glide.with(this).load(trip.getImageUrl()).into(viewBinding.image);
 //        }
     }
-
 }
