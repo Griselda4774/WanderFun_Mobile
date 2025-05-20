@@ -95,4 +95,10 @@
     <dimen name="close_icon_size">12dp</dimen>
     <dimen name="close_button_padding">16dp</dimen>
 
+    <!--    Add edit post activity      -->
+    <dimen name="post_option_padding_vertical">12dp</dimen>
+    <dimen name="post_option_padding_horizontal">@dimen/app_horizontal_margin</dimen>
+    <dimen name="post_option_margin_vertical">8dp</dimen>
+    <dimen name="post_option_icon_size">24dp</dimen>
+
 </resources>

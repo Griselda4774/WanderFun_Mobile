@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/trip_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingVertical="@dimen/item_padding_vertical"
     android:layout_marginTop="8dp"
-    android:background="@drawable/bg_border_bottom">
+    android:background="@drawable/bg_border_bottom"
+    android:clickable="true"
+    android:stateListAnimator="@animator/touch_opacity_animator">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,6 +18,7 @@
         android:layout_marginHorizontal="@dimen/app_horizontal_margin">
 
         <ImageView
+            android:id="@+id/user_avatar"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_avatar" />
@@ -25,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="8dp">
+            android:layout_marginStart="8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -34,19 +36,20 @@
                 android:gravity="end">
 
                 <TextView
-                    android:id="@+id/author"
+                    android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
                     android:text="Trần Đình Tâm"
                     style="@style/Text.Title.Section" />
 
                 <TextView
+                    android:id="@+id/date_created"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="01/01/2025"
                     android:textColor="@color/black1"
-                    style="@style/Text.Description"
-                    android:layout_marginLeft="16dp"/>
+                    style="@style/Text.Description" />
 
             </LinearLayout>
 
@@ -64,6 +67,7 @@
                     style="@style/Text.Description" />
 
                 <TextView
+                    android:id="@+id/place_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tên địa điểm"
@@ -81,7 +85,7 @@
                     android:stateListAnimator="@animator/touch_opacity_animator">
 
                     <TextView
-                        android:id="@+id/register_button"
+                        android:id="@+id/explore_place_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Khám phá ngay"
@@ -103,6 +107,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/app_horizontal_margin"
@@ -111,11 +116,11 @@
         style="@style/Text.Content"/>
 
     <ImageView
-        android:id="@+id/post_image"
+        android:id="@+id/image"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="600dp"
+        android:maxHeight="400dp"
         android:adjustViewBounds="true"
         android:src="@drawable/chill_image" />
 
@@ -137,8 +142,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_heart"
-                app:tint="@color/blue2" />
+                android:src="@drawable/ic_heart_rounded" />
 
             <TextView
                 android:id="@+id/like_count"
@@ -160,6 +164,7 @@
             android:gravity="center_vertical">
 
             <TextView
+                android:id="@+id/comment_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="15"
@@ -182,27 +187,67 @@
         android:layout_marginTop="16dp">
 
         <LinearLayout
-            android:id="@+id/like_button"
+            android:id="@+id/like_button_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/comment_button"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_heart_outline" />
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/like_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thích"
-                style="@style/Text.Content"
-                android:layout_marginStart="4dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:background="@drawable/effect_ripple"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_heart_outline" />
+
+                <TextView
+                    android:id="@+id/like_button_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thích"
+                    style="@style/Text.Content"
+                    android:layout_marginStart="4dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/like_button_highlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:background="@drawable/effect_ripple"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_heart"
+                    app:tint="@color/blue2"/>
+
+                <TextView
+                    android:id="@+id/like_button_highlight_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thích"
+                    style="@style/Text.Content"
+                    android:textColor="@color/blue2"
+                    android:layout_marginStart="4dp"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -213,9 +258,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/like_button"
+            app:layout_constraintStart_toEndOf="@id/like_button_wrapper"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:background="@drawable/effect_ripple">
 
             <ImageView
                 android:layout_width="20dp"

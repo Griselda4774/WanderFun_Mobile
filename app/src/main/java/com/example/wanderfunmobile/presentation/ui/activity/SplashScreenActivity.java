@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.MediaManagerStateUtil;
+import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 
@@ -38,6 +39,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     toMainActivity();
                 } else {
                     SessionManager.getInstance(getApplicationContext()).logout();
+                    PostViewManager.getInstance(getApplicationContext()).reset();
                     Toast.makeText(getApplicationContext(), "Phiên đăng nhập hết hạn!\nVui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
                     toLoginActivity();
                 }

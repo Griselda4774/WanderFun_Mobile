@@ -42,11 +42,11 @@ public class AddressRepositoryImpl implements AddressRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<ProvinceDto>>> call,
                                        @NonNull Response<ResponseDto<List<ProvinceDto>>> response) {
-                    if (response.body() != null) {
+                    if (response.isSuccessful() && response.body() != null) {
                         if (!response.body().isError() && response.body().getData() != null) {
-                            List<ProvinceDto> provinceDtos = response.body().getData();
-                            List<Province> provinces = objectMapper.mapList(provinceDtos, Province.class);
-                            findAllProvincesLiveData.postValue(provinces);
+                            List<ProvinceDto> provinceDtoList = response.body().getData();
+                            List<Province> provinceList = objectMapper.mapList(provinceDtoList, Province.class);
+                            findAllProvincesLiveData.postValue(provinceList);
                         } else {
                             Log.e("AddressRepositoryImpl", "Error: " + response.body().getMessage());
                         }
