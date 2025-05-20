@@ -1,28 +1,27 @@
-package com.example.wanderfunmobile.domain.model.posts;
+package com.example.wanderfunmobile.data.dto.posts;
 
-import com.example.wanderfunmobile.domain.model.images.Image;
-import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.domain.model.trips.Trip;
-import com.example.wanderfunmobile.domain.model.users.User;
+import com.example.wanderfunmobile.data.dto.images.ImageDto;
+import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
+import com.example.wanderfunmobile.data.dto.trip.TripDto;
+import com.example.wanderfunmobile.data.dto.user.MiniUserDto;
 
 import java.time.LocalDateTime;
 
-public class Post {
+public class PostDto {
     private Long id;
-    private User user;
+    private MiniUserDto user;
     private String content;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private Place place;
+    private MiniPlaceDto place;
     private boolean isTripShare;
-    private Trip trip;
-    private Image image;
+    private TripDto trip;
+    private ImageDto image;
     private Long likeCount;
     private Long commentCount;
-
     private boolean isLiked;
 
-    public Post() {
+    public PostDto() {
     }
 
     public Long getId() {
@@ -33,11 +32,11 @@ public class Post {
         this.id = id;
     }
 
-    public User getUser() {
+    public MiniUserDto getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(MiniUserDto user) {
         this.user = user;
     }
 
@@ -65,11 +64,11 @@ public class Post {
         this.updateAt = updateAt;
     }
 
-    public Place getPlace() {
+    public MiniPlaceDto getPlace() {
         return place;
     }
 
-    public void setPlace(Place place) {
+    public void setPlace(MiniPlaceDto place) {
         this.place = place;
     }
 
@@ -81,19 +80,19 @@ public class Post {
         isTripShare = tripShare;
     }
 
-    public Trip getTrip() {
+    public TripDto getTrip() {
         return trip;
     }
 
-    public void setTrip(Trip trip) {
+    public void setTrip(TripDto trip) {
         this.trip = trip;
     }
 
-    public Image getImage() {
+    public ImageDto getImage() {
         return image;
     }
 
-    public void setImage(Image image) {
+    public void setImage(ImageDto image) {
         this.image = image;
     }
 

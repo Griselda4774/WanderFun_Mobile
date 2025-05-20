@@ -5,6 +5,14 @@ import android.content.SharedPreferences;
 
 public class SessionManager {
 
+    private static final String ID_KEY = "id";
+    private static final String EMAIL_KEY = "email";
+    private static final String ROLE_KEY = "role";
+    private static final String TOKEN_TYPE_KEY = "tokenType";
+    private static final String ACCESS_TOKEN_KEY = "accessToken";
+    private static final String REFRESH_TOKEN_KEY = "refreshToken";
+    private static final String IS_LOGGED_IN_KEY = "isLoggedIn";
+
     private static final String PREF_NAME = "UserSession";
     private static SessionManager instance;
     private final SharedPreferences sharedPreferences;
@@ -22,60 +30,60 @@ public class SessionManager {
 
     public void login(Long id, String email, String role, String tokenType, String accessToken, String refreshToken) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong("id", id);
-        editor.putString("email", email);
-        editor.putString("role", role);
-        editor.putString("tokenType", tokenType);
-        editor.putString("accessToken", accessToken);
-        editor.putString("refreshToken", refreshToken);
-        editor.putBoolean("isLoggedIn", true);
+        editor.putLong(ID_KEY, id);
+        editor.putString(EMAIL_KEY, email);
+        editor.putString(ROLE_KEY, role);
+        editor.putString(TOKEN_TYPE_KEY, tokenType);
+        editor.putString(ACCESS_TOKEN_KEY, accessToken);
+        editor.putString(REFRESH_TOKEN_KEY, refreshToken);
+        editor.putBoolean(IS_LOGGED_IN_KEY, true);
         editor.apply();
     }
 
     public void logout() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("id");
-        editor.remove("email");
-        editor.remove("role");
-        editor.remove("tokenType");
-        editor.remove("accessToken");
-        editor.remove("refreshToken");
-        editor.putBoolean("isLoggedIn", false);
+        editor.remove(ID_KEY);
+        editor.remove(EMAIL_KEY);
+        editor.remove(ROLE_KEY);
+        editor.remove(TOKEN_TYPE_KEY);
+        editor.remove(ACCESS_TOKEN_KEY);
+        editor.remove(REFRESH_TOKEN_KEY);
+        editor.putBoolean(IS_LOGGED_IN_KEY, false);
         editor.apply();
     }
 
     public void refresh(String accessToken, String refreshToken) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("accessToken", accessToken);
-        editor.putString("refreshToken", refreshToken);
+        editor.putString(ACCESS_TOKEN_KEY, accessToken);
+        editor.putString(REFRESH_TOKEN_KEY, refreshToken);
         editor.apply();
     }
 
     public Long getUserId() {
-        return sharedPreferences.getLong("id", -1);
+        return sharedPreferences.getLong(ID_KEY, -1);
     }
 
     public String getUserEmail() {
-        return sharedPreferences.getString("email", null);
+        return sharedPreferences.getString(EMAIL_KEY, null);
     }
 
     public String getUserRole() {
-        return sharedPreferences.getString("role", null);
+        return sharedPreferences.getString(ROLE_KEY, null);
     }
 
     public String getTokenType() {
-        return sharedPreferences.getString("tokenType", null);
+        return sharedPreferences.getString(TOKEN_TYPE_KEY, null);
     }
 
     public String getAccessToken() {
-        return sharedPreferences.getString("accessToken", null);
+        return sharedPreferences.getString(ACCESS_TOKEN_KEY, null);
     }
 
     public String getRefreshToken() {
-        return sharedPreferences.getString("refreshToken", null);
+        return sharedPreferences.getString(REFRESH_TOKEN_KEY, null);
     }
 
     public Boolean isLoggedIn() {
-        return sharedPreferences.getBoolean("isLoggedIn", false);
+        return sharedPreferences.getBoolean(IS_LOGGED_IN_KEY, false);
     }
 }

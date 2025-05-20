@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.data.dto.auth.LoginDto;
 import com.example.wanderfunmobile.data.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
@@ -101,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         TextView guestButton = viewBinding.guestButton;
         guestButton.setOnClickListener(v -> {
             SessionManager.getInstance(getApplicationContext()).logout();
+            PostViewManager.getInstance(getApplicationContext()).reset();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

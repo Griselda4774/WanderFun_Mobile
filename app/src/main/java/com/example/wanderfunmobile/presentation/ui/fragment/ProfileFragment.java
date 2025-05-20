@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.databinding.FragmentProfileBinding;
 import com.example.wanderfunmobile.presentation.ui.activity.LoginActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.album.MyAlbumActivity;
@@ -70,6 +71,7 @@ public class ProfileFragment extends Fragment {
         logoutSection.setOnClickListener(v -> {
             authViewModel.logout("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext().getApplicationContext()).getAccessToken());
             SessionManager.getInstance(requireActivity().getApplicationContext()).logout();
+            PostViewManager.getInstance(requireActivity().getApplicationContext()).reset();
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivity(intent);
             requireActivity().finish();

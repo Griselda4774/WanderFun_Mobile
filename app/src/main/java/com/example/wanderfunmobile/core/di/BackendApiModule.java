@@ -5,12 +5,14 @@ import android.content.Context;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.LocalDateDeserializer;
 import com.example.wanderfunmobile.core.util.LocalDateSerializer;
+import com.example.wanderfunmobile.core.util.typeadapter.LocalDateTimeAdapter;
 import com.example.wanderfunmobile.data.api.backend.AddressApi;
 import com.example.wanderfunmobile.data.api.backend.AlbumApi;
 import com.example.wanderfunmobile.data.api.backend.AuthApi;
 import com.example.wanderfunmobile.data.api.backend.CloudinaryApi;
 import com.example.wanderfunmobile.data.api.backend.LeaderboardApi;
 import com.example.wanderfunmobile.data.api.backend.PlaceApi;
+import com.example.wanderfunmobile.data.api.backend.PostApi;
 import com.example.wanderfunmobile.data.api.backend.TripApi;
 import com.example.wanderfunmobile.data.api.backend.UserApi;
 import com.example.wanderfunmobile.core.util.DateDeserializer;
@@ -19,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -163,5 +166,23 @@ public class BackendApiModule {
                         .build())
                 .build()
                 .create(LeaderboardApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public PostApi providePostApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(PostApi.class);
     }
 }

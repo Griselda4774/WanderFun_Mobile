@@ -7,7 +7,8 @@ public class MiniPlaceDto {
     private String name;
     private Image coverImage;
 
-    public MiniPlaceDto() {}
+    public MiniPlaceDto() {
+    }
 
     public Long getId() {
         return id;
@@ -24,9 +25,11 @@ public class MiniPlaceDto {
     public void setName(String name) {
         this.name = name;
     }
+
     public Image getCoverImage() {
         return coverImage;
     }
+
     public void setCoverImage(Image coverImage) {
         this.coverImage = coverImage;
     }
