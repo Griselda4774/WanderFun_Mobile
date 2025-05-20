@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -38,5 +39,15 @@ public class DateTimeUtil {
     public static LocalDate stringToLocalDate(String dateString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return LocalDate.parse(dateString, formatter);
+    }
+
+    public static String localDateTimeToString(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm, dd/MM/yyyy");
+        return localDateTime.format(formatter);
+    }
+
+    public static LocalDateTime stringToLocalDateTime(String dateString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm, dd/MM/yyyy");
+        return LocalDateTime.parse(dateString, formatter);
     }
 }

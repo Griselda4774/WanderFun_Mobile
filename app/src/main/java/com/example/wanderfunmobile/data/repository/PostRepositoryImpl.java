@@ -36,11 +36,10 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<List<Post>>> findAllPostsByCursor(String bearerToken, Long cursor, int size) {
+    public LiveData<Result<List<Post>>> findAllPostsByCursor(Long cursor, int size) {
         MutableLiveData<Result<List<Post>>> findAllPostsByCursorResponseLiveData = new MutableLiveData<>();
-
         try {
-            Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsByCursor(bearerToken, cursor, size);
+            Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsByCursor(cursor, size);
             call.enqueue(new Callback<ResponseDto<List<PostDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<PostDto>>> call,
@@ -70,11 +69,79 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<Post>> findPostById(String bearerToken, Long postId) {
+    public LiveData<Result<List<Post>>> findAllPostsWithSize(int size) {
+        MutableLiveData<Result<List<Post>>> findAllPostsByCursorResponseLiveData = new MutableLiveData<>();
+        try {
+            Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsWithSize(size);
+            call.enqueue(new Callback<ResponseDto<List<PostDto>>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<List<PostDto>>> call,
+                                       @NonNull Response<ResponseDto<List<PostDto>>> response) {
+                    Log.d("PostRepositoryImpl", "Response: " + response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<List<Post>> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.mapList(response.body().getData(), Post.class));
+                        }
+                        findAllPostsByCursorResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<List<PostDto>>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e("PostRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("PostRepositoryImpl", "Error during findAllPostsByCursor", e);
+        }
+
+        return findAllPostsByCursorResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<List<Post>>> findAllPostsNoParam() {
+        MutableLiveData<Result<List<Post>>> findAllPostsByCursorResponseLiveData = new MutableLiveData<>();
+        try {
+            Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsNoParam();
+            call.enqueue(new Callback<ResponseDto<List<PostDto>>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<List<PostDto>>> call,
+                                       @NonNull Response<ResponseDto<List<PostDto>>> response) {
+                    Log.d("PostRepositoryImpl", "Response: " + response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<List<Post>> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.mapList(response.body().getData(), Post.class));
+                        }
+                        findAllPostsByCursorResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<List<PostDto>>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e("PostRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("PostRepositoryImpl", "Error during findAllPostsByCursor", e);
+        }
+
+        return findAllPostsByCursorResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<Post>> findPostById(Long postId) {
         MutableLiveData<Result<Post>> findPostByIdResponseLiveData = new MutableLiveData<>();
 
         try {
-            Call<ResponseDto<PostDto>> call = postApi.findPostById(bearerToken, postId);
+            Call<ResponseDto<PostDto>> call = postApi.findPostById(postId);
             call.enqueue(new Callback<ResponseDto<PostDto>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<PostDto>> call,

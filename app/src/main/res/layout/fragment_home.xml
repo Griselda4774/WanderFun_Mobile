@@ -56,7 +56,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/create_post_container"
@@ -122,7 +123,22 @@
                 app:layout_constraintTop_toBottomOf="@id/create_post_container"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:nestedScrollingEnabled="true" />
+                android:nestedScrollingEnabled="true"
+                android:scrollbars="vertical"
+                android:overScrollMode="ifContentScrolls"/>
+
+            <ProgressBar
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:indeterminateTint="@color/blue2"
+                app:layout_constraintTop_toBottomOf="@id/post_list"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@android:color/transparent"
+                android:indeterminateTintMode="src_in"
+                android:visibility="gone"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

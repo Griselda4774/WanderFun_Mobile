@@ -18,12 +18,17 @@ import retrofit2.http.Query;
 
 public interface PostApi {
     @GET("post/cursor")
-    Call<ResponseDto<List<PostDto>>> findAllPostsByCursor(@Header("Authorization") String bearerToken,
-                                                          @Query("cursor") Long cursor, @Query("size") int size);
+    Call<ResponseDto<List<PostDto>>> findAllPostsByCursor(@Query("cursor") Long cursor,
+                                                          @Query("size") int size);
+
+    @GET("post/cursor")
+    Call<ResponseDto<List<PostDto>>> findAllPostsWithSize(@Query("size") int size);
+
+    @GET("post/cursor")
+    Call<ResponseDto<List<PostDto>>> findAllPostsNoParam();
 
     @GET("post/{postId}")
-    Call<ResponseDto<PostDto>> findPostById(@Header("Authorization") String bearerToken,
-                                          @Path("postId") Long postId);
+    Call<ResponseDto<PostDto>> findPostById(@Path("postId") Long postId);
 
     @POST("post")
     Call<ResponseDto<PostDto>> createPost(@Header("Authorization") String bearerToken,
