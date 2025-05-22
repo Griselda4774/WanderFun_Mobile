@@ -16,6 +16,7 @@ constraintlayout = "2.2.0"
 modelmapper = "3.2.2"
 retrofit = "2.11.0"
 viewpager2 = "1.1.0"
+parceler = "1.1.12"
 
 
 [libraries]
@@ -36,6 +37,9 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 modelmapper = { module = "org.modelmapper:modelmapper", version.ref = "modelmapper" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
+parceler-api = { module = "org.parceler:parceler-api", version.ref = "parceler" }
+parceler-compiler = { module = "org.parceler:parceler", version.ref = "parceler" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

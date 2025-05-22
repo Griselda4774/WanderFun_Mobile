@@ -41,16 +41,6 @@ public class DateTimeUtil {
         return LocalDate.parse(dateString, formatter);
     }
 
-    public static String localDateToApiString(LocalDate localDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return localDate.format(formatter);
-    }
-
-    public static LocalDate apiStringToLocalDate(String dateString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(dateString, formatter);
-    }
-  
     public static String localDateTimeToString(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm, dd/MM/yyyy");
         return localDateTime.format(formatter);
@@ -60,4 +50,19 @@ public class DateTimeUtil {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm, dd/MM/yyyy");
         return LocalDateTime.parse(dateString, formatter);
     }
+
+    public static LocalDate dateToLocalDate(Date date) {
+        return date.toInstant()
+                .atZone(java.time.ZoneId.of("Asia/Ho_Chi_Minh"))
+                .toLocalDate();
+    }
+
+    public static Date localDateToDate(LocalDate localDate) {
+        return java.util.Date.from(
+                localDate.atStartOfDay()
+                        .atZone(java.time.ZoneId.of("Asia/Ho_Chi_Minh"))
+                        .toInstant()
+        );
+    }
+
 }

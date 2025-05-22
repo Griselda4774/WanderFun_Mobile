@@ -1,5 +1,8 @@
 package com.example.wanderfunmobile.data.dto.images;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class ImageDto {
     private Long id;
     private String imageUrl;
