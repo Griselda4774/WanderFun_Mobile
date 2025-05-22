@@ -2,9 +2,12 @@ package com.example.wanderfunmobile.data.dto.tripplace;
 
 import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
 
+import org.parceler.Parcel;
+
 import java.time.LocalDate;
 import java.util.Date;
 
+@Parcel
 public class TripPlaceDto {
     private Long id;
     private MiniPlaceDto place;

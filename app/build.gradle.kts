@@ -60,5 +60,8 @@ dependencies {
     implementation(libs.cloudinary.android)
     implementation(libs.glide)
 
+    implementation(libs.parceler.api)
+    annotationProcessor(libs.parceler.compiler)
+
     
 }

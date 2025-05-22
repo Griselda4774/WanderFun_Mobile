@@ -122,8 +122,9 @@ public class BackendApiModule {
     @Singleton
     public TripApi provideTripApi(@ApplicationContext Context context) {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Date.class, new DateDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+                .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+                .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                .setDateFormat("yyyy-MM-dd")
                 .create();
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()

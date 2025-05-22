@@ -123,7 +123,7 @@ public class TripDetailActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = viewBinding.tripPlaceList;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        tripPlaceItemAdapter = new TripPlaceItemAdapter(tripPlaceList);
+        tripPlaceItemAdapter = new TripPlaceItemAdapter(tripPlaceList, objectMapper, null);
         recyclerView.setAdapter(tripPlaceItemAdapter);
 
         // Delete button

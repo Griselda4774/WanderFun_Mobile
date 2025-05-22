@@ -12,21 +12,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceDto;
+import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.ItemTripPlaceBinding;
 import com.example.wanderfunmobile.domain.model.trips.TripPlace;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.presentation.ui.activity.trip.TripPlaceCreateActivity;
 
+import org.parceler.Parcels;
+
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdapter.TripPlaceItemViewHolder> {
 
+    @Inject
+    ObjectMapper objectMapper;
     private final List<TripPlace> tripPlaceList;
     private boolean editMode = false;
 
-    public TripPlaceItemAdapter(List<TripPlace> tripPlaceList) {
+    private OnTripPlaceClickListener clickListener;
+
+    public interface OnTripPlaceClickListener {
+        void onClick(TripPlace tripPlace, int position);
+    }
+
+    public TripPlaceItemAdapter(List<TripPlace> tripPlaceList, ObjectMapper objectMapper, OnTripPlaceClickListener clickListener) {
         this.tripPlaceList = tripPlaceList;
+        this.objectMapper = objectMapper;
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -38,7 +55,7 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
 
     @Override
     public void onBindViewHolder(@NonNull TripPlaceItemViewHolder holder, int position) {
-        holder.bind(tripPlaceList.get(position), editMode);
+        holder.bind(tripPlaceList.get(position), editMode, position);
     }
 
     @Override
@@ -64,6 +81,19 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
         int nextPos = currentPos + 1;
         if (nextPos < tripPlaceList.size()) {
             Collections.swap(tripPlaceList, currentPos, nextPos);
+
+            TripPlace first = tripPlaceList.get(currentPos);
+            TripPlace second = tripPlaceList.get(nextPos);
+
+            LocalDate tempStart = first.getStartTime();
+            LocalDate tempEnd = first.getEndTime();
+
+            first.setStartTime(second.getStartTime());
+            first.setEndTime(second.getEndTime());
+
+            second.setStartTime(tempStart);
+            second.setEndTime(tempEnd);
+
             notifyItemMoved(currentPos, nextPos);
             notifyItemChanged(currentPos);
             notifyItemChanged(nextPos);
@@ -79,9 +109,13 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
         }
 
         @SuppressLint("SetTextI18n")
-        public void bind(TripPlace tripPlace, boolean isEditMode) {
+        public void bind(TripPlace tripPlace, boolean isEditMode, int position) {
             binding.placeName.setText(
                     tripPlace.getPlace() != null ? tripPlace.getPlace().getName() : ""
+            );
+
+            binding.placeNote.setText(
+                    tripPlace.getPlaceNotes() != null ? tripPlace.getPlaceNotes() : ""
             );
 
             binding.startTime.setText(
@@ -104,7 +138,7 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
 
             setupRemoveButton(isEditMode);
             setupSwapButton(isEditMode);
-            setupEditClick(tripPlace, isEditMode);
+            setupEditClick(tripPlace, isEditMode, position);
         }
 
         private void setupRemoveButton(boolean isEditMode) {
@@ -126,19 +160,16 @@ public class TripPlaceItemAdapter extends RecyclerView.Adapter<TripPlaceItemAdap
             binding.swapButton.setOnClickListener(canSwap ? v -> swapItem(currentPos) : null);
         }
 
-        private void setupEditClick(TripPlace tripPlace, boolean isEditMode) {
+        private void setupEditClick(TripPlace tripPlace, boolean isEditMode, int position) {
             if (!isEditMode) {
                 binding.getRoot().setOnClickListener(null);
                 return;
             }
 
             binding.getRoot().setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), TripPlaceCreateActivity.class);
-                intent.putExtra("selected_place_name", tripPlace.getPlace().getName());
-                intent.putExtra("selected_place_notes", tripPlace.getPlaceNotes());
-                intent.putExtra("selected_place_start_time", DateTimeUtil.localDateToString(tripPlace.getStartTime()));
-                intent.putExtra("selected_place_end_time", DateTimeUtil.localDateToString(tripPlace.getEndTime()));
-                v.getContext().startActivity(intent);
+                if (clickListener != null) {
+                    clickListener.onClick(tripPlace, position);
+                }
             });
         }
     }

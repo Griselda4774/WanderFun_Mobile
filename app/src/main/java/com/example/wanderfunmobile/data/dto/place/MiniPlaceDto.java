@@ -1,11 +1,14 @@
 package com.example.wanderfunmobile.data.dto.place;
 
-import com.example.wanderfunmobile.domain.model.images.Image;
+import com.example.wanderfunmobile.data.dto.images.ImageDto;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class MiniPlaceDto {
     private Long id;
     private String name;
-    private Image coverImage;
+    private ImageDto coverImage;
 
     public MiniPlaceDto() {}
 
@@ -24,10 +27,12 @@ public class MiniPlaceDto {
     public void setName(String name) {
         this.name = name;
     }
-    public Image getCoverImage() {
+
+    public ImageDto getCoverImage() {
         return coverImage;
     }
-    public void setCoverImage(Image coverImage) {
+
+    public void setCoverImage(ImageDto coverImage) {
         this.coverImage = coverImage;
     }
 }
