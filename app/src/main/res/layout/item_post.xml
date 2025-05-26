@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingVertical="@dimen/item_padding_vertical"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp"
     android:layout_marginTop="8dp"
     android:background="@drawable/bg_border_bottom"
     android:clickable="true"
@@ -54,6 +55,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/place_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -114,6 +116,30 @@
         android:layout_marginTop="16dp"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent dada rutrum lectus tortor, sed placerat nunc pulvinar eu. Nulla mattis vu van dignissim."
         style="@style/Text.Content"/>
+
+    <TextView
+        android:id="@+id/see_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+        android:layout_marginTop="16dp"
+        android:text="Xem thêm"
+        android:textStyle="bold"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator"
+        style="@style/Text.Content.Highlight" />
+
+    <TextView
+        android:id="@+id/see_less"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+        android:layout_marginTop="16dp"
+        android:text="Rút gọn"
+        android:textStyle="bold"
+        style="@style/Text.Content.Highlight"
+        android:clickable="true"
+        android:stateListAnimator="@animator/touch_opacity_animator"/>
 
     <ImageView
         android:id="@+id/image"
@@ -181,10 +207,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/like_comment_button_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/app_horizontal_margin"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="8dp">
 
         <LinearLayout
             android:id="@+id/like_button_wrapper"
@@ -200,6 +227,8 @@
                 android:id="@+id/like_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="12dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:clickable="true"
@@ -225,6 +254,8 @@
                 android:id="@+id/like_button_highlight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="12dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:clickable="true"
@@ -255,6 +286,8 @@
             android:id="@+id/comment_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

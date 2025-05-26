@@ -44,7 +44,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scrollbars="none"
@@ -83,19 +83,22 @@
                     android:clickable="true"
                     android:stateListAnimator="@animator/touch_opacity_animator"/>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:id="@+id/create_post_input"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_search_bar"
-                    android:paddingHorizontal="8dp"
                     android:layout_marginStart="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     app:layout_constraintStart_toEndOf="@id/user_avatar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:clickable="true"
-                    android:stateListAnimator="@animator/touch_opacity_animator">
+                    android:foreground="@drawable/effect_ripple"
+                    android:background="@drawable/bg_search_bar"
+                    android:stateListAnimator="@animator/touch_opacity_animator"
+                    android:paddingHorizontal="8dp">
 
                     <TextView
                         style="@style/Text.Content"
@@ -105,14 +108,10 @@
                         android:text="Ban đang nghĩ gì?"
                         android:padding="8dp"
                         android:textColor="@color/black1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
                         android:clickable="false"
                         android:longClickable="false" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -127,21 +126,21 @@
                 android:scrollbars="vertical"
                 android:overScrollMode="ifContentScrolls"/>
 
-            <ProgressBar
-                android:id="@+id/loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:indeterminateTint="@color/blue2"
-                app:layout_constraintTop_toBottomOf="@id/post_list"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:background="@android:color/transparent"
-                android:indeterminateTintMode="src_in"
-                android:visibility="gone"/>
+<!--            <ProgressBar-->
+<!--                android:id="@+id/loading"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginVertical="8dp"-->
+<!--                android:indeterminateTint="@color/blue2"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/post_list"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                android:background="@android:color/transparent"-->
+<!--                android:indeterminateTintMode="src_in"-->
+<!--                android:visibility="gone"/>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

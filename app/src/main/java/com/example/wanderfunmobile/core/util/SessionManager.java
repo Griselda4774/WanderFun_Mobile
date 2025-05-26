@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 
 public class SessionManager {
 
-    private static final String ID_KEY = "id";
-    private static final String EMAIL_KEY = "email";
+    private static final String ACCOUNT_ID_KEY = "id";
+    private static final String USER_ID_KEY = "userId";
     private static final String ROLE_KEY = "role";
     private static final String TOKEN_TYPE_KEY = "tokenType";
     private static final String ACCESS_TOKEN_KEY = "accessToken";
@@ -28,10 +28,10 @@ public class SessionManager {
         return instance;
     }
 
-    public void login(Long id, String email, String role, String tokenType, String accessToken, String refreshToken) {
+    public void login(Long id, Long userId, String role, String tokenType, String accessToken, String refreshToken) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(ID_KEY, id);
-        editor.putString(EMAIL_KEY, email);
+        editor.putLong(ACCOUNT_ID_KEY, id);
+        editor.putLong(USER_ID_KEY, userId);
         editor.putString(ROLE_KEY, role);
         editor.putString(TOKEN_TYPE_KEY, tokenType);
         editor.putString(ACCESS_TOKEN_KEY, accessToken);
@@ -42,8 +42,8 @@ public class SessionManager {
 
     public void logout() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(ID_KEY);
-        editor.remove(EMAIL_KEY);
+        editor.remove(ACCOUNT_ID_KEY);
+        editor.remove(USER_ID_KEY);
         editor.remove(ROLE_KEY);
         editor.remove(TOKEN_TYPE_KEY);
         editor.remove(ACCESS_TOKEN_KEY);
@@ -59,15 +59,15 @@ public class SessionManager {
         editor.apply();
     }
 
+    public Long getAccountId() {
+        return sharedPreferences.getLong(ACCOUNT_ID_KEY, -1);
+    }
+
     public Long getUserId() {
-        return sharedPreferences.getLong(ID_KEY, -1);
+        return sharedPreferences.getLong(USER_ID_KEY, -1);
     }
 
-    public String getUserEmail() {
-        return sharedPreferences.getString(EMAIL_KEY, null);
-    }
-
-    public String getUserRole() {
+    public String getRole() {
         return sharedPreferences.getString(ROLE_KEY, null);
     }
 

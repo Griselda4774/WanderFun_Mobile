@@ -32,16 +32,48 @@
                 app:layout_constraintBottom_toBottomOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <include layout="@layout/button_back_rounded" />
+                <include
+                    android:id="@+id/back_button"
+                    layout="@layout/button_back_rounded" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/modify_button_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/edit_button"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    app:tint="@color/black4"
+                    android:src="@drawable/ic_edit"
+                    android:clickable="true"
+                    android:stateListAnimator="@animator/touch_opacity_animator"/>
+
+                <ImageView
+                    android:id="@+id/delete_button"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_delete"
+                    android:clickable="true"
+                    android:stateListAnimator="@animator/touch_opacity_animator"
+                    app:tint="@color/red4" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -105,6 +137,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/place_info"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -136,6 +169,7 @@
                                 android:stateListAnimator="@animator/touch_opacity_animator">
 
                                 <TextView
+                                    android:id="@+id/explore_place_button"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Khám phá ngay"
@@ -165,6 +199,30 @@
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent dada rutrum lectus tortor, sed placerat nunc pulvinar eu. Nulla mattis vu van dignissim."
                     style="@style/Text.Content"/>
 
+                <TextView
+                    android:id="@+id/see_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                    android:layout_marginTop="16dp"
+                    android:text="Xem thêm"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:stateListAnimator="@animator/touch_opacity_animator"
+                    style="@style/Text.Content.Highlight" />
+
+                <TextView
+                    android:id="@+id/see_less"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                    android:layout_marginTop="16dp"
+                    android:text="Rút gọn"
+                    android:textStyle="bold"
+                    style="@style/Text.Content.Highlight"
+                    android:clickable="true"
+                    android:stateListAnimator="@animator/touch_opacity_animator"/>
+
                 <ImageView
                     android:id="@+id/image"
                     android:layout_marginTop="16dp"
@@ -175,36 +233,78 @@
                     android:src="@drawable/chill_image" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/like_comment_button_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/app_horizontal_margin"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="8dp">
 
                     <LinearLayout
-                        android:id="@+id/like_button"
+                        android:id="@+id/like_button_wrapper"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/comment_button"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:clickable="true"
-                        android:background="@drawable/effect_ripple">
+                        android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_heart_outline" />
-
-                        <TextView
-                            android:id="@+id/like_button_text"
+                        <LinearLayout
+                            android:id="@+id/like_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Thích"
-                            style="@style/Text.Content"
-                            android:layout_marginStart="4dp"/>
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="12dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:clickable="true"
+                            android:background="@drawable/effect_ripple"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_heart_outline" />
+
+                            <TextView
+                                android:id="@+id/like_button_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Thích"
+                                style="@style/Text.Content"
+                                android:layout_marginStart="4dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/like_button_highlight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="12dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:clickable="true"
+                            android:background="@drawable/effect_ripple"
+                            android:visibility="visible">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_heart"
+                                app:tint="@color/blue2"/>
+
+                            <TextView
+                                android:id="@+id/like_button_highlight_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Thích"
+                                style="@style/Text.Content"
+                                android:textColor="@color/blue2"
+                                android:layout_marginStart="4dp"/>
+
+                        </LinearLayout>
+
 
                     </LinearLayout>
 
@@ -212,10 +312,12 @@
                         android:id="@+id/comment_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="12dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/like_button"
+                        app:layout_constraintStart_toEndOf="@id/like_button_wrapper"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:clickable="true"
@@ -241,7 +343,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/app_horizontal_margin"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="8dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"

@@ -68,8 +68,8 @@ public class RepositoryModule {
 
     @Provides
     @Singleton
-    public UserRepository provideUserRepository(UserApi userApi) {
-        return new UserRepositoryImpl(userApi);
+    public UserRepository provideUserRepository(UserApi userApi, ObjectMapper objectMapper) {
+        return new UserRepositoryImpl(userApi, objectMapper);
     }
 
     @Provides

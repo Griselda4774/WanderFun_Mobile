@@ -4,7 +4,7 @@ import com.example.wanderfunmobile.domain.model.enums.UserRole;
 
 public class LoginResponseDto {
     private Long id;
-    private String email;
+    private Long userId;
     private UserRole role;
     private final String tokenType;
     private String accessToken;
@@ -42,12 +42,12 @@ public class LoginResponseDto {
         this.role = role;
     }
 
-    public String getEmail() {
-        return email;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getId() {
