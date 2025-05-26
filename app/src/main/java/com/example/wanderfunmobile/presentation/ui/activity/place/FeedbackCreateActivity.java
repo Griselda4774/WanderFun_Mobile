@@ -68,11 +68,13 @@ public class FeedbackCreateActivity extends AppCompatActivity {
 
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getSelfInfo("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
-        userViewModel.getSelfInfoResponseLiveData().observe(this, data -> {
-            if (data != null && !data.isError()) {
-                user = objectMapper.map(data.getData(), User.class);
-                setInfo();
+        userViewModel.getMiniSelfInfo("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
+        userViewModel.miniSelfInfoResponseLiveData().observe(this, result -> {
+            if (!result.isError() && result.getData() != null) {
+                user = result.getData();
+                bindUserData();
+            } else {
+                Toast.makeText(this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -192,7 +194,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void setInfo() {
+    private void bindUserData() {
         // User name
         TextView userName = viewBinding.userName;
         if (user != null) {

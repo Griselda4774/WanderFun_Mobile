@@ -196,8 +196,8 @@ public class AddEditAlbumActivity extends AppCompatActivity {
     private void createAlbum(AlbumCreateDto albumCreateDto) {
 
         if (imageList.size() > 0) {
-            String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getUserId().toString() + "/albums/" + albumCreateDto.getName();
-            String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getUserId().toString() + "_" + System.currentTimeMillis();
+            String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getAccountId().toString() + "/albums/" + albumCreateDto.getName();
+            String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getAccountId().toString() + "_" + System.currentTimeMillis();
             List<AlbumImageCreateDto> albumImageCreateDtoList = new ArrayList<>();
             AtomicInteger completedUploads = new AtomicInteger(0); // Track completed uploads
             int totalUploads = imageList.size(); // Total images to upload
@@ -245,8 +245,8 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
     private void updateAlbum(AlbumCreateDto albumCreateDto, Long albumId) {
         if (imageList.size() > 0) {
-            String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getUserId().toString() + "/albums/" + albumCreateDto.getName().replaceAll("\\s+", "");
-            String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getUserId().toString() + "_" + System.currentTimeMillis();
+            String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getAccountId().toString() + "/albums/" + albumCreateDto.getName().replaceAll("\\s+", "");
+            String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getAccountId().toString() + "_" + System.currentTimeMillis();
             List<AlbumImageCreateDto> albumImageCreateDtoList = new ArrayList<>();
             AtomicInteger completedUploads = new AtomicInteger(0); // Track completed uploads
             int totalUploads = imageList.size(); // Total images to upload

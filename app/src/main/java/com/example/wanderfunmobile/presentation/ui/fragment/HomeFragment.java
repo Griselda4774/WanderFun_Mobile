@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.PostViewManager;
+import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.FragmentHomeBinding;
 import com.example.wanderfunmobile.domain.model.posts.Post;
@@ -65,8 +66,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ConstraintLayout createPostInput = viewBinding.createPostInput;
-        createPostInput.setOnClickListener(v -> {
+        viewBinding.createPostInput.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), AddEditPostActivity.class);
             startActivity(intent);
         });
@@ -76,10 +76,10 @@ public class HomeFragment extends Fragment {
         viewBinding.postList.setAdapter(postItemAdapter);
 
         // Load posts
-        if (PostViewManager.getInstance(requireContext()).getCursor() > 0) {
-            postViewModel.findAllPostsByCursor(PostViewManager.getInstance(requireContext()).getCursor(), 10);
-        } else {
+        if (!(PostViewManager.getInstance(requireContext()).getCursor() > 1)) {
             postViewModel.findAllPostsNoParam();
+        } else {
+            postViewModel.findAllPostsByCursor(PostViewManager.getInstance(requireContext()).getCursor(), 10);
         }
 
         // Observe Post ViewModel
@@ -88,7 +88,10 @@ public class HomeFragment extends Fragment {
                 postList.addAll(result.getData());
                 postItemAdapter.notifyDataSetChanged();
                 if (!postList.isEmpty()) {
-                    PostViewManager.getInstance(requireContext().getApplicationContext()).init(postList.get(postList.size() - 1).getId());
+                    PostViewManager.getInstance(requireContext().getApplicationContext()).setCursor(postList.get(postList.size() - 1).getId());
+                } else {
+                    PostViewManager.getInstance(requireContext().getApplicationContext()).reset();
+                    postViewModel.findAllPostsNoParam();
                 }
             } else {
                 Toast.makeText(getContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
@@ -107,13 +110,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        postViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading) {
-                viewBinding.loading.setVisibility(View.VISIBLE);
-            } else {
-                viewBinding.loading.setVisibility(View.GONE);
-            }
-        });
+//        postViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+//            if (isLoading) {
+//                viewBinding.loading.setVisibility(View.VISIBLE);
+//            } else {
+//                viewBinding.loading.setVisibility(View.GONE);
+//            }
+//        });
+
+        // Create post container
+        if (SessionManager.getInstance(requireContext().getApplicationContext()).isLoggedIn()) {
+            viewBinding.createPostContainer.setVisibility(View.VISIBLE);
+        } else {
+            viewBinding.createPostContainer.setVisibility(View.GONE);
+        }
 
         // RecyclerView
         viewBinding.postList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -153,7 +163,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        viewBinding = null;
+        postList.clear();
     }
 
     @Override

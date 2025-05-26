@@ -85,11 +85,12 @@ public class LoginActivity extends AppCompatActivity {
                 LoginResponseDto loginResponseDto = objectMapper.map(loginResponse.getData(), LoginResponseDto.class);
                 SessionManager.getInstance(getApplicationContext()).login(
                         loginResponseDto.getId(),
-                        loginResponseDto.getEmail(),
+                        loginResponseDto.getUserId(),
                         loginResponseDto.getRole().name(),
                         loginResponseDto.getTokenType(),
                         loginResponseDto.getAccessToken(),
                         loginResponseDto.getRefreshToken());
+                PostViewManager.getInstance(getApplicationContext()).reset();
                 Toast.makeText(getApplicationContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);

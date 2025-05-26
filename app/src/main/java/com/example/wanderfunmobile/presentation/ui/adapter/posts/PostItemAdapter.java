@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
+import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.databinding.ItemPostBinding;
 import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.presentation.ui.activity.post.PostDetailActivity;
@@ -57,6 +58,12 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
 
         @SuppressLint("SetTextI18n")
         public void bind(Post post) {
+            binding.getRoot().setOnClickListener(v -> {
+                Intent intent = new Intent(binding.getRoot().getContext(), PostDetailActivity.class);
+                intent.putExtra("postId", post.getId());
+                binding.getRoot().getContext().startActivity(intent);
+            });
+
             // User info
             ImageView userAvatar = binding.userAvatar;
             TextView userName = binding.userName;
@@ -82,18 +89,41 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
             // Place name
             TextView placeName = binding.placeName;
             if (post.getPlace() != null) {
+                binding.placeInfo.setVisibility(View.VISIBLE);
                 placeName.setText(post.getPlace().getName());
             } else {
-                placeName.setText("Unknown Place");
+                binding.placeInfo.setVisibility(View.GONE);
             }
 
             // Post content
             TextView content = binding.content;
             if (post.getContent() != null && !post.getContent().isEmpty()) {
-                content.setText(post.getContent());
+                if (post.getContent().length() > 100) {
+                    content.setText(post.getContent().substring(0, 100) + "...");
+                    binding.seeMore.setVisibility(View.VISIBLE);
+                    binding.seeLess.setVisibility(View.GONE);
+                } else {
+                    content.setText(post.getContent());
+                    binding.seeMore.setVisibility(View.GONE);
+                    binding.seeLess.setVisibility(View.GONE);
+                }
             } else {
                 content.setText("");
             }
+
+            // See more button, see less button
+
+            binding.seeMore.setOnClickListener(v -> {
+                content.setText(post.getContent());
+                binding.seeMore.setVisibility(View.GONE);
+                binding.seeLess.setVisibility(View.VISIBLE);
+            });
+
+            binding.seeLess.setOnClickListener(v -> {
+                content.setText(post.getContent().substring(0, 100) + "...");
+                binding.seeMore.setVisibility(View.VISIBLE);
+                binding.seeLess.setVisibility(View.GONE);
+            });
 
             // Post image
             ImageView image = binding.image;
@@ -135,22 +165,22 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
             });
 
             // Like button
-            binding.likeButton.setOnClickListener(v -> {
-                if (post.isLiked()) {
-                    binding.likeButton.setVisibility(View.GONE);
-                    binding.likeButtonHighlight.setVisibility(View.VISIBLE);
-                } else {
-                    binding.likeButton.setVisibility(View.VISIBLE);
-                    binding.likeButtonHighlight.setVisibility(View.GONE);
-                }
-            });
+            if (post.isLiked()) {
+                binding.likeButton.setVisibility(View.GONE);
+                binding.likeButtonHighlight.setVisibility(View.VISIBLE);
+            } else {
+                binding.likeButton.setVisibility(View.VISIBLE);
+                binding.likeButtonHighlight.setVisibility(View.GONE);
+            }
 
             binding.likeButton.setOnClickListener(v -> {
-
+                binding.likeButton.setVisibility(View.GONE);
+                binding.likeButtonHighlight.setVisibility(View.VISIBLE);
             });
 
             binding.likeButtonHighlight.setOnClickListener(v -> {
-
+                binding.likeButton.setVisibility(View.VISIBLE);
+                binding.likeButtonHighlight.setVisibility(View.GONE);
             });
 
             // Comment button
@@ -159,6 +189,12 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
                 intent.putExtra("postId", post.getId());
                 binding.getRoot().getContext().startActivity(intent);
             });
+
+            if (SessionManager.getInstance(binding.getRoot().getContext()).isLoggedIn()) {
+                binding.likeCommentButtonWrapper.setVisibility(View.VISIBLE);
+            } else {
+                binding.likeCommentButtonWrapper.setVisibility(View.GONE);
+            }
         }
     }
 }
