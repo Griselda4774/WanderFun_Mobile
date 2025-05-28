@@ -1,23 +1,24 @@
-package com.example.wanderfunmobile.data.dto.album;
+package com.example.wanderfunmobile.domain.model.albums;
 
-import com.example.wanderfunmobile.data.dto.images.ImageDto;
-import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
+import com.example.wanderfunmobile.domain.model.images.Image;
+import com.example.wanderfunmobile.domain.model.places.Place;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
-public class AlbumDto {
+public class Album {
     private Long id;
     private String name;
     private String description;
-    private ImageDto coverImage;
-    private List<AlbumImageDto> albumImageList;
+    private Image coverImage;
+    private List<AlbumImage> albumImageList;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private MiniPlaceDto place;
+    private Place place;
     private Long userId;
 
-    public AlbumDto() {}
+    public Album() {}
 
     public Long getId() {
         return id;
@@ -43,24 +44,24 @@ public class AlbumDto {
         this.description = description;
     }
 
-    public ImageDto getCoverImage() {
-        return coverImage;
-    }
-
-    public void setCoverImage(ImageDto coverImage) {
+    public void setCoverImage(Image coverImage) {
         this.coverImage = coverImage;
-    }
-
-    public List<AlbumImageDto> getAlbumImageList() {
-        return albumImageList;
-    }
-
-    public void setAlbumImageList(List<AlbumImageDto> albumImageList) {
-        this.albumImageList = albumImageList;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public List<AlbumImage> getAlbumImageList() {
+        return albumImageList;
+    }
+
+    public void setAlbumImageList(List<AlbumImage> albumImageList) {
+        this.albumImageList = albumImageList;
+    }
+
+    public Image getCoverImage() {
+        return coverImage;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
@@ -75,11 +76,11 @@ public class AlbumDto {
         this.updatedAt = updatedAt;
     }
 
-    public MiniPlaceDto getPlace() {
+    public Place getPlace() {
         return place;
     }
 
-    public void setPlace(MiniPlaceDto place) {
+    public void setPlace(Place place) {
         this.place = place;
     }
 

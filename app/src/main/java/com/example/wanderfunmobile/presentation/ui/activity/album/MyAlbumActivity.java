@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.album.AlbumDto;
 import com.example.wanderfunmobile.databinding.ActivityMyAlbumsBinding;
-import com.example.wanderfunmobile.domain.model.Album;
+import com.example.wanderfunmobile.domain.model.albums.Album;
 import com.example.wanderfunmobile.presentation.ui.adapter.album.AlbumItemAdapter;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;

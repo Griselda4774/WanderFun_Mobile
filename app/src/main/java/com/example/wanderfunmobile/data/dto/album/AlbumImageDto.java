@@ -1,12 +1,12 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.data.dto.album;
 
-public class AlbumImage {
+public class AlbumImageDto {
     private Long id;
     private String imageUrl;
     private String imagePublicId;
     private Long albumId;
 
-    public AlbumImage() {};
+    public AlbumImageDto() {};
 
     public Long getId() {
         return id;

@@ -100,47 +100,56 @@
 
                 </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/album_place_layout_main"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="8dp"
+                    android:layout_marginTop="@dimen/app_section_margin"
+                    android:orientation="vertical"
+                    android:gravity="start"
                     app:layout_constraintTop_toBottomOf="@id/album_description_layout">
 
-                    <LinearLayout
-                        android:id="@+id/album_place_layout"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:orientation="vertical"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/search_place_button"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:id="@+id/album_place_label"
-                            style="@style/Text.Title.Input"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:text="Địa điểm" />
-
-                        <include layout="@layout/edittext_content" />
-                    </LinearLayout>
+                        android:text="Địa điểm"
+                        style="@style/Text.Title.Input"
+                        android:layout_marginBottom="@dimen/input_title_margin" />
 
                     <LinearLayout
-                        android:id="@+id/search_place_button"
-                        android:layout_width="120dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/album_place_layout">
+                        android:gravity="center">
 
-                        <include layout="@layout/button_highlight" />
+                        <TextView
+                            android:id="@+id/place_name"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Content"
+                            android:textColor="@color/black5_30"
+                            android:text="Chọn địa điểm"
+                            android:background="@drawable/bg_edit_text"
+                            android:padding="@dimen/input_padding"
+                            android:maxLines="1"
+                            android:ellipsize="end" />
+
+                        <LinearLayout
+                            android:id="@+id/select_place_button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:layout_marginStart="16dp">
+
+                            <include layout="@layout/button_highlight" />
+
+                        </LinearLayout>
+
                     </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

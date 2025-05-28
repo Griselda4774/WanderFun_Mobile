@@ -3,6 +3,8 @@ package com.example.wanderfunmobile.presentation.ui.activity.album;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,13 +19,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.R;
-import com.example.wanderfunmobile.data.dto.albumimage.AlbumImageDto;
+import com.example.wanderfunmobile.data.dto.album.AlbumImageDto;
 import com.example.wanderfunmobile.databinding.ActivityAlbumDetailsBinding;
-import com.example.wanderfunmobile.domain.model.Album;
-import com.example.wanderfunmobile.domain.model.AlbumImage;
-import com.example.wanderfunmobile.presentation.ui.adapter.album.AlbumImageAdapter;
+import com.example.wanderfunmobile.domain.model.albums.Album;
+import com.example.wanderfunmobile.domain.model.albums.AlbumImage;
+import com.example.wanderfunmobile.presentation.ui.adapter.album.AlbumImageItemAdapter;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.SelectionDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.AlbumViewModel;
 
 import java.util.List;
@@ -36,10 +40,13 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class AlbumDetailsActivity extends AppCompatActivity {
     @Inject
     ObjectMapper objectMapper;
-    AlbumImageAdapter albumImageAdapter;
+    AlbumImageItemAdapter albumImageItemAdapter;
     private Album album;
     private ActivityAlbumDetailsBinding viewBinding;
     private AlbumViewModel albumViewModel;
+
+    private LoadingDialog loadingDialog;
+    private SelectionDialog selectionDialog;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -62,32 +69,63 @@ public class AlbumDetailsActivity extends AppCompatActivity {
         albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), getIntent().getLongExtra("albumId", 0));
         albumViewModel.getAlbumByIdResponseLiveData().observe(this, albumResponseDto -> {
             if (!albumResponseDto.isError()) {
-                List<AlbumImageDto> albumImageListDto = albumResponseDto.getData().getAlbumImages();
+                List<AlbumImageDto> albumImageListDto = albumResponseDto.getData().getAlbumImageList();
                 album = objectMapper.map(albumResponseDto.getData(), Album.class);
-                album.setAlbumImages(objectMapper.mapList(albumImageListDto, AlbumImage.class));
+                album.setAlbumImageList(objectMapper.mapList(albumImageListDto, AlbumImage.class));
 
-                albumImageAdapter = new AlbumImageAdapter(album.getAlbumImages());
-                recyclerView.setAdapter(albumImageAdapter);
+                albumImageItemAdapter = new AlbumImageItemAdapter(album.getAlbumImageList());
+                recyclerView.setAdapter(albumImageItemAdapter);
 
                 viewBinding.headerTitle.setText(albumResponseDto.getData().getName());
                 viewBinding.description.setText(albumResponseDto.getData().getDescription());
-                viewBinding.placeName.setText(albumResponseDto.getData().getPlaceName());
+                viewBinding.placeName.setText(albumResponseDto.getData().getPlace().getName());
 
+            }
+        });
+
+        albumViewModel.deleteAlbumResponseLiveData().observe(this, response -> {
+            if (!response.isError()) {
+                Toast.makeText(getApplicationContext(), "Xóa album thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            Toast.makeText(getApplicationContext(), "Xóa album thất bại", Toast.LENGTH_SHORT).show();
+        });
+
+        selectionDialog = viewBinding.selectionDialog;
+        selectionDialog.hide();
+        selectionDialog.setVisibility(View.GONE);
+        selectionDialog.setOnAcceptListener(() -> {
+            albumViewModel.deleteAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), album.getId());
+            selectionDialog.hide();
+            Log.d("SelectionDialog", "Accept");
+        });
+
+        selectionDialog.setOnRejectListener(() -> {
+            selectionDialog.hide();
+            Log.d("SelectionDialog", "Reject");
+        });
+
+        // Loading dialog
+        loadingDialog = viewBinding.loadingDialog;
+        albumViewModel.getIsLoading().observe(this, isLoading -> {
+            if (isLoading) {
+                loadingDialog.show();
+                loadingDialog.setVisibility(View.VISIBLE);
+            } else {
+                loadingDialog.hide();
+                loadingDialog.setVisibility(View.GONE);
             }
         });
 
         TextView deleteButton = viewBinding.deleteButton.findViewById(R.id.button);
         deleteButton.setText("Xóa");
         deleteButton.setOnClickListener(v -> {
-            albumViewModel.deleteAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), album.getId());
-            albumViewModel.deleteAlbumResponseLiveData().observe(this, response -> {
-                if (!response.isError()) {
-                    Toast.makeText(this, "Xóa album thành công", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                Toast.makeText(this, "Xóa album thất bại", Toast.LENGTH_SHORT).show();
-            });
-            finish();
+            selectionDialog.setVisibility(View.VISIBLE);
+            selectionDialog.show("Xóa chuyến đi",
+                    "Bạn có chắc chắn muốn xóa chuyến đi này?",
+                    "Thao tác này không thể hoàn tác",
+                    "Xóa",
+                    "Hủy");
         });
 
         TextView editButton = viewBinding.editButton.findViewById(R.id.button);
