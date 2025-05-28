@@ -93,12 +93,109 @@
                 android:paddingBottom="8dp"
                 android:background="@drawable/bg_border_bottom">
 
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:gravity="center_vertical"-->
+<!--                    android:layout_marginHorizontal="@dimen/app_horizontal_margin">-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/user_avatar"-->
+<!--                        android:layout_width="32dp"-->
+<!--                        android:layout_height="32dp"-->
+<!--                        android:src="@drawable/ic_avatar" />-->
+
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:layout_marginStart="8dp">-->
+
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:orientation="horizontal"-->
+<!--                            android:gravity="end">-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/user_name"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginEnd="16dp"-->
+<!--                                android:text="Trần Đình Tâm"-->
+<!--                                style="@style/Text.Title.Section" />-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/date_created"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="01/01/2025"-->
+<!--                                android:textColor="@color/black1"-->
+<!--                                style="@style/Text.Description" />-->
+
+<!--                        </LinearLayout>-->
+
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/place_info"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:orientation="horizontal"-->
+<!--                            android:gravity="center_vertical">-->
+
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="Địa điểm: "-->
+<!--                                android:textColor="@color/black1"-->
+<!--                                style="@style/Text.Description" />-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/place_name"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="Tên địa điểm"-->
+<!--                                android:textColor="@color/black1"-->
+<!--                                style="@style/Text.Description" />-->
+
+<!--                            <LinearLayout-->
+<!--                                android:id="@+id/place_detail_button"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="16dp"-->
+<!--                                android:clickable="true"-->
+<!--                                android:orientation="horizontal"-->
+<!--                                android:gravity="center_vertical"-->
+<!--                                android:stateListAnimator="@animator/touch_opacity_animator">-->
+
+<!--                                <TextView-->
+<!--                                    android:id="@+id/explore_place_button"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:text="Khám phá ngay"-->
+<!--                                    style="@style/Text.Description.Highlight" />-->
+
+<!--                                <ImageView-->
+<!--                                    android:layout_width="12dp"-->
+<!--                                    android:layout_height="12dp"-->
+<!--                                    android:src="@drawable/ic_share"-->
+<!--                                    android:layout_marginLeft="2dp"-->
+<!--                                    app:tint="@color/blue2" />-->
+
+<!--                            </LinearLayout>-->
+
+<!--                        </LinearLayout>-->
+
+<!--                    </LinearLayout>-->
+
+<!--                </LinearLayout>-->
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
                     android:gravity="center_vertical"
-                    android:layout_marginHorizontal="@dimen/app_horizontal_margin">
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/user_avatar"
@@ -109,82 +206,59 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="8dp">
+                        android:layout_marginStart="8dp"
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="end">
+                            android:gravity="start"
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/user_name"
+                                style="@style/Text.Content"
+                                android:textStyle="bold"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="16dp"
                                 android:text="Trần Đình Tâm"
-                                style="@style/Text.Title.Section" />
+                                android:clickable="true"
+                                android:stateListAnimator="@animator/touch_opacity_animator"/>
 
                             <TextView
-                                android:id="@+id/date_created"
+                                android:id="@+id/place_check_in_status"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="01/01/2025"
-                                android:textColor="@color/black1"
-                                style="@style/Text.Description" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/place_info"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Địa điểm: "
-                                android:textColor="@color/black1"
-                                style="@style/Text.Description" />
+                                android:text=" đang ở "
+                                style="@style/Text.Content"/>
 
                             <TextView
                                 android:id="@+id/place_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tên địa điểm"
-                                android:textColor="@color/black1"
-                                style="@style/Text.Description" />
+                                android:text="Dinh Độc Lập"
+                                android:textStyle="bold"
+                                style="@style/Text.Content"
+                                android:clickable="true"
+                                android:stateListAnimator="@animator/touch_opacity_animator"/>
 
-                            <LinearLayout
-                                android:id="@+id/place_detail_button"
+                            <TextView
+                                android:id="@+id/trip_share_status"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:clickable="true"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:stateListAnimator="@animator/touch_opacity_animator">
-
-                                <TextView
-                                    android:id="@+id/explore_place_button"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Khám phá ngay"
-                                    style="@style/Text.Description.Highlight" />
-
-                                <ImageView
-                                    android:layout_width="12dp"
-                                    android:layout_height="12dp"
-                                    android:src="@drawable/ic_share"
-                                    android:layout_marginLeft="2dp"
-                                    app:tint="@color/blue2" />
-
-                            </LinearLayout>
+                                android:text=" đã chia sẻ một chuyến đi"
+                                style="@style/Text.Content"
+                                android:visibility="gone"/>
 
                         </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/date_created"
+                            style="@style/Text.Description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="01/01/2025"
+                            android:textColor="@color/black1" />
 
                     </LinearLayout>
 
@@ -223,9 +297,29 @@
                     android:clickable="true"
                     android:stateListAnimator="@animator/touch_opacity_animator"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <include
+                        android:id="@+id/place"
+                        layout="@layout/item_place" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <include
+                        android:id="@+id/trip"
+                        layout="@layout/item_trip" />
+
+                </LinearLayout>
+
                 <ImageView
                     android:id="@+id/image"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxHeight="400dp"

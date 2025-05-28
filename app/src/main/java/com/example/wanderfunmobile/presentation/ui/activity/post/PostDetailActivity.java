@@ -34,6 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class PostDetailActivity extends AppCompatActivity {
 
     private ActivityPostDetailBinding viewBinding;
+    private long postId;
     private Post post;
     private PostViewModel postViewModel;
 
@@ -80,12 +81,28 @@ public class PostDetailActivity extends AppCompatActivity {
         viewBinding.backButton.button.setOnClickListener(v -> {
             finish();
         });
+
+        viewBinding.editButton.setOnClickListener(v -> {
+            if (post != null) {
+                Intent intent = new Intent(viewBinding.getRoot().getContext(), AddEditPostActivity.class);
+                intent.putExtra("postId", post.getId());
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (postId > 0) {
+            postViewModel.findPostById(postId);
+        }
     }
 
     private void getPost() {
         Intent intent = getIntent();
         if (intent != null) {
-            long postId = intent.getLongExtra("postId", -1);
+            postId = intent.getLongExtra("postId", -1);
             if (postId > 0) {
                 postViewModel.findPostById(postId);
             }
@@ -105,7 +122,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         .into(userAvatar);
             }
 
-            userName.setText(post.getUser().getFirstName() + " " + post.getUser().getLastName());
+            userName.setText(post.getUser().getLastName() + " " + post.getUser().getFirstName());
         } else {
             userAvatar.setImageResource(R.drawable.ic_avatar);
             userName.setText("Unknown User");
@@ -116,13 +133,31 @@ public class PostDetailActivity extends AppCompatActivity {
         TextView dateCreated = viewBinding.dateCreated;
         dateCreated.setText(DateTimeUtil.localDateTimeToString(post.getCreateAt()));
 
-        // Place name
+        // Place
         TextView placeName = viewBinding.placeName;
         if (post.getPlace() != null) {
-            viewBinding.placeInfo.setVisibility(View.VISIBLE);
+            viewBinding.placeName.setVisibility(View.VISIBLE);
+            viewBinding.placeCheckInStatus.setVisibility(View.VISIBLE);
+            viewBinding.place.getRoot().setVisibility(View.VISIBLE);
             placeName.setText(post.getPlace().getName());
+            viewBinding.tripShareStatus.setVisibility(View.GONE);
+            viewBinding.trip.getRoot().setVisibility(View.GONE);
         } else {
-            viewBinding.placeInfo.setVisibility(View.GONE);
+            viewBinding.placeName.setVisibility(View.GONE);
+            viewBinding.placeCheckInStatus.setVisibility(View.GONE);
+            viewBinding.place.getRoot().setVisibility(View.GONE);
+        }
+
+        // Trip
+        if (post.getTrip() != null) {
+            viewBinding.placeName.setVisibility(View.GONE);
+            viewBinding.placeCheckInStatus.setVisibility(View.GONE);
+            viewBinding.place.getRoot().setVisibility(View.GONE);
+            viewBinding.tripShareStatus.setVisibility(View.VISIBLE);
+            viewBinding.trip.getRoot().setVisibility(View.VISIBLE);
+        } else {
+            viewBinding.tripShareStatus.setVisibility(View.GONE);
+            viewBinding.trip.getRoot().setVisibility(View.GONE);
         }
 
         // Post content
@@ -139,10 +174,11 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         } else {
             content.setText("");
+            viewBinding.seeMore.setVisibility(View.GONE);
+            viewBinding.seeLess.setVisibility(View.GONE);
         }
 
         // See more button, see less button
-
         viewBinding.seeMore.setOnClickListener(v -> {
             content.setText(post.getContent());
             viewBinding.seeMore.setVisibility(View.GONE);
@@ -181,18 +217,6 @@ public class PostDetailActivity extends AppCompatActivity {
         } else {
             commentCount.setText("0");
         }
-
-        // Post deltail button
-        viewBinding.getRoot().setOnClickListener(v -> {
-            Intent intent = new Intent(viewBinding.getRoot().getContext(), PostDetailActivity.class);
-            intent.putExtra("postId", post.getId());
-            viewBinding.getRoot().getContext().startActivity(intent);
-        });
-
-        // Explore place button
-        viewBinding.explorePlaceButton.setOnClickListener(v -> {
-
-        });
 
         // Like button
         if (post.isLiked()) {
