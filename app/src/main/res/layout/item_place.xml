@@ -5,7 +5,7 @@
     android:id="@+id/item_place"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+    android:layout_marginHorizontal="@dimen/app_margin_medium"
     android:layout_marginVertical="8dp"
     android:background="@drawable/bg_item_place"
     android:padding="16dp"

@@ -9,7 +9,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="top">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/header"
@@ -18,7 +19,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:padding="@dimen/app_horizontal_margin">
+            android:padding="@dimen/app_margin_medium">
 
             <TextView
                 android:id="@+id/header_title"
@@ -81,6 +82,7 @@
             android:scrollbars="none"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+
             app:layout_constraintTop_toBottomOf="@id/header"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +100,7 @@
 <!--                    android:layout_height="wrap_content"-->
 <!--                    android:orientation="horizontal"-->
 <!--                    android:gravity="center_vertical"-->
-<!--                    android:layout_marginHorizontal="@dimen/app_horizontal_margin">-->
+<!--                    android:layout_marginHorizontal="@dimen/app_margin_medium">-->
 
 <!--                    <ImageView-->
 <!--                        android:id="@+id/user_avatar"-->
@@ -193,7 +195,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                    android:layout_marginHorizontal="@dimen/app_margin_medium"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -268,7 +270,7 @@
                     android:id="@+id/content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                    android:layout_marginHorizontal="@dimen/app_margin_medium"
                     android:layout_marginTop="16dp"
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent dada rutrum lectus tortor, sed placerat nunc pulvinar eu. Nulla mattis vu van dignissim."
                     style="@style/Text.Content"/>
@@ -277,7 +279,7 @@
                     android:id="@+id/see_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                    android:layout_marginHorizontal="@dimen/app_margin_medium"
                     android:layout_marginTop="16dp"
                     android:text="Xem thêm"
                     android:textStyle="bold"
@@ -289,7 +291,7 @@
                     android:id="@+id/see_less"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                    android:layout_marginHorizontal="@dimen/app_margin_medium"
                     android:layout_marginTop="16dp"
                     android:text="Rút gọn"
                     android:textStyle="bold"
@@ -330,7 +332,7 @@
                     android:id="@+id/like_comment_button_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                    android:layout_marginHorizontal="@dimen/app_margin_medium"
                     android:layout_marginTop="8dp">
 
                     <LinearLayout
@@ -436,7 +438,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+                    android:layout_marginHorizontal="@dimen/app_margin_medium"
                     android:layout_marginTop="8dp">
 
                     <LinearLayout
@@ -506,5 +508,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/comment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white1"
+        android:paddingTop="8dp"
+        android:paddingHorizontal="@dimen/app_margin_medium">
+
+        <EditText
+            android:id="@+id/comment_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:hint="Bình luận về bài viết này..."
+            android:background="@drawable/bg_search_bar"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:overScrollMode="always"
+            android:inputType="textMultiLine"
+            android:gravity="top|start"
+            style="@style/Text.Content"
+            android:textCursorDrawable="@drawable/edit_text_cursor"/>
+
+        <ImageView
+            android:id="@+id/send_comment_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_send"
+            app:tint="@color/blue2"
+            android:clickable="true"
+            android:stateListAnimator="@animator/touch_opacity_animator"/>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

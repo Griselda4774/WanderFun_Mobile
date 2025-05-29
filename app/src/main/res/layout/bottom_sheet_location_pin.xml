@@ -32,7 +32,7 @@
             android:id="@+id/location_pin_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/app_horizontal_margin2"
+            android:paddingHorizontal="@dimen/app_margin_medium"
             android:layout_marginTop="@dimen/place_info_section_small_margin"
             app:layout_constraintTop_toBottomOf="@id/location_pin_bottom_sheet_drag_bar"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -46,7 +46,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottom_sheet_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin2"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/place_info_section_medium_margin"

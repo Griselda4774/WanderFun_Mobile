@@ -13,7 +13,7 @@
         android:id="@+id/place_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 
@@ -44,7 +44,7 @@
         android:id="@+id/place_time_opening"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 
@@ -107,7 +107,7 @@
         android:id="@+id/open_all_day"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 
@@ -138,7 +138,7 @@
         android:id="@+id/place_time_closing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 
@@ -201,7 +201,7 @@
         android:id="@+id/closing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 
@@ -231,7 +231,7 @@
         android:id="@+id/place_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 
@@ -262,7 +262,7 @@
         android:id="@+id/place_check_in_point"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 
@@ -293,7 +293,7 @@
         android:id="@+id/place_alternative_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 
@@ -324,7 +324,7 @@
         android:id="@+id/place_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 
@@ -355,7 +355,7 @@
         android:id="@+id/place_link"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin"
         android:background="@drawable/bg_border_bottom">
 

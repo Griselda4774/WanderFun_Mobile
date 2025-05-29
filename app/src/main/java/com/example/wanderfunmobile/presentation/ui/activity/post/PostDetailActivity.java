@@ -3,6 +3,8 @@ package com.example.wanderfunmobile.presentation.ui.activity.post;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,6 +49,25 @@ public class PostDetailActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(viewBinding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+            boolean isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+
+            View inputBar = viewBinding.commentContainer;
+            int paddingBottom = isKeyboardVisible
+                    ? imeInsets.bottom
+                    : (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    8,
+                    inputBar.getResources().getDisplayMetrics()
+            );
+            inputBar.setPadding(
+                    inputBar.getPaddingLeft(),
+                    inputBar.getPaddingTop(),
+                    inputBar.getPaddingRight(),
+                    paddingBottom
+            );
+
             return insets;
         });
 
@@ -55,10 +76,25 @@ public class PostDetailActivity extends AppCompatActivity {
             if (!result.isError() && result.getData() != null) {
                 post = result.getData();
                 bindPostData();
+                hideLoadingDialog();
             } else {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Bài viết đã bị xóa!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        postViewModel.getDeletePostLiveData().observe(this, result -> {
+            if (!result.isError()) {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Xóa bài viết thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                hideLoadingDialog();
                 Toast.makeText(this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
             }
         });
+
         getPost();
 
         // Like comment button wrapper
@@ -89,17 +125,41 @@ public class PostDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        viewBinding.deleteButton.setOnClickListener(v -> {
+            viewBinding.selectionDialog.show("Xóa bài viết",
+                    "Bạn chắc chắn chứ?",
+                    "Bài viết sẽ bị xóa vĩnh viễn và không thể khôi phục lại.",
+                    "Hủy",
+                    "Vẫn xóa");
+        });
+
+        // Selection dialog
+        viewBinding.selectionDialog.setOnAcceptListener(() -> {
+            viewBinding.selectionDialog.hide();
+            Log.d("SelectionDialog", "Accept");
+        });
+
+        viewBinding.selectionDialog.setOnRejectListener(() -> {
+            if (postId > 0) {
+                showLoadingDialog();
+                postViewModel.deletePost("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), postId);
+            }
+            viewBinding.selectionDialog.hide();
+            Log.d("SelectionDialog", "Reject");
+        });
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onRestart() {
+        super.onRestart();
         if (postId > 0) {
             postViewModel.findPostById(postId);
         }
     }
 
     private void getPost() {
+        showLoadingDialog();
         Intent intent = getIntent();
         if (intent != null) {
             postId = intent.getLongExtra("postId", -1);
@@ -255,5 +315,15 @@ public class PostDetailActivity extends AppCompatActivity {
         } else {
             viewBinding.modifyButtonGroup.setVisibility(View.GONE);
         }
+    }
+
+    private void showLoadingDialog() {
+        viewBinding.loadingDialog.setVisibility(View.VISIBLE);
+        viewBinding.loadingDialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        viewBinding.loadingDialog.setVisibility(View.GONE);
+        viewBinding.loadingDialog.hide();
     }
 }

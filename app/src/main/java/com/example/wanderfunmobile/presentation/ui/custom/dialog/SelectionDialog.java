@@ -65,7 +65,9 @@ public class SelectionDialog extends LinearLayout {
     public void setInfo(String title, String content1, String content2, String acceptText, String rejectText) {
         binding.title.setText(title);
         binding.content1.setText(content1);
+        binding.content1.setVisibility(content1.isEmpty() ? GONE : VISIBLE);
         binding.content2.setText(content2);
+        binding.content2.setVisibility(content2.isEmpty() ? GONE : VISIBLE);
         acceptButton.setText(acceptText);
         rejectButton.setText(rejectText);
     }
@@ -75,7 +77,7 @@ public class SelectionDialog extends LinearLayout {
         binding.getRoot().setVisibility(VISIBLE);
 
         autoHideRunnable = this::hide;
-        handler.postDelayed(autoHideRunnable, 15000);
+        handler.postDelayed(autoHideRunnable, 150000);
     }
 
     public void hide() {

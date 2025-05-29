@@ -18,7 +18,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:padding="@dimen/app_horizontal_margin">
+            android:padding="@dimen/app_margin_medium">
 
             <TextView
                 android:id="@+id/header_title"
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginHorizontal="@dimen/app_horizontal_margin">
+                    android:layout_marginHorizontal="@dimen/app_margin_medium">
 
                     <ImageView
                         android:id="@+id/user_avatar"
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:paddingVertical="8dp"
-                    android:paddingHorizontal="@dimen/app_horizontal_margin"
+                    android:paddingHorizontal="@dimen/app_margin_medium"
                     android:inputType="textMultiLine"
                     android:gravity="top|start"
                     style="@style/Text.Content"
