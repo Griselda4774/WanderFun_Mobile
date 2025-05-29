@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="start"
-    android:paddingHorizontal="@dimen/app_horizontal_margin"
+    android:paddingHorizontal="@dimen/app_margin_medium"
     android:paddingVertical="@dimen/item_padding_vertical"
     android:background="@drawable/bg_border_bottom">
 

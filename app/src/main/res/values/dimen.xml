@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--    app-->
-    <dimen name="app_horizontal_margin">20dp</dimen>
-    <dimen name="app_horizontal_margin2">20dp</dimen>
+    <dimen name="app_margin_medium">16dp</dimen>
+    <dimen name="app_margin_small">8dp</dimen>
     <dimen name="app_section_margin">16dp</dimen>
     <dimen name="half_app_section_margin">8dp</dimen>
     <dimen name="double_app_section_margin">32dp</dimen>
@@ -97,7 +97,7 @@
 
     <!--    Add edit post activity      -->
     <dimen name="post_option_padding_vertical">12dp</dimen>
-    <dimen name="post_option_padding_horizontal">@dimen/app_horizontal_margin</dimen>
+    <dimen name="post_option_padding_horizontal">@dimen/app_margin_medium</dimen>
     <dimen name="post_option_margin_vertical">8dp</dimen>
     <dimen name="post_option_icon_size">24dp</dimen>
 
