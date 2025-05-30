@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,21 +21,26 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.album.AlbumCreateDto;
 import com.example.wanderfunmobile.data.dto.album.AlbumDto;
-import com.example.wanderfunmobile.data.dto.albumimage.AlbumImageCreateDto;
-import com.example.wanderfunmobile.data.dto.albumimage.AlbumImageDto;
+import com.example.wanderfunmobile.data.dto.album.AlbumImageDto;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.data.dto.place.PlaceDto;
+import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.ActivityAddEditAlbumBinding;
+import com.example.wanderfunmobile.domain.model.albums.Album;
+import com.example.wanderfunmobile.domain.model.albums.AlbumImage;
+import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.activity.place.SearchPlaceActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.ImageWithDeleteAdapter;
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.AlbumViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 
@@ -42,30 +48,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class AddEditAlbumActivity extends AppCompatActivity {
-    private static final int REQUEST_CODE_SEARCH_PLACE = 1;
-    AlbumCreateDto albumCreateDto = new AlbumCreateDto();
-    List<Uri> imageList = new ArrayList<>();
+    private ActivityAddEditAlbumBinding viewBinding;
+    private AlbumCreateDto albumCreateDto = new AlbumCreateDto();
+    private List<Uri> imageList = new ArrayList<>();
+    private Album album;
+    private Long albumId;
+    private Place selectedPlace;
     private AlbumViewModel albumViewModel;
     private PlaceViewModel placeViewModel;
     private ImageWithDeleteAdapter imageWithDeleteAdapter;
-    private EditText albumPlace;
-    private ActivityResultLauncher<Intent> activityResultLauncher;
     private ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia;
+    private ActivityResultLauncher<Intent> placePickerLauncher;
+    private LoadingDialog loadingDialog;
+    @Inject
+    ObjectMapper objectMapper;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Long albumId = getIntent().getLongExtra("albumId", 0);
-
-        ActivityAddEditAlbumBinding viewBinding = ActivityAddEditAlbumBinding.inflate(getLayoutInflater());
-        albumViewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
-        placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
+        viewBinding = ActivityAddEditAlbumBinding.inflate(getLayoutInflater());
 
         EdgeToEdge.enable(this);
         setContentView(viewBinding.getRoot());
@@ -79,57 +88,13 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
         EditText albumDescription = viewBinding.albumDescriptionLayout.findViewById(R.id.content_edittext);
 
-        albumPlace = viewBinding.albumPlaceLayout.findViewById(R.id.content_edittext);
-
         RecyclerView recyclerView = viewBinding.albumImageList.findViewById(R.id.album_image_list);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
-        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                // Handle the returned data
-                Long placeId = result.getData().getLongExtra("selected_place", 0);
-                if (placeId != 0) {
-                    placeViewModel.getPlaceById(placeId);
-                    placeViewModel.getPlaceByIdResponseLiveData().observe(this, response -> {
-                        if (!response.isError()) {
-                            PlaceDto placeDto = response.getData();
-
-                            albumCreateDto.setPlaceId(placeDto.getId());
-                            albumCreateDto.setPlaceName(placeDto.getName());
-                            albumCreateDto.setPlaceCoverImageUrl(placeDto.getCoverImage().getImageUrl());
-                            albumCreateDto.setPlaceLatitude(placeDto.getLatitude());
-                            albumCreateDto.setPlaceLongitude(placeDto.getLongitude());
-
-                            albumPlace.setText(placeDto.getName());
-                        }
-                    });
-                }
-            }
-        });
-
-        pickMultipleMedia = registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(9), uris -> {
-            if (!uris.isEmpty()) {
-                int previousSize = imageList.size(); // Track current size
-                imageList.addAll(uris); // Add new images to the list
-                if (imageWithDeleteAdapter == null) {
-                    // Initialize the adapter only once
-                    imageWithDeleteAdapter = new ImageWithDeleteAdapter(imageList);
-                    recyclerView.setAdapter(imageWithDeleteAdapter);
-                } else {
-                    // Notify adapter of new items added
-                    imageWithDeleteAdapter.notifyItemRangeInserted(previousSize, uris.size());
-                }
-            } else {
-                Log.d("PhotoPicker", "No media selected");
-            }
-        });
-
-        ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
-        backButton.setOnClickListener(v -> {
-            finish();
-        });
-
-        TextView headerTitle = viewBinding.headerTitle;
+        initViewModels();
+        setupHeader();
+        setupRecyclerView(recyclerView);
+        setUpButtonEvents();
+        setupPickMultipleMedia();
 
         if (albumId != 0) {
             albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), albumId);
@@ -138,9 +103,11 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                     AlbumDto albumDto = response.getData();
                     albumName.setText(albumDto.getName());
                     albumDescription.setText(albumDto.getDescription());
-                    albumPlace.setText(albumDto.getPlaceName());
+                    selectedPlace = objectMapper.map(albumDto.getPlace(), Place.class);
+                    viewBinding.placeName.setText(selectedPlace.getName());
 
-                    for (AlbumImageDto albumImageDto : albumDto.getAlbumImages()) {
+                    imageList.clear();
+                    for (AlbumImageDto albumImageDto : albumDto.getAlbumImageList()) {
                         imageList.add(Uri.parse(albumImageDto.getImageUrl()));
                     }
 
@@ -148,35 +115,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                     recyclerView.setAdapter(imageWithDeleteAdapter);
                 }
             });
-            headerTitle.setText("Chỉnh sửa album");
-        } else {
-            headerTitle.setText("Tạo album mới");
         }
-
-        TextView searchPlaceButton = viewBinding.searchPlaceButton.findViewById(R.id.button);
-        searchPlaceButton.setText("Chọn");
-
-
-        searchPlaceButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, SearchPlaceActivity.class);
-            activityResultLauncher.launch(intent);
-        });
-
-        TextView addImageButton = viewBinding.addImageButton.findViewById(R.id.button);
-        addImageButton.setText("Thêm ảnh");
-        addImageButton.setOnClickListener(v -> {
-            pickMultipleMedia.launch(
-                    new PickVisualMediaRequest.Builder()
-                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                            .build()
-            );
-        });
-
-        TextView cancelButton = viewBinding.cancelButton.findViewById(R.id.button);
-        cancelButton.setText("Hủy bỏ");
-        cancelButton.setOnClickListener(v -> {
-            finish();
-        });
 
         TextView saveButton = viewBinding.saveButton.findViewById(R.id.button);
         saveButton.setText("Lưu");
@@ -185,137 +124,216 @@ public class AddEditAlbumActivity extends AppCompatActivity {
             albumCreateDto.setName(albumName.getText().toString());
             albumCreateDto.setDescription(albumDescription.getText().toString());
 
-            if (albumId != 0) {
-                updateAlbum(albumCreateDto, albumId);
-            } else {
-                createAlbum(albumCreateDto);
+            saveAlbum(albumCreateDto);
+        });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void initViewModels() {
+        loadingDialog = new LoadingDialog(this); // Initialize loading dialog
+        hideLoadingDialog();
+
+        albumViewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
+
+        albumViewModel.getAlbumByIdResponseLiveData().observe(this, response -> {
+            if (response != null && !response.isError() && response.getData() != null) {
+                album = objectMapper.map(response.getData(), Album.class);
+                List<AlbumImage> albumImages = objectMapper.mapList(response.getData().getAlbumImageList(), AlbumImage.class);
+                imageList.clear();
+                for (AlbumImage image : albumImages) {
+                    imageList.add(Uri.parse(image.getImageUrl()));
+                }
+                imageWithDeleteAdapter.notifyDataSetChanged();
+            }
+        });
+
+        albumViewModel.createAlbumResponseLiveData().observe(this, response -> {
+            hideLoadingDialog();
+            showToast(response.isError() ? "Tạo album thất bại" : "Tạo album thành công");
+            if (!response.isError()) finish();
+        });
+
+        albumViewModel.updateAlbumResponseLiveData().observe(this, response -> {
+            hideLoadingDialog();
+            showToast(response.isError() ? "Cập nhật album thất bại" : "Cập nhật album thành công");
+            if (!response.isError()) finish();
+        });
+
+        placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
+        placeViewModel.getPlaceByIdResponseLiveData().observe(this, response -> {
+            if (!response.isError()) {
+                selectedPlace = objectMapper.map(response.getData(), Place.class);
+                viewBinding.placeName.setText(selectedPlace.getName());
             }
         });
     }
 
-    private void createAlbum(AlbumCreateDto albumCreateDto) {
+    private void setupHeader() {
+        albumId = getIntent().getLongExtra("albumId", 0);
+        viewBinding.headerTitle.setText(albumId == 0 ? "Tạo album" : "Chỉnh sửa album");
+        if (albumId != 0) {
+            String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
+            showLoadingDialog();
+            albumViewModel.getAlbumById(token, albumId);
+        }
+    }
 
-        if (imageList.size() > 0) {
-            String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getAccountId().toString() + "/albums/" + albumCreateDto.getName();
-            String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getAccountId().toString() + "_" + System.currentTimeMillis();
-            List<AlbumImageCreateDto> albumImageCreateDtoList = new ArrayList<>();
-            AtomicInteger completedUploads = new AtomicInteger(0); // Track completed uploads
-            int totalUploads = imageList.size(); // Total images to upload
+    private void setupRecyclerView(RecyclerView recyclerView) {
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        imageWithDeleteAdapter = new ImageWithDeleteAdapter(imageList); // Initialize with unified list
+        recyclerView.setAdapter(imageWithDeleteAdapter);
+    }
 
-            for (Uri uri : imageList) {
+    private void setUpButtonEvents() {
+        viewBinding.addImageButton.findViewById(R.id.button).setOnClickListener(v -> {
+            pickMultipleMedia.launch(
+                    new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build()
+            );
+        });
+
+        ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
+        backButton.setOnClickListener(v -> {
+            finish();
+        });
+
+        TextView cancelButton = viewBinding.cancelButton.findViewById(R.id.button);
+        cancelButton.setText("Hủy");
+        cancelButton.findViewById(R.id.button).setOnClickListener(v -> {
+            finish();
+        });
+
+        TextView addImageBtn = viewBinding.addImageButton.findViewById(R.id.button);
+        addImageBtn.setText("Thêm ảnh");
+
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void setupPickMultipleMedia() {
+        pickMultipleMedia = registerForActivityResult(
+                new ActivityResultContracts.PickMultipleVisualMedia(9),
+                uris -> {
+                    if (uris != null) {
+                        imageList.addAll(uris);
+                        imageWithDeleteAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("AddEditAlbumActivity", "No media selected");
+                    }
+                }
+        );
+
+        placePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        long placeId = result.getData().getLongExtra("selected_place", 0);
+                        if (placeId != 0) placeViewModel.getPlaceById(placeId);
+                    }
+                });
+
+        TextView selectPlaceBtn = viewBinding.selectPlaceButton.findViewById(R.id.button);
+        selectPlaceBtn.setText("Chọn");
+        int padding = getResources().getDimensionPixelSize(R.dimen.button_vertical_padding_extra_small);
+        selectPlaceBtn.setPadding(selectPlaceBtn.getPaddingLeft(), padding, selectPlaceBtn.getPaddingRight(), padding);
+        selectPlaceBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SearchPlaceActivity.class);
+            placePickerLauncher.launch(intent);
+        });
+    }
+
+
+    private void saveAlbum(AlbumCreateDto albumCreateDto) {
+        String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
+        boolean isUpdate = albumId != 0;
+
+        albumCreateDto.setPlaceId(selectedPlace.getId());
+        uploadImages(albumCreateDto.getName(), albumImageDtoList -> {
+            albumCreateDto.setAlbumImageList(albumImageDtoList);
+            if (isUpdate) {
+                albumViewModel.updateAlbumById(token, albumId, albumCreateDto);
+            } else {
+                albumViewModel.createAlbum(token, albumCreateDto);
+            }
+        });
+    }
+
+    private void uploadImages(String albumName, ImageUploadCallback callback) {
+        if (imageList.isEmpty()) {
+            callback.onComplete(new ArrayList<>());
+            return;
+        }
+
+        String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getAccountId() + "/albums/" + albumName.replaceAll("\\s+", "");
+        List<AlbumImageDto> albumImageDtoList = new ArrayList<>();
+        AtomicInteger completedUploads = new AtomicInteger(0);
+        int totalUploads = imageList.size();
+
+        for (int i = 0; i < imageList.size(); i++) {
+            Uri uri = imageList.get(i);
+            String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getAccountId() + "_" + System.currentTimeMillis() + "_" + i;
+
+            if (uri.toString().startsWith("http")) {
+                AlbumImageDto existingImage = new AlbumImageDto();
+                existingImage.setImageUrl(uri.toString());
+                existingImage.setImagePublicId(extractPublicIdFromUrl(uri.toString()));
+                albumImageDtoList.add(existingImage);
+
+                if (completedUploads.incrementAndGet() == totalUploads) {
+                    callback.onComplete(albumImageDtoList);
+                }
+            } else {
                 CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), uri, fileName, folderName, new CloudinaryUtil.CloudinaryCallback() {
                     @Override
                     public void onSuccess(CloudinaryImageDto result) {
-                        AlbumImageCreateDto albumImageCreateDto = new AlbumImageCreateDto();
-                        albumImageCreateDto.setImageUrl(result.getUrl());
-                        albumImageCreateDto.setImagePublicId(result.getPublicId());
-                        albumImageCreateDtoList.add(albumImageCreateDto);
+                        AlbumImageDto newImage = new AlbumImageDto();
+                        newImage.setImageUrl(result.getUrl());
+                        newImage.setImagePublicId(result.getPublicId());
+                        albumImageDtoList.add(newImage);
 
-                        // Increment counter and check if all uploads are complete
                         if (completedUploads.incrementAndGet() == totalUploads) {
-                            // This runs only after all uploads are done
-                            albumCreateDto.setAlbumImages(albumImageCreateDtoList);
-                            albumViewModel.createAlbum("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), albumCreateDto);
+                            callback.onComplete(albumImageDtoList);
                         }
                     }
 
                     @Override
                     public void onError(String error) {
-                        Toast.makeText(AddEditAlbumActivity.this, "Tạo album thất bại, lỗi Cloudinary!", Toast.LENGTH_SHORT).show();
-
-                        // Increment counter even on error to prevent deadlocks
+                        Toast.makeText(AddEditAlbumActivity.this, "Lỗi tải ảnh lên Cloudinary: " + error, Toast.LENGTH_SHORT).show();
                         if (completedUploads.incrementAndGet() == totalUploads) {
-                            // This runs if all uploads are either complete or errored
-                            albumCreateDto.setAlbumImages(albumImageCreateDtoList);
-                            albumViewModel.createAlbum("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), albumCreateDto);
+                            callback.onComplete(albumImageDtoList);
                         }
                     }
                 });
             }
         }
-
-        albumViewModel.createAlbumResponseLiveData().observe(this, response -> {
-            if (!response.isError()) {
-                Toast.makeText(this, "Tạo album thành công", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-            Toast.makeText(this, "Tạo album thất bại", Toast.LENGTH_SHORT).show();
-        });
     }
 
-    private void updateAlbum(AlbumCreateDto albumCreateDto, Long albumId) {
-        if (imageList.size() > 0) {
-            String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getAccountId().toString() + "/albums/" + albumCreateDto.getName().replaceAll("\\s+", "");
-            String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getAccountId().toString() + "_" + System.currentTimeMillis();
-            List<AlbumImageCreateDto> albumImageCreateDtoList = new ArrayList<>();
-            AtomicInteger completedUploads = new AtomicInteger(0); // Track completed uploads
-            int totalUploads = imageList.size(); // Total images to upload
+    private void showLoadingDialog() {
+        loadingDialog.setVisibility(View.VISIBLE);
+        loadingDialog.show();
+    }
 
-            for (Uri uri : imageList) {
-                if (uri.toString().startsWith("http")) {
-                    // Case 1: Existing Cloudinary image, add its details directly
-                    AlbumImageCreateDto existingImage = new AlbumImageCreateDto();
-                    existingImage.setImageUrl(uri.toString()); // URL is already set
-                    existingImage.setImagePublicId(extractPublicIdFromUrl(uri.toString())); // Extract public ID from the URL
-                    albumImageCreateDtoList.add(existingImage);
+    private void hideLoadingDialog() {
+        loadingDialog.setVisibility(View.GONE);
+        loadingDialog.hide();
+    }
 
-                    // Increment counter and check if all images are processed
-                    if (completedUploads.incrementAndGet() == totalUploads) {
-                        albumCreateDto.setAlbumImages(albumImageCreateDtoList);
-                        albumViewModel.updateAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), albumId, albumCreateDto);
-                    }
-                } else {
-                    // Case 2: New image, upload to Cloudinary
-                    CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), uri, fileName, folderName, new CloudinaryUtil.CloudinaryCallback() {
-                        @Override
-                        public void onSuccess(CloudinaryImageDto result) {
-                            AlbumImageCreateDto newImage = new AlbumImageCreateDto();
-                            newImage.setImageUrl(result.getUrl());
-                            newImage.setImagePublicId(result.getPublicId());
-                            albumImageCreateDtoList.add(newImage);
-
-                            // Increment counter and check if all images are processed
-                            if (completedUploads.incrementAndGet() == totalUploads) {
-                                albumCreateDto.setAlbumImages(albumImageCreateDtoList);
-                                albumViewModel.updateAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), albumId, albumCreateDto);
-                            }
-                        }
-
-                        @Override
-                        public void onError(String error) {
-                            Toast.makeText(AddEditAlbumActivity.this, "Tạo album thất bại, lỗi Cloudinary!", Toast.LENGTH_SHORT).show();
-                            finish();
-
-                            // Increment counter to prevent deadlocks
-                            if (completedUploads.incrementAndGet() == totalUploads) {
-                                albumCreateDto.setAlbumImages(albumImageCreateDtoList);
-                                albumViewModel.updateAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), albumId, albumCreateDto);
-                            }
-                        }
-                    });
-                }
-            }
-            albumViewModel.updateAlbumResponseLiveData().observe(this, response -> {
-                if (!response.isError()) {
-                    Toast.makeText(this, "Cập nhật album thành công", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(this, "Cập nhật album thất bại", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+    private void showToast(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     private String extractPublicIdFromUrl(String url) {
-        // Find the index where "wanderfun" starts in the URL
         int startIndex = url.indexOf("wanderfun");
         if (startIndex != -1) {
-            // Extract substring from "wanderfun" to the end of the URL
             String publicIdWithExtension = url.substring(startIndex);
-            // Remove the file extension (e.g., ".jpg")
             return publicIdWithExtension.split("\\.")[0];
         }
-        // Return null or an empty string if "wanderfun" is not found
-        return null;
+        return "";
+    }
+
+    @FunctionalInterface
+    interface ImageUploadCallback {
+        void onComplete(List<AlbumImageDto> images);
     }
 }
