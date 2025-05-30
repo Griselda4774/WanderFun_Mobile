@@ -4,7 +4,7 @@
     android:id="@+id/item_album_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+    android:layout_marginHorizontal="@dimen/app_margin_medium"
     android:layout_marginVertical="@dimen/item_padding_vertical_small"
     android:background="@drawable/bg_item_place"
     android:clickable="true"

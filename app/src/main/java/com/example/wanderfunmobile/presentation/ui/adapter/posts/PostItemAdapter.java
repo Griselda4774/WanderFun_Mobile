@@ -75,7 +75,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
                             .into(userAvatar);
                 }
 
-                userName.setText(post.getUser().getFirstName() + " " + post.getUser().getLastName());
+                userName.setText(post.getUser().getLastName() + " " + post.getUser().getFirstName());
             } else {
                 userAvatar.setImageResource(R.drawable.ic_avatar);
                 userName.setText("Unknown User");
@@ -86,13 +86,31 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
             TextView dateCreated = binding.dateCreated;
             dateCreated.setText(DateTimeUtil.localDateTimeToString(post.getCreateAt()));
 
-            // Place name
+            // Place
             TextView placeName = binding.placeName;
             if (post.getPlace() != null) {
-                binding.placeInfo.setVisibility(View.VISIBLE);
+                binding.placeName.setVisibility(View.VISIBLE);
+                binding.placeCheckInStatus.setVisibility(View.VISIBLE);
+                binding.place.getRoot().setVisibility(View.VISIBLE);
                 placeName.setText(post.getPlace().getName());
+                binding.tripShareStatus.setVisibility(View.GONE);
+                binding.trip.getRoot().setVisibility(View.GONE);
             } else {
-                binding.placeInfo.setVisibility(View.GONE);
+                binding.placeName.setVisibility(View.GONE);
+                binding.placeCheckInStatus.setVisibility(View.GONE);
+                binding.place.getRoot().setVisibility(View.GONE);
+            }
+
+            // Trip
+            if (post.getTrip() != null) {
+                binding.placeName.setVisibility(View.GONE);
+                binding.placeCheckInStatus.setVisibility(View.GONE);
+                binding.place.getRoot().setVisibility(View.GONE);
+                binding.tripShareStatus.setVisibility(View.VISIBLE);
+                binding.trip.getRoot().setVisibility(View.VISIBLE);
+            } else {
+                binding.tripShareStatus.setVisibility(View.GONE);
+                binding.trip.getRoot().setVisibility(View.GONE);
             }
 
             // Post content
@@ -109,6 +127,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
                 }
             } else {
                 content.setText("");
+                binding.seeMore.setVisibility(View.GONE);
+                binding.seeLess.setVisibility(View.GONE);
             }
 
             // See more button, see less button
@@ -157,11 +177,6 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
                 Intent intent = new Intent(binding.getRoot().getContext(), PostDetailActivity.class);
                 intent.putExtra("postId", post.getId());
                 binding.getRoot().getContext().startActivity(intent);
-            });
-
-            // Explore place button
-            binding.explorePlaceButton.setOnClickListener(v -> {
-
             });
 
             // Like button

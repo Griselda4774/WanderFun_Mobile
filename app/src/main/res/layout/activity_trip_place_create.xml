@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="@dimen/app_horizontal_margin">
+        android:padding="@dimen/app_margin_medium">
 
         <TextView
             android:id="@+id/header_title"
@@ -56,7 +56,7 @@
             android:orientation="vertical"
             android:layout_gravity="start"
             android:paddingBottom="@dimen/app_section_margin"
-            android:paddingHorizontal="@dimen/app_horizontal_margin"
+            android:paddingHorizontal="@dimen/app_margin_medium"
             android:clipChildren="false"
             android:clipToOutline="false"
             android:clipToPadding="false">

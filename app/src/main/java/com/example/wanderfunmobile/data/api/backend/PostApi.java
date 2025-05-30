@@ -1,6 +1,8 @@
 package com.example.wanderfunmobile.data.api.backend;
 
 import com.example.wanderfunmobile.data.dto.ResponseDto;
+import com.example.wanderfunmobile.data.dto.posts.CommentCreateDto;
+import com.example.wanderfunmobile.data.dto.posts.CommentDto;
 import com.example.wanderfunmobile.data.dto.posts.PostCreateDto;
 import com.example.wanderfunmobile.data.dto.posts.PostDto;
 
@@ -42,4 +44,21 @@ public interface PostApi {
     @DELETE("post/{postId}")
     Call<ResponseDto<PostDto>> deletePost(@Header("Authorization") String bearerToken,
                                           @Path("postId") Long postId);
+
+    @GET("post/comment")
+    Call<ResponseDto<List<CommentDto>>> findAllCommentsByPostId(@Query("postId") Long postId);
+
+    @POST("post/comment")
+    Call<ResponseDto<CommentDto>> createComment(@Header("Authorization") String bearerToken,
+                                                @Query("postId") Long postId,
+                                                @Body CommentCreateDto commentCreateDto);
+
+    @PUT("post/comment/{commentId}")
+    Call<ResponseDto<CommentDto>> updateComment(@Header("Authorization") String bearerToken,
+                                                @Path("commentId") Long commentId,
+                                                @Body CommentCreateDto commentCreateDto);
+
+    @DELETE("post/comment/{commentId}")
+    Call<ResponseDto<CommentDto>> deleteComment(@Header("Authorization") String bearerToken,
+                                                @Path("commentId") Long commentId);
 }

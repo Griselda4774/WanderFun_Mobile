@@ -3,12 +3,15 @@ package com.example.wanderfunmobile.presentation.ui.activity.post;
 import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -19,10 +22,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
+import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.databinding.ActivityAddEditPostBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPostOptionHorizontalBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPostOptionVerticalBinding;
+import com.example.wanderfunmobile.domain.model.images.Image;
+import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.PostViewModel;
@@ -64,6 +71,10 @@ public class AddEditPostActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Initialize loading dialog
+        loadingDialog = viewBinding.loadingDialog;
+        hideLoadingDialog();
+
         // Initialize ViewModel
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
@@ -79,17 +90,74 @@ public class AddEditPostActivity extends AppCompatActivity {
             }
         });
 
+        postViewModel.getFindPostByIdLiveData().observe(this, result -> {
+            if (!result.isError() && result.getData() != null) {
+                Post post = result.getData();
+                bindPostData(post);
+            } else {
+                Toast.makeText(getApplicationContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        postViewModel.getCreatePostLiveData().observe(this, result -> {
+            if (!result.isError()) {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Đăng bài thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        postViewModel.getUpdatePostLiveData().observe(this, result -> {
+            if (!result.isError()) {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Sửa bài viết thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // Get postId from intent
         postId = getIntent().getLongExtra("postId", -1L);
+        if (postId > 0) {
+            postViewModel.findPostById(postId);
+        } else {
+            viewBinding.image.setVisibility(View.GONE);
+            viewBinding.removeImageButton.getRoot().setVisibility(View.GONE);
+        }
 
         // Fetch user info
         userViewModel.getMiniSelfInfo("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
 
+        // Initialize pick media launcher
+        pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+            if (uri != null) {
+                imageUri = uri;
+                Glide.with(this).load(uri).into(viewBinding.image);
+                viewBinding.image.setVisibility(ImageView.VISIBLE);
+                viewBinding.removeImageButton.getRoot().setVisibility(View.VISIBLE);
+            } else {
+                Log.d("PhotoPicker", "No media selected");
+            }
+        });
+
         // Initialize bottom sheet
         initBottomSheet();
+        initBottomSheetButtons();
 
-        viewBinding.backButton.button.setOnClickListener(v -> {
-            finish();
+        initActivityButtons();
+
+        viewBinding.removeImageButton.getRoot().setVisibility(View.GONE);
+        viewBinding.removeImageButton.getRoot().setOnClickListener(v -> {
+            viewBinding.removeImageButton.getRoot().setVisibility(View.GONE);
+            viewBinding.image.setVisibility(ImageView.GONE);
+            viewBinding.image.setImageDrawable(null);
+            imageUri = null;
         });
     }
 
@@ -146,6 +214,86 @@ public class AddEditPostActivity extends AppCompatActivity {
                     .into(viewBinding.userAvatar);
         } else {
             viewBinding.userAvatar.setImageResource(R.drawable.ic_avatar);
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void bindPostData(Post post) {
+        viewBinding.textEdittext.setText(post.getContent());
+
+        if (post.getImage() != null) {
+            Glide.with(this)
+                    .load(post.getImage().getImageUrl())
+                    .error(R.drawable.chill_image)
+                    .into(viewBinding.image);
+            viewBinding.image.setVisibility(ImageView.VISIBLE);
+            viewBinding.removeImageButton.getRoot().setVisibility(View.VISIBLE);
+        } else {
+            viewBinding.image.setVisibility(View.GONE);
+            viewBinding.removeImageButton.getRoot().setVisibility(View.GONE);
+        }
+    }
+
+    private void initBottomSheetButtons() {
+        viewBinding.postOptionVertical.addImageButton.setOnClickListener(v -> pickMedia.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build()));
+
+        viewBinding.postOptionHorizontal.addImageButton.setOnClickListener(v -> pickMedia.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build()));
+    }
+
+    private void initActivityButtons() {
+        viewBinding.backButton.button.setOnClickListener(v -> {
+            finish();
+        });
+
+        viewBinding.postButton.setOnClickListener(v -> {
+            showLoadingDialog();
+            Post postCreate = new Post();
+            if (viewBinding.textEdittext.getText() != null) {
+                postCreate.setContent(viewBinding.textEdittext.getText().toString());
+            }
+
+            if (viewBinding.image.getDrawable() != null && imageUri != null) {
+                String folderName = "/wanderfun/posts/" + "user_" + SessionManager.getInstance(getApplicationContext()).getUserId().toString();
+                String fileName = "post_user_" + SessionManager.getInstance(getApplicationContext()).getUserId().toString() + "_" + System.currentTimeMillis();
+                CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), imageUri, fileName, folderName, new CloudinaryUtil.CloudinaryCallback() {
+                    @Override
+                    public void onSuccess(CloudinaryImageDto result) {
+                        postCreate.setImage(new Image());
+                        postCreate.getImage().setImageUrl(result.getUrl());
+                        postCreate.getImage().setImagePublicId(result.getPublicId());
+                        performCreateOrUpdatePost(postCreate);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        postCreate.setImage(null);
+                        performCreateOrUpdatePost(postCreate);                 }
+                });
+            } else {
+                performCreateOrUpdatePost(postCreate);
+            }
+        });
+    }
+
+    private void showLoadingDialog() {
+        loadingDialog.setVisibility(View.VISIBLE);
+        loadingDialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        loadingDialog.setVisibility(View.GONE);
+        loadingDialog.hide();
+    }
+
+    private void performCreateOrUpdatePost(Post post) {
+        if (postId <= 0) {
+            postViewModel.createPost("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), post);
+        } else {
+            postViewModel.updatePost("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), postId, post);
         }
     }
 }

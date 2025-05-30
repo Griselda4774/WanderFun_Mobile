@@ -25,8 +25,8 @@
             android:layout_height="@dimen/rounded_button_size"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_marginEnd="@dimen/app_horizontal_margin2"
-            android:layout_marginBottom="@dimen/app_horizontal_margin2"
+            android:layout_marginEnd="@dimen/app_margin_medium"
+            android:layout_marginBottom="@dimen/app_margin_medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:background="@drawable/bg_button_rounded_border"
@@ -48,8 +48,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginHorizontal="@dimen/app_horizontal_margin2"
-            android:layout_marginTop="@dimen/app_horizontal_margin2"
+            android:layout_marginHorizontal="@dimen/app_margin_medium"
+            android:layout_marginTop="@dimen/app_margin_medium"
             android:paddingHorizontal="@dimen/input_padding"
             android:background="@drawable/bg_search_bar">
 

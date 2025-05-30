@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -81,7 +82,7 @@ public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripIt
             }
 
             // Intent
-            ConstraintLayout tripItem = binding.getRoot();
+            LinearLayout tripItem = binding.getRoot();
             tripItem.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), TripDetailActivity.class);
                 intent.putExtra("tripId", trip.getId());

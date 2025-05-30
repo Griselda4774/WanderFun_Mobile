@@ -30,6 +30,6 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/white1</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
     </style>
 </resources>
