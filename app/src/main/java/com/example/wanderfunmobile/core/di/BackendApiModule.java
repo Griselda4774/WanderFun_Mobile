@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.LocalDateDeserializer;
 import com.example.wanderfunmobile.core.util.LocalDateSerializer;
+import com.example.wanderfunmobile.core.util.LocalDateTimeDeserializer;
 import com.example.wanderfunmobile.core.util.typeadapter.LocalDateTimeAdapter;
 import com.example.wanderfunmobile.data.api.backend.AddressApi;
 import com.example.wanderfunmobile.data.api.backend.AlbumApi;
@@ -74,9 +75,12 @@ public class BackendApiModule {
     @Singleton
     public AlbumApi provideAlbumApi(@ApplicationContext Context context) {
         String baseUrl = context.getString(R.string.base_url);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                .create();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
