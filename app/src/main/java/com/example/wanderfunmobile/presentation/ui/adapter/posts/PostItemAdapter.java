@@ -71,6 +71,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
                 if (post.getUser().getAvatarImage() != null) {
                     Glide.with(binding.getRoot())
                             .load(post.getUser().getAvatarImage().getImageUrl())
+                            .placeholder(R.drawable.ic_avatar)
                             .error(R.drawable.ic_avatar)
                             .into(userAvatar);
                 }

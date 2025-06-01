@@ -46,7 +46,8 @@ public interface PostApi {
                                           @Path("postId") Long postId);
 
     @GET("post/comment")
-    Call<ResponseDto<List<CommentDto>>> findAllCommentsByPostId(@Query("postId") Long postId);
+    Call<ResponseDto<List<CommentDto>>> findAllCommentsByPostId(@Header("Authorization") String bearerToken,
+                                                                @Query("postId") Long postId);
 
     @POST("post/comment")
     Call<ResponseDto<CommentDto>> createComment(@Header("Authorization") String bearerToken,

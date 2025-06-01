@@ -18,7 +18,7 @@ public interface PostRepository {
     LiveData<Result<Post>> deletePost(String bearerToken, Long postId);
 
     // Comments
-    LiveData<Result<List<Comment>>> findAllCommentsByPostId(Long postId);
+    LiveData<Result<List<Comment>>> findAllCommentsByPostId(String bearerToken, Long postId);
     LiveData<Result<Comment>> createComment(String bearerToken, Long postId, Comment comment);
     LiveData<Result<Comment>> updateComment(String bearerToken, Long commentId, Comment comment);
     LiveData<Result<Comment>> deleteComment(String bearerToken, Long commentId);

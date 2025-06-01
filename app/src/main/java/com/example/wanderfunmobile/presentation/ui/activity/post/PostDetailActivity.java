@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
@@ -25,9 +26,15 @@ import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.databinding.ActivityPostDetailBinding;
 import com.example.wanderfunmobile.databinding.ButtonBackRoundedBinding;
+import com.example.wanderfunmobile.domain.model.posts.Comment;
 import com.example.wanderfunmobile.domain.model.posts.Post;
+import com.example.wanderfunmobile.presentation.ui.adapter.posts.CommentItemAdapter;
+import com.example.wanderfunmobile.presentation.ui.adapter.posts.PostItemAdapter;
+import com.example.wanderfunmobile.presentation.viewmodel.CommentViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.PostViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -39,7 +46,11 @@ public class PostDetailActivity extends AppCompatActivity {
     private long postId;
     private Post post;
     private PostViewModel postViewModel;
+    private CommentViewModel commentViewModel;
+    private CommentItemAdapter commentItemAdapter;
+    private final List<Comment> commentList = new ArrayList<>();
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +82,10 @@ public class PostDetailActivity extends AppCompatActivity {
             return insets;
         });
 
+        viewBinding.commentList.setLayoutManager(new LinearLayoutManager(this));
+        commentItemAdapter = new CommentItemAdapter(commentList);
+        viewBinding.commentList.setAdapter(commentItemAdapter);
+
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.getFindPostByIdLiveData().observe(this, result -> {
             if (!result.isError() && result.getData() != null) {
@@ -95,13 +110,27 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
 
-        getPost();
+        commentViewModel = new ViewModelProvider(this).get(CommentViewModel.class);
+        commentViewModel.getFindAllCommentsByPostIdLiveData().observe(this, result -> {
+            if (!result.isError() && result.getData() != null) {
+                commentList.clear();
+                commentList.addAll(result.getData());
+                commentItemAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(getApplicationContext(), "Không thể tải bình luận!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        // Like comment button wrapper
+        getPost();
+        getComment();
+
+        // Like comment button wrapper, comment container
         if (SessionManager.getInstance(viewBinding.getRoot().getContext()).isLoggedIn()) {
             viewBinding.likeCommentButtonWrapper.setVisibility(View.VISIBLE);
+            viewBinding.commentContainer.setVisibility(View.VISIBLE);
         } else {
             viewBinding.likeCommentButtonWrapper.setVisibility(View.GONE);
+            viewBinding.commentContainer.setVisibility(View.GONE);
         }
 
         viewBinding.likeButton.setOnClickListener(v -> {
@@ -165,6 +194,17 @@ public class PostDetailActivity extends AppCompatActivity {
             postId = intent.getLongExtra("postId", -1);
             if (postId > 0) {
                 postViewModel.findPostById(postId);
+            }
+        }
+    }
+
+    private void getComment() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            postId = intent.getLongExtra("postId", -1);
+            if (postId > 0) {
+                String bearerToken = "Bearer " + SessionManager.getInstance(viewBinding.getRoot().getContext()).getAccessToken();
+                commentViewModel.findAllCommentsByPostId(bearerToken ,postId);
             }
         }
     }
