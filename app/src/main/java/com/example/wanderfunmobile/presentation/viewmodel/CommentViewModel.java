@@ -49,15 +49,15 @@ public class CommentViewModel extends ViewModel {
         return isLoading;
     }
 
-    public void setFindAllCommentsByPostId(Long postId) {
+    public void findAllCommentsByPostId(String bearerToken, Long postId) {
         isLoading.setValue(true);
-        postRepository.findAllCommentsByPostId(postId).observeForever(result -> {
+        postRepository.findAllCommentsByPostId(bearerToken, postId).observeForever(result -> {
             isLoading.setValue(false);
             findAllCommentsByPostIdLiveData.setValue(result);
         });
     }
 
-    public void createPost(String bearerToken,Long postId, Comment comment) {
+    public void createComment(String bearerToken, Long postId, Comment comment) {
         isLoading.setValue(true);
         postRepository.createComment(bearerToken, postId, comment).observeForever(result -> {
             isLoading.setValue(false);

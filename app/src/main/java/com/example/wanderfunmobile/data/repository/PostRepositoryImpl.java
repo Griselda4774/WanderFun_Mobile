@@ -274,10 +274,10 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<List<Comment>>> findAllCommentsByPostId(Long postId) {
+    public LiveData<Result<List<Comment>>> findAllCommentsByPostId(String bearerToken, Long postId) {
         MutableLiveData<Result<List<Comment>>> findAllCommentsByPostIdResponseLiveData = new MutableLiveData<>();
         try {
-            Call<ResponseDto<List<CommentDto>>> call = postApi.findAllCommentsByPostId(postId);
+            Call<ResponseDto<List<CommentDto>>> call = postApi.findAllCommentsByPostId(bearerToken, postId);
             call.enqueue(new Callback<ResponseDto<List<CommentDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<CommentDto>>> call,

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -65,4 +66,29 @@ public class DateTimeUtil {
         );
     }
 
+    public static String timeAgoLocalDateTime(LocalDateTime pastTime) {
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(pastTime, now);
+
+        long seconds = duration.getSeconds();
+
+        if (seconds < 60) {
+            return seconds + " giây trước";
+        } else if (seconds < 3600) {
+            long minutes = seconds / 60;
+            return minutes + " phút trước";
+        } else if (seconds < 86400) {
+            long hours = seconds / 3600;
+            return hours + " giờ trước";
+        } else if (seconds < 2592000) {
+            long days = seconds / 86400;
+            return days + " ngày trước";
+        } else if (seconds < 31104000) {
+            long months = seconds / 2592000;
+            return months + " tháng trước";
+        } else {
+            long years = seconds / 31104000;
+            return years + " năm trước";
+        }
+    }
 }
