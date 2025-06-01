@@ -67,12 +67,13 @@ public class DateTimeUtil {
     }
 
     public static String timeAgoLocalDateTime(LocalDateTime pastTime) {
-        LocalDateTime now = LocalDateTime.now();
-        Duration duration = Duration.between(pastTime, now);
+        Duration duration = Duration.between(pastTime, LocalDateTime.now());
 
         long seconds = duration.getSeconds();
-
-        if (seconds < 60) {
+        if (seconds < 30) {
+            return "Vừa xong";
+        }
+        else if (seconds < 60) {
             return seconds + " giây trước";
         } else if (seconds < 3600) {
             long minutes = seconds / 60;

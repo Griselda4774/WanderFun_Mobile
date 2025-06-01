@@ -57,25 +57,25 @@ public class CommentViewModel extends ViewModel {
         });
     }
 
-    public void createComment(String bearerToken, Long postId, Comment comment) {
+    public void createComment(String bearerToken, Long postId, Comment comment, String localId) {
         isLoading.setValue(true);
-        postRepository.createComment(bearerToken, postId, comment).observeForever(result -> {
+        postRepository.createComment(bearerToken, postId, comment, localId).observeForever(result -> {
             isLoading.setValue(false);
             createCommentLiveData.setValue(result);
         });
     }
 
-    public void updateComment(String bearerToken, Long commentId, Comment comment) {
+    public void updateComment(String bearerToken, Long commentId, Comment comment, String localId) {
         isLoading.setValue(true);
-        postRepository.updateComment(bearerToken, commentId, comment).observeForever(result -> {
+        postRepository.updateComment(bearerToken, commentId, comment, localId).observeForever(result -> {
             isLoading.setValue(false);
             updateCommentLiveData.setValue(result);
         });
     }
 
-    public void deletePost(String bearerToken, Long commentId) {
+    public void deleteComment(String bearerToken, Long commentId, String localId) {
         isLoading.setValue(true);
-        postRepository.deleteComment(bearerToken, commentId).observeForever(result -> {
+        postRepository.deleteComment(bearerToken, commentId,localId).observeForever(result -> {
             isLoading.setValue(false);
             deleteCommentLiveData.setValue(result);
         });

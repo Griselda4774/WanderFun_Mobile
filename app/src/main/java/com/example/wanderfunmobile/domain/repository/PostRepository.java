@@ -19,7 +19,7 @@ public interface PostRepository {
 
     // Comments
     LiveData<Result<List<Comment>>> findAllCommentsByPostId(String bearerToken, Long postId);
-    LiveData<Result<Comment>> createComment(String bearerToken, Long postId, Comment comment);
-    LiveData<Result<Comment>> updateComment(String bearerToken, Long commentId, Comment comment);
-    LiveData<Result<Comment>> deleteComment(String bearerToken, Long commentId);
+    LiveData<Result<Comment>> createComment(String bearerToken, Long postId, Comment comment, String localId);
+    LiveData<Result<Comment>> updateComment(String bearerToken, Long commentId, Comment comment, String localId);
+    LiveData<Result<Comment>> deleteComment(String bearerToken, Long commentId, String localId);
 }
