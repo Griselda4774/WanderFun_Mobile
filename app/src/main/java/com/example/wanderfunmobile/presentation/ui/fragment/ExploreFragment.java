@@ -228,15 +228,15 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
         // Loading dialog
         loadingDialog = viewBinding.loadingDialog;
-        placeViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading) {
-                loadingDialog.show();
-                loadingDialog.setVisibility(View.VISIBLE);
-            } else {
-                loadingDialog.hide();
-                loadingDialog.setVisibility(View.GONE);
-            }
-        });
+//        placeViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+//            if (isLoading) {
+//                loadingDialog.show();
+//                loadingDialog.setVisibility(View.VISIBLE);
+//            } else {
+//                loadingDialog.hide();
+//                loadingDialog.setVisibility(View.GONE);
+//            }
+//        });
 //        placeViewModel.getIsCheckingIn().observe(getViewLifecycleOwner(), isCheckingIn -> {
 //            if (isCheckingIn) {
 //                loadingDialog.show();

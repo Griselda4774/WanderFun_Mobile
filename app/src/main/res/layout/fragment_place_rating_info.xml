@@ -15,7 +15,7 @@
         android:orientation="vertical"
         android:gravity="center"
         android:background="@drawable/bg_border_bottom"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_medium_margin">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -84,7 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_border_bottom"
-        android:paddingHorizontal="@dimen/app_horizontal_margin"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         android:paddingVertical="@dimen/place_info_section_large_margin"
         android:orientation="vertical"
         android:gravity="start">
@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/place_info_section_large_margin"
-            android:layout_marginHorizontal="@dimen/app_horizontal_margin"
+            android:layout_marginHorizontal="@dimen/app_margin_medium"
             android:text="Bài đánh giá"
             android:textSize="@dimen/place_info_title_text_size"
             style="@style/Text.Title" />

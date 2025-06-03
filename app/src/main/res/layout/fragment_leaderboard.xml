@@ -16,14 +16,14 @@
         style="@style/Text.Title"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="@dimen/app_horizontal_margin2"/>
+        android:layout_margin="@dimen/app_margin_medium"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabPaddingEnd="@dimen/app_horizontal_margin2"
-        app:tabPaddingStart="@dimen/app_horizontal_margin2"
+        app:tabPaddingEnd="@dimen/app_margin_medium"
+        app:tabPaddingStart="@dimen/app_margin_medium"
         app:tabIndicator="@drawable/tab_indicator"
         app:tabIndicatorColor="@color/blue2"
         app:tabIndicatorGravity="bottom"
@@ -42,7 +42,7 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingHorizontal="@dimen/app_horizontal_margin2"
+        android:paddingHorizontal="@dimen/app_margin_medium"
         app:layout_constraintTop_toBottomOf="@id/tab_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -3,6 +3,8 @@ package com.example.wanderfunmobile.presentation.ui.activity.post;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
@@ -23,9 +26,15 @@ import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.databinding.ActivityPostDetailBinding;
 import com.example.wanderfunmobile.databinding.ButtonBackRoundedBinding;
+import com.example.wanderfunmobile.domain.model.posts.Comment;
 import com.example.wanderfunmobile.domain.model.posts.Post;
+import com.example.wanderfunmobile.presentation.ui.adapter.posts.CommentItemAdapter;
+import com.example.wanderfunmobile.presentation.ui.adapter.posts.PostItemAdapter;
+import com.example.wanderfunmobile.presentation.viewmodel.CommentViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.PostViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -34,9 +43,14 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class PostDetailActivity extends AppCompatActivity {
 
     private ActivityPostDetailBinding viewBinding;
+    private long postId;
     private Post post;
     private PostViewModel postViewModel;
+    private CommentViewModel commentViewModel;
+    private CommentItemAdapter commentItemAdapter;
+    private final List<Comment> commentList = new ArrayList<>();
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,25 +60,77 @@ public class PostDetailActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(viewBinding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+            boolean isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+
+            View inputBar = viewBinding.commentContainer;
+            int paddingBottom = isKeyboardVisible
+                    ? imeInsets.bottom
+                    : (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    8,
+                    inputBar.getResources().getDisplayMetrics()
+            );
+            inputBar.setPadding(
+                    inputBar.getPaddingLeft(),
+                    inputBar.getPaddingTop(),
+                    inputBar.getPaddingRight(),
+                    paddingBottom
+            );
+
             return insets;
         });
+
+        viewBinding.commentList.setLayoutManager(new LinearLayoutManager(this));
+        commentItemAdapter = new CommentItemAdapter(commentList);
+        viewBinding.commentList.setAdapter(commentItemAdapter);
 
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.getFindPostByIdLiveData().observe(this, result -> {
             if (!result.isError() && result.getData() != null) {
                 post = result.getData();
                 bindPostData();
+                hideLoadingDialog();
             } else {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Bài viết đã bị xóa!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        postViewModel.getDeletePostLiveData().observe(this, result -> {
+            if (!result.isError()) {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Xóa bài viết thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                hideLoadingDialog();
                 Toast.makeText(this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
             }
         });
-        getPost();
 
-        // Like comment button wrapper
+        commentViewModel = new ViewModelProvider(this).get(CommentViewModel.class);
+        commentViewModel.getFindAllCommentsByPostIdLiveData().observe(this, result -> {
+            if (!result.isError() && result.getData() != null) {
+                commentList.clear();
+                commentList.addAll(result.getData());
+                commentItemAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(getApplicationContext(), "Không thể tải bình luận!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        getPost();
+        getComment();
+
+        // Like comment button wrapper, comment container
         if (SessionManager.getInstance(viewBinding.getRoot().getContext()).isLoggedIn()) {
             viewBinding.likeCommentButtonWrapper.setVisibility(View.VISIBLE);
+            viewBinding.commentContainer.setVisibility(View.VISIBLE);
         } else {
             viewBinding.likeCommentButtonWrapper.setVisibility(View.GONE);
+            viewBinding.commentContainer.setVisibility(View.GONE);
         }
 
         viewBinding.likeButton.setOnClickListener(v -> {
@@ -80,14 +146,65 @@ public class PostDetailActivity extends AppCompatActivity {
         viewBinding.backButton.button.setOnClickListener(v -> {
             finish();
         });
+
+        viewBinding.editButton.setOnClickListener(v -> {
+            if (post != null) {
+                Intent intent = new Intent(viewBinding.getRoot().getContext(), AddEditPostActivity.class);
+                intent.putExtra("postId", post.getId());
+                startActivity(intent);
+            }
+        });
+
+        viewBinding.deleteButton.setOnClickListener(v -> {
+            viewBinding.selectionDialog.show("Xóa bài viết",
+                    "Bạn chắc chắn chứ?",
+                    "Bài viết sẽ bị xóa vĩnh viễn và không thể khôi phục lại.",
+                    "Hủy",
+                    "Vẫn xóa");
+        });
+
+        // Selection dialog
+        viewBinding.selectionDialog.setOnAcceptListener(() -> {
+            viewBinding.selectionDialog.hide();
+            Log.d("SelectionDialog", "Accept");
+        });
+
+        viewBinding.selectionDialog.setOnRejectListener(() -> {
+            if (postId > 0) {
+                showLoadingDialog();
+                postViewModel.deletePost("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), postId);
+            }
+            viewBinding.selectionDialog.hide();
+            Log.d("SelectionDialog", "Reject");
+        });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (postId > 0) {
+            postViewModel.findPostById(postId);
+        }
     }
 
     private void getPost() {
+        showLoadingDialog();
         Intent intent = getIntent();
         if (intent != null) {
-            long postId = intent.getLongExtra("postId", -1);
+            postId = intent.getLongExtra("postId", -1);
             if (postId > 0) {
                 postViewModel.findPostById(postId);
+            }
+        }
+    }
+
+    private void getComment() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            postId = intent.getLongExtra("postId", -1);
+            if (postId > 0) {
+                String bearerToken = "Bearer " + SessionManager.getInstance(viewBinding.getRoot().getContext()).getAccessToken();
+                commentViewModel.findAllCommentsByPostId(bearerToken ,postId);
             }
         }
     }
@@ -105,7 +222,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         .into(userAvatar);
             }
 
-            userName.setText(post.getUser().getFirstName() + " " + post.getUser().getLastName());
+            userName.setText(post.getUser().getLastName() + " " + post.getUser().getFirstName());
         } else {
             userAvatar.setImageResource(R.drawable.ic_avatar);
             userName.setText("Unknown User");
@@ -116,13 +233,31 @@ public class PostDetailActivity extends AppCompatActivity {
         TextView dateCreated = viewBinding.dateCreated;
         dateCreated.setText(DateTimeUtil.localDateTimeToString(post.getCreateAt()));
 
-        // Place name
+        // Place
         TextView placeName = viewBinding.placeName;
         if (post.getPlace() != null) {
-            viewBinding.placeInfo.setVisibility(View.VISIBLE);
+            viewBinding.placeName.setVisibility(View.VISIBLE);
+            viewBinding.placeCheckInStatus.setVisibility(View.VISIBLE);
+            viewBinding.place.getRoot().setVisibility(View.VISIBLE);
             placeName.setText(post.getPlace().getName());
+            viewBinding.tripShareStatus.setVisibility(View.GONE);
+            viewBinding.trip.getRoot().setVisibility(View.GONE);
         } else {
-            viewBinding.placeInfo.setVisibility(View.GONE);
+            viewBinding.placeName.setVisibility(View.GONE);
+            viewBinding.placeCheckInStatus.setVisibility(View.GONE);
+            viewBinding.place.getRoot().setVisibility(View.GONE);
+        }
+
+        // Trip
+        if (post.getTrip() != null) {
+            viewBinding.placeName.setVisibility(View.GONE);
+            viewBinding.placeCheckInStatus.setVisibility(View.GONE);
+            viewBinding.place.getRoot().setVisibility(View.GONE);
+            viewBinding.tripShareStatus.setVisibility(View.VISIBLE);
+            viewBinding.trip.getRoot().setVisibility(View.VISIBLE);
+        } else {
+            viewBinding.tripShareStatus.setVisibility(View.GONE);
+            viewBinding.trip.getRoot().setVisibility(View.GONE);
         }
 
         // Post content
@@ -139,10 +274,11 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         } else {
             content.setText("");
+            viewBinding.seeMore.setVisibility(View.GONE);
+            viewBinding.seeLess.setVisibility(View.GONE);
         }
 
         // See more button, see less button
-
         viewBinding.seeMore.setOnClickListener(v -> {
             content.setText(post.getContent());
             viewBinding.seeMore.setVisibility(View.GONE);
@@ -182,18 +318,6 @@ public class PostDetailActivity extends AppCompatActivity {
             commentCount.setText("0");
         }
 
-        // Post deltail button
-        viewBinding.getRoot().setOnClickListener(v -> {
-            Intent intent = new Intent(viewBinding.getRoot().getContext(), PostDetailActivity.class);
-            intent.putExtra("postId", post.getId());
-            viewBinding.getRoot().getContext().startActivity(intent);
-        });
-
-        // Explore place button
-        viewBinding.explorePlaceButton.setOnClickListener(v -> {
-
-        });
-
         // Like button
         if (post.isLiked()) {
             viewBinding.likeButton.setVisibility(View.GONE);
@@ -231,5 +355,15 @@ public class PostDetailActivity extends AppCompatActivity {
         } else {
             viewBinding.modifyButtonGroup.setVisibility(View.GONE);
         }
+    }
+
+    private void showLoadingDialog() {
+        viewBinding.loadingDialog.setVisibility(View.VISIBLE);
+        viewBinding.loadingDialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        viewBinding.loadingDialog.setVisibility(View.GONE);
+        viewBinding.loadingDialog.hide();
     }
 }

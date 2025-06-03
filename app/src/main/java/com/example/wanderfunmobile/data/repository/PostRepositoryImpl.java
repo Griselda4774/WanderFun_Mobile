@@ -8,10 +8,13 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.wanderfunmobile.data.api.backend.PostApi;
 import com.example.wanderfunmobile.data.dto.ResponseDto;
+import com.example.wanderfunmobile.data.dto.posts.CommentCreateDto;
+import com.example.wanderfunmobile.data.dto.posts.CommentDto;
 import com.example.wanderfunmobile.data.dto.posts.PostCreateDto;
 import com.example.wanderfunmobile.data.dto.posts.PostDto;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.domain.model.Result;
+import com.example.wanderfunmobile.domain.model.posts.Comment;
 import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.repository.PostRepository;
 
@@ -268,5 +271,138 @@ public class PostRepositoryImpl implements PostRepository {
         }
 
         return deletePostResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<List<Comment>>> findAllCommentsByPostId(String bearerToken, Long postId) {
+        MutableLiveData<Result<List<Comment>>> findAllCommentsByPostIdResponseLiveData = new MutableLiveData<>();
+        try {
+            Call<ResponseDto<List<CommentDto>>> call = postApi.findAllCommentsByPostId(bearerToken, postId);
+            call.enqueue(new Callback<ResponseDto<List<CommentDto>>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<List<CommentDto>>> call,
+                                       @NonNull Response<ResponseDto<List<CommentDto>>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<List<Comment>> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.mapList(response.body().getData(), Comment.class));
+                        }
+                        findAllCommentsByPostIdResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<List<CommentDto>>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e("PostRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("PostRepositoryImpl", "Error during findAllPostsByCursor", e);
+        }
+
+        return findAllCommentsByPostIdResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<Comment>> createComment(String bearerToken, Long postId, Comment comment) {
+        MutableLiveData<Result<Comment>> createCommentResponseLiveData = new MutableLiveData<>();
+        try {
+            Call<ResponseDto<CommentDto>> call = postApi.createComment(bearerToken, postId, objectMapper.map(comment, CommentCreateDto.class));
+            call.enqueue(new Callback<ResponseDto<CommentDto>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<CommentDto>> call,
+                                       @NonNull Response<ResponseDto<CommentDto>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<Comment> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), Comment.class));
+                        }
+                        createCommentResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<CommentDto>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e("PostRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("PostRepositoryImpl", "Error during createPost", e);
+        }
+        return createCommentResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<Comment>> updateComment(String bearerToken, Long commentId, Comment comment) {
+        MutableLiveData<Result<Comment>> updateCommentResponseLiveData = new MutableLiveData<>();
+
+        try {
+            Call<ResponseDto<CommentDto>> call = postApi.updateComment(bearerToken, commentId, objectMapper.map(comment, CommentCreateDto.class));
+            call.enqueue(new Callback<ResponseDto<CommentDto>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<CommentDto>> call,
+                                       @NonNull Response<ResponseDto<CommentDto>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<Comment> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), Comment.class));
+                        }
+                        updateCommentResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<CommentDto>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e("CommentRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("CommentRepositoryImpl", "Error during updateComment", e);
+        }
+
+        return updateCommentResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<Comment>> deleteComment(String bearerToken, Long commentId) {
+        MutableLiveData<Result<Comment>> deleteCommentResponseLiveData = new MutableLiveData<>();
+
+        try {
+            Call<ResponseDto<CommentDto>> call = postApi.deleteComment(bearerToken, commentId);
+            call.enqueue(new Callback<ResponseDto<CommentDto>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<CommentDto>> call,
+                                       @NonNull Response<ResponseDto<CommentDto>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<Comment> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), Comment.class));
+                        }
+                        deleteCommentResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<CommentDto>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e("CommentRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("CommentRepositoryImpl", "Error during deleteComment", e);
+        }
+
+        return deleteCommentResponseLiveData;
     }
 }

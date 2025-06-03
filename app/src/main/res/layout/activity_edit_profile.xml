@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="Chỉnh sửa thông tin"
             style="@style/Text.Title"
-            android:layout_margin="@dimen/app_horizontal_margin2"
+            android:layout_margin="@dimen/app_margin_medium"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/app_horizontal_margin2"
+            android:layout_marginStart="@dimen/app_margin_medium"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -60,7 +60,7 @@
                 android:id="@+id/body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/app_horizontal_margin"
+                android:paddingHorizontal="@dimen/app_margin_medium"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -169,7 +169,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/button_container_padding"
-                android:paddingHorizontal="@dimen/app_horizontal_margin"
+                android:paddingHorizontal="@dimen/app_margin_medium"
                 app:layout_constraintTop_toBottomOf="@id/body"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">

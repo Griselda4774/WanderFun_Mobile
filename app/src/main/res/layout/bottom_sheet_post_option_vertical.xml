@@ -47,6 +47,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
+                android:id="@+id/add_image_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/post_option_margin_vertical"
@@ -73,6 +74,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/add_place_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/post_option_margin_vertical"
@@ -99,6 +101,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/add_trip_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/post_option_margin_vertical"
