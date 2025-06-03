@@ -84,4 +84,6 @@
     <color name="star">@color/yellow3</color>
     <color name="star_disable">@color/white4</color>
 
+    <color name="pop_up_comment_menu_tint">@color/black1</color>
+
 </resources>

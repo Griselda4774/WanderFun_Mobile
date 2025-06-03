@@ -42,6 +42,7 @@ public class HomeFragment extends Fragment {
     private PostViewModel postViewModel;
     private PostItemAdapter postItemAdapter;
     private final List<Post> postList = new ArrayList<>();
+    private boolean isFirstLoad = true;
 
     @Inject
     public HomeFragment() {
@@ -87,9 +88,7 @@ public class HomeFragment extends Fragment {
             if (!result.isError() && result.getData() != null) {
                 postList.addAll(result.getData());
                 postItemAdapter.notifyDataSetChanged();
-                if (!postList.isEmpty()) {
-                    PostViewManager.getInstance(requireContext().getApplicationContext()).setCursor(postList.get(postList.size() - 1).getId());
-                } else {
+                if (postList.isEmpty()) {
                     PostViewManager.getInstance(requireContext().getApplicationContext()).reset();
                     postViewModel.findAllPostsNoParam();
                 }
@@ -102,9 +101,6 @@ public class HomeFragment extends Fragment {
             if (!result.isError() && result.getData() != null) {
                 postList.addAll(result.getData());
                 postItemAdapter.notifyDataSetChanged();
-                if (!postList.isEmpty()) {
-                    PostViewManager.getInstance(requireContext().getApplicationContext()).init(postList.get(postList.size() - 1).getId());
-                }
             } else {
                 Toast.makeText(getContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
             }
@@ -142,6 +138,14 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onResume() {
+        if (!isFirstLoad) {
+            if (!(PostViewManager.getInstance(requireContext()).getCursor() > 1)) {
+                postViewModel.findAllPostsNoParam();
+            } else {
+                postViewModel.findAllPostsByCursor(PostViewManager.getInstance(requireContext()).getCursor(), 10);
+            }
+        }
+        isFirstLoad = false;
         super.onResume();
     }
 
@@ -163,6 +167,9 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (!postList.isEmpty()) {
+            PostViewManager.getInstance(requireContext().getApplicationContext()).init(postList.get(postList.size() - 1).getId());
+        }
         postList.clear();
     }
 

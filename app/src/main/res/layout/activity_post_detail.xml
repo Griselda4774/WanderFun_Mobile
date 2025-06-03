@@ -79,6 +79,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -237,7 +238,7 @@
                         android:maxHeight="400dp"
                         android:adjustViewBounds="true"
                         android:src="@drawable/chill_image"
-                        android:visibility="gone"/>
+                        android:visibility="visible"/>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/like_comment_button_wrapper"
@@ -336,6 +337,7 @@
                                 android:src="@drawable/ic_comment" />
 
                             <TextView
+                                android:id="@+id/comment_part"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Bình luận"
@@ -467,6 +469,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autofillHints=""
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
             android:hint="Bình luận về bài viết này..."
@@ -486,7 +489,7 @@
             android:layout_marginStart="16dp"
             android:src="@drawable/ic_send"
             app:tint="@color/blue2"
-            android:clickable="true"
+            android:clickable="false"
             android:stateListAnimator="@animator/touch_opacity_animator"/>
 
     </LinearLayout>

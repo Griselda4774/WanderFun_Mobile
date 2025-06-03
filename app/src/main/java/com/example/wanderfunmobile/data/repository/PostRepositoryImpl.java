@@ -307,7 +307,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<Comment>> createComment(String bearerToken, Long postId, Comment comment) {
+    public LiveData<Result<Comment>> createComment(String bearerToken, Long postId, Comment comment, String localId) {
         MutableLiveData<Result<Comment>> createCommentResponseLiveData = new MutableLiveData<>();
         try {
             Call<ResponseDto<CommentDto>> call = postApi.createComment(bearerToken, postId, objectMapper.map(comment, CommentCreateDto.class));
@@ -321,6 +321,7 @@ public class PostRepositoryImpl implements PostRepository {
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
                             result.setData(objectMapper.map(response.body().getData(), Comment.class));
+                            result.getData().setLocalId(localId);
                         }
                         createCommentResponseLiveData.postValue(result);
                     }
@@ -339,7 +340,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<Comment>> updateComment(String bearerToken, Long commentId, Comment comment) {
+    public LiveData<Result<Comment>> updateComment(String bearerToken, Long commentId, Comment comment, String localId) {
         MutableLiveData<Result<Comment>> updateCommentResponseLiveData = new MutableLiveData<>();
 
         try {
@@ -354,6 +355,7 @@ public class PostRepositoryImpl implements PostRepository {
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
                             result.setData(objectMapper.map(response.body().getData(), Comment.class));
+                            result.getData().setLocalId(localId);
                         }
                         updateCommentResponseLiveData.postValue(result);
                     }
@@ -373,7 +375,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<Comment>> deleteComment(String bearerToken, Long commentId) {
+    public LiveData<Result<Comment>> deleteComment(String bearerToken, Long commentId, String localId) {
         MutableLiveData<Result<Comment>> deleteCommentResponseLiveData = new MutableLiveData<>();
 
         try {
@@ -388,7 +390,10 @@ public class PostRepositoryImpl implements PostRepository {
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
                             result.setData(objectMapper.map(response.body().getData(), Comment.class));
+                        } else {
+                            result.setData(new Comment());
                         }
+                        result.getData().setLocalId(localId);
                         deleteCommentResponseLiveData.postValue(result);
                     }
                 }
