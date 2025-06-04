@@ -25,16 +25,22 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
+import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.ActivityAddEditPostBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPostOptionHorizontalBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPostOptionVerticalBinding;
 import com.example.wanderfunmobile.domain.model.images.Image;
 import com.example.wanderfunmobile.domain.model.posts.Post;
+import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.PostViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.UserViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import org.parceler.Parcels;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -58,6 +64,9 @@ public class AddEditPostActivity extends AppCompatActivity {
 
     private Uri imageUri;
     private LoadingDialog loadingDialog;
+
+    @Inject
+    ObjectMapper objectMapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +154,10 @@ public class AddEditPostActivity extends AppCompatActivity {
                 Log.d("PhotoPicker", "No media selected");
             }
         });
+
+        // Get shared trip data from intent
+        Trip shareTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("share_trip")), Trip.class);
+
 
         // Initialize bottom sheet
         initBottomSheet();

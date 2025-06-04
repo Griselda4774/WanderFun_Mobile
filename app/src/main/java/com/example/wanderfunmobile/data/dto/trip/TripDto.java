@@ -16,6 +16,7 @@ public class TripDto {
     private String imagePublicId;
     private LocalDate startTime;
     private LocalDate endTime;
+    private Long userId;
     private List<TripPlaceDto> tripPlaceList;
 
     public TripDto() {
@@ -69,6 +70,13 @@ public class TripDto {
         this.endTime = endTime;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
     public List<TripPlaceDto> getTripPlaceList() {
         return tripPlaceList;
     }
