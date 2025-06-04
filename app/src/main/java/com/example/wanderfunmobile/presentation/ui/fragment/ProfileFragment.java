@@ -17,7 +17,7 @@ import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.databinding.FragmentProfileBinding;
 import com.example.wanderfunmobile.presentation.ui.activity.LoginActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.album.MyAlbumActivity;
-import com.example.wanderfunmobile.presentation.ui.activity.profile.MyProfileActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.profile.ProfileActivity;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 
@@ -55,7 +55,7 @@ public class ProfileFragment extends Fragment {
         // Profile
         ConstraintLayout profileSection = viewBinding.profileSection;
         profileSection.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MyProfileActivity.class);
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
             startActivity(intent);
         });
 

@@ -1,9 +1,13 @@
 package com.example.wanderfunmobile.presentation.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -43,6 +47,7 @@ public class HomeFragment extends Fragment {
     private PostItemAdapter postItemAdapter;
     private final List<Post> postList = new ArrayList<>();
     private boolean isFirstLoad = true;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
     @Inject
     public HomeFragment() {
@@ -67,18 +72,33 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null ) {
+                            switch (Objects.requireNonNull(data.getStringExtra("status")))
+                            {
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                });
+
         viewBinding.createPostInput.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), AddEditPostActivity.class);
             startActivity(intent);
         });
 
         viewBinding.postList.setLayoutManager(new LinearLayoutManager(getContext()));
-        postItemAdapter = new PostItemAdapter(postList);
+        postItemAdapter = new PostItemAdapter(postList, activityResultLauncher);
         viewBinding.postList.setAdapter(postItemAdapter);
 
         // Load posts
         if (!(PostViewManager.getInstance(requireContext()).getCursor() > 1)) {
-            postViewModel.findAllPostsNoParam();
+            postViewModel.findAllPostsByCursor(null, null);
         } else {
             postViewModel.findAllPostsByCursor(PostViewManager.getInstance(requireContext()).getCursor(), 10);
         }
@@ -90,21 +110,21 @@ public class HomeFragment extends Fragment {
                 postItemAdapter.notifyDataSetChanged();
                 if (postList.isEmpty()) {
                     PostViewManager.getInstance(requireContext().getApplicationContext()).reset();
-                    postViewModel.findAllPostsNoParam();
+                    postViewModel.findAllPostsByCursor(null, null);
                 }
             } else {
                 Toast.makeText(getContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
             }
         });
 
-        postViewModel.getFindAllPostsNoParamLiveData().observe(getViewLifecycleOwner(), result -> {
-            if (!result.isError() && result.getData() != null) {
-                postList.addAll(result.getData());
-                postItemAdapter.notifyDataSetChanged();
-            } else {
-                Toast.makeText(getContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        postViewModel.getFindAllPostsNoParamLiveData().observe(getViewLifecycleOwner(), result -> {
+//            if (!result.isError() && result.getData() != null) {
+//                postList.addAll(result.getData());
+//                postItemAdapter.notifyDataSetChanged();
+//            } else {
+//                Toast.makeText(getContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
 //        postViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
 //            if (isLoading) {
@@ -140,7 +160,7 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         if (!isFirstLoad) {
             if (!(PostViewManager.getInstance(requireContext()).getCursor() > 1)) {
-                postViewModel.findAllPostsNoParam();
+                postViewModel.findAllPostsByCursor(null, null);
             } else {
                 postViewModel.findAllPostsByCursor(PostViewManager.getInstance(requireContext()).getCursor(), 10);
             }
