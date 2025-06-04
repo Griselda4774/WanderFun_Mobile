@@ -271,6 +271,9 @@ public class PostDetailActivity extends AppCompatActivity {
             if (!result.isError()) {
                 hideLoadingDialog();
                 Toast.makeText(getApplicationContext(), "Xóa bài viết thành công", Toast.LENGTH_SHORT).show();
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("status", "post_deleted");
+                setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
                 hideLoadingDialog();

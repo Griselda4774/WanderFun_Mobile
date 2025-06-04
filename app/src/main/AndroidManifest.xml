@@ -57,7 +57,7 @@
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".presentation.ui.activity.profile.MyProfileActivity"
+            android:name=".presentation.ui.activity.profile.ProfileActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity

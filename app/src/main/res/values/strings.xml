@@ -2,7 +2,7 @@
     <string name="app_name">WanderFun</string>
     <string name="app_logo_no_bg">App Logo No Background</string>
     <string name="api_prefix">wanderfun</string>
-    <string name="base_url">http://192.168.101.101:8080/wanderfun/</string>
+    <string name="base_url">http://172.20.10.2:8080/wanderfun/</string>
     <string name="goong_api_url">https://rsapi.goong.io/</string>
     <string name="goong_map_url">https://tiles.goong.io</string>
     <string name="goong_api_key">xC0sC1N7JwgjhB9bBCunmIqta8U1Mi6cvK42RQOK</string>

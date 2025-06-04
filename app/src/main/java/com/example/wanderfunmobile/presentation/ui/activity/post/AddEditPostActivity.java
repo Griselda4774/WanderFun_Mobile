@@ -1,6 +1,7 @@
 package com.example.wanderfunmobile.presentation.ui.activity.post;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -80,7 +81,7 @@ public class AddEditPostActivity extends AppCompatActivity {
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
 
         // Observe view model
-        userViewModel.miniSelfInfoResponseLiveData().observe(this, result -> {
+        userViewModel.getMiniSelfInfoResponseLiveData().observe(this, result -> {
             if (!result.isError() && result.getData() != null) {
                 User user = result.getData();
                 bindUserData(user);
@@ -104,6 +105,9 @@ public class AddEditPostActivity extends AppCompatActivity {
             if (!result.isError()) {
                 hideLoadingDialog();
                 Toast.makeText(getApplicationContext(), "Đăng bài thành công", Toast.LENGTH_SHORT).show();
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("status", "post_created");
+                setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
                 hideLoadingDialog();
@@ -115,6 +119,9 @@ public class AddEditPostActivity extends AppCompatActivity {
             if (!result.isError()) {
                 hideLoadingDialog();
                 Toast.makeText(getApplicationContext(), "Sửa bài viết thành công", Toast.LENGTH_SHORT).show();
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("status", "post_updated");
+                setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
                 hideLoadingDialog();
