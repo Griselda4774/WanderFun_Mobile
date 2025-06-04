@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         setupPasswordToggle(passwordEditText, hidePassIcon, viewPassIcon);
 
 
-        TextView loginButton = viewBinding.loginButton.findViewById(R.id.button);
+        TextView loginButton = viewBinding.loginButton.button;
         loginButton.setText("Đăng nhập");
         loginButton.setOnClickListener(v -> {
             String username = emailEditText.getText().toString();

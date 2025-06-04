@@ -78,8 +78,8 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
             if (comment.getUser() != null && comment.getUser().getAvatarImage() != null) {
                 Glide.with(binding.getRoot().getContext())
                         .load(comment.getUser().getAvatarImage())
-                        .placeholder(R.drawable.ic_avatar)
-                        .error(R.drawable.ic_avatar)
+                        .placeholder(R.drawable.img_placeholder)
+                        .error(R.drawable.img_placeholder)
                         .into(binding.userAvatar);
             } else {
                 binding.userAvatar.setImageResource(R.drawable.ic_avatar);

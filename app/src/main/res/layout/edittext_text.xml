@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <EditText
-        android:id="@+id/text_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_edit_text"
-        android:padding="@dimen/input_padding"
-        android:inputType="text"
-        style="@style/Text.Content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:cursorVisible="true"
-        android:textCursorDrawable="@drawable/edit_text_cursor"
-        android:hint="Nhập thông tin..."/>
-
-</merge>
+<EditText
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/text_edittext"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_edit_text"
+    android:padding="@dimen/input_padding"
+    android:inputType="text"
+    style="@style/Text.Content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:cursorVisible="true"
+    android:textCursorDrawable="@drawable/edit_text_cursor"
+    android:hint="Nhập thông tin..."/>

@@ -7,15 +7,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.wanderfunmobile.data.dto.ResponseDto;
-import com.example.wanderfunmobile.data.dto.posts.PostDto;
-import com.example.wanderfunmobile.data.dto.user.ChangeInfoDto;
 import com.example.wanderfunmobile.data.dto.user.MiniUserDto;
-import com.example.wanderfunmobile.data.dto.user.SelfInfoDto;
 import com.example.wanderfunmobile.data.api.backend.UserApi;
+import com.example.wanderfunmobile.data.dto.user.UserCreateDto;
 import com.example.wanderfunmobile.data.dto.user.UserDto;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.domain.model.Result;
-import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.domain.repository.UserRepository;
 
@@ -63,6 +60,40 @@ public class UserRepositoryImpl implements UserRepository {
 //    }
 
     @Override
+    public LiveData<Result<User>> getSelfInfo(String bearerToken) {
+        MutableLiveData<Result<User>> selfInfoResponseLiveData = new MutableLiveData<>();
+
+        try {
+            Call<ResponseDto<UserDto>> call = userApi.getSelfInfo(bearerToken);
+            call.enqueue(new Callback<ResponseDto<UserDto>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<UserDto>> call,
+                                       @NonNull Response<ResponseDto<UserDto>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<User> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), User.class));
+                        }
+                        selfInfoResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<UserDto>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e("UserRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("UserRepositoryImpl", "Error during getMiniSelfInfo", e);
+        }
+
+        return selfInfoResponseLiveData;
+    }
+
+    @Override
     public LiveData<Result<User>> getMiniSelfInfo(String bearerToken) {
         MutableLiveData<Result<User>> miniSelfInfoResponseLiveData = new MutableLiveData<>();
 
@@ -94,6 +125,40 @@ public class UserRepositoryImpl implements UserRepository {
         }
 
         return miniSelfInfoResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<User>> updateSelfInfo(String bearerToken, User user) {
+        MutableLiveData<Result<User>> updateSelfInfoResponseLiveData = new MutableLiveData<>();
+
+        try {
+            Call<ResponseDto<UserDto>> call = userApi.updateSelfInfo(bearerToken, objectMapper.map(user, UserCreateDto.class));
+            call.enqueue(new Callback<ResponseDto<UserDto>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<UserDto>> call,
+                                       @NonNull Response<ResponseDto<UserDto>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<User> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), User.class));
+                        }
+                        updateSelfInfoResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<UserDto>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e("UserRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("UserRepositoryImpl", "Error during getMiniSelfInfo", e);
+        }
+
+        return updateSelfInfoResponseLiveData;
     }
 
 //    @Override
