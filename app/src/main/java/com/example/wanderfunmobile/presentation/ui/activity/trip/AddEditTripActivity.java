@@ -23,14 +23,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.R;
-import com.example.wanderfunmobile.data.dto.images.ImageDto;
-import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
 import com.example.wanderfunmobile.data.dto.trip.TripCreateDto;
 import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceCreateDto;
 import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceDto;
 import com.example.wanderfunmobile.databinding.ActivityAddEditTripBinding;
-import com.example.wanderfunmobile.domain.model.images.Image;
-import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.domain.model.trips.TripPlace;
 import com.example.wanderfunmobile.presentation.ui.adapter.tripplace.TripPlaceItemAdapter;
@@ -55,6 +51,7 @@ public class AddEditTripActivity extends AppCompatActivity {
     private ActivityAddEditTripBinding binding;
     private Long tripId;
     private Trip trip;
+    private boolean isCloned = false;
     private TripViewModel tripViewModel;
     private TripPlaceItemAdapter tripPlaceItemAdapter;
     private final List<TripPlace> tripPlaceList = new ArrayList<>();
@@ -117,12 +114,18 @@ public class AddEditTripActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void setupHeader() {
         ConstraintLayout backButton = binding.backButton.findViewById(R.id.button);
         backButton.setOnClickListener(v -> finish());
 
         tripId = getIntent().getLongExtra("tripId", 0);
-        binding.headerTitle.setText(tripId == 0 ? "Tạo chuyến đi" : "Chỉnh sửa chuyến đi");
+        isCloned = getIntent().getBooleanExtra("isCloned", false);
+        if (tripId == 0 || isCloned) {
+            binding.headerTitle.setText("Tạo chuyến đi");
+        } else {
+            binding.headerTitle.setText("Chỉnh sửa chuyến đi");
+        }
         if (tripId != 0) {
             String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
             tripViewModel.getTripById(token, tripId);
@@ -238,7 +241,7 @@ public class AddEditTripActivity extends AppCompatActivity {
 
     private void doAddOrUpdate(TripCreateDto tripDto) {
         String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
-        if (tripId == 0) {
+        if (tripId == 0 || isCloned) {
             tripViewModel.createTrip(token, tripDto);
         } else {
             tripViewModel.updateTripById(token, tripId, tripDto);

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.album.AlbumCreateDto;
 import com.example.wanderfunmobile.data.dto.album.AlbumDto;
@@ -57,13 +59,14 @@ public class AddEditAlbumActivity extends AppCompatActivity {
     private ActivityAddEditAlbumBinding viewBinding;
     private AlbumCreateDto albumCreateDto = new AlbumCreateDto();
     private List<Uri> imageList = new ArrayList<>();
+    private Uri coverImageUri;
     private Album album;
     private Long albumId;
     private Place selectedPlace;
     private AlbumViewModel albumViewModel;
     private PlaceViewModel placeViewModel;
     private ImageWithDeleteAdapter imageWithDeleteAdapter;
-    private ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia;
+    private ActivityResultLauncher<PickVisualMediaRequest> pickAlbumImages, pickCoverImage;
     private ActivityResultLauncher<Intent> placePickerLauncher;
     private LoadingDialog loadingDialog;
     @Inject
@@ -187,7 +190,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
     private void setUpButtonEvents() {
         viewBinding.addImageButton.findViewById(R.id.button).setOnClickListener(v -> {
-            pickMultipleMedia.launch(
+            pickAlbumImages.launch(
                     new PickVisualMediaRequest.Builder()
                             .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                             .build()
@@ -208,11 +211,30 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         TextView addImageBtn = viewBinding.addImageButton.findViewById(R.id.button);
         addImageBtn.setText("Thêm ảnh");
 
+        // Feedback image
+        ImageView coverImage = viewBinding.coverImage;
+        coverImage.setOnClickListener(v -> {
+            pickCoverImage.launch(
+                    new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build()
+            );
+        });
+
+        // Remove image button
+        ConstraintLayout removeImageButton = viewBinding.removeButton.findViewById(R.id.button);
+        removeImageButton.setVisibility(View.GONE);
+        removeImageButton.setOnClickListener(v -> {
+            removeImageButton.setVisibility(View.GONE);
+            coverImage.setImageDrawable(null);
+            coverImageUri = null;
+        });
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void setupPickMultipleMedia() {
-        pickMultipleMedia = registerForActivityResult(
+        pickAlbumImages = registerForActivityResult(
                 new ActivityResultContracts.PickMultipleVisualMedia(9),
                 uris -> {
                     if (uris != null) {
@@ -220,6 +242,19 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                         imageWithDeleteAdapter.notifyDataSetChanged();
                     } else {
                         Log.d("AddEditAlbumActivity", "No media selected");
+                    }
+                }
+        );
+
+        pickCoverImage = registerForActivityResult(
+                new ActivityResultContracts.PickVisualMedia(),
+                uri -> {
+                    if (uri != null) {
+                        coverImageUri = uri;
+                        Glide.with(this).load(uri).into(viewBinding.coverImage);
+                        viewBinding.removeButton.findViewById(R.id.button).setVisibility(View.VISIBLE);
+                    } else {
+                        Log.d("AddEditAlbumActivity", "No cover image selected");
                     }
                 }
         );
@@ -241,6 +276,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SearchPlaceActivity.class);
             placePickerLauncher.launch(intent);
         });
+
     }
 
 
@@ -306,6 +342,31 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                     }
                 });
             }
+        }
+
+        if (coverImageUri != null) {
+            String coverFileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getAccountId() + "_" + System.currentTimeMillis() + "_cover";
+            CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), coverImageUri, coverFileName, folderName, new CloudinaryUtil.CloudinaryCallback() {
+                @Override
+                public void onSuccess(CloudinaryImageDto result) {
+                    AlbumImageDto coverImage = new AlbumImageDto();
+                    coverImage.setImageUrl(result.getUrl());
+                    coverImage.setImagePublicId(result.getPublicId());
+                    albumImageDtoList.add(coverImage);
+
+                    if (completedUploads.incrementAndGet() == totalUploads) {
+                        callback.onComplete(albumImageDtoList);
+                    }
+                }
+
+                @Override
+                public void onError(String error) {
+                    Toast.makeText(AddEditAlbumActivity.this, "Lỗi tải ảnh bìa lên Cloudinary: " + error, Toast.LENGTH_SHORT).show();
+                    if (completedUploads.incrementAndGet() == totalUploads) {
+                        callback.onComplete(albumImageDtoList);
+                    }
+                }
+            });
         }
     }
 

@@ -18,11 +18,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.data.dto.trip.TripDto;
 import com.example.wanderfunmobile.databinding.ActivityTripDetailBinding;
 import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.domain.model.trips.TripPlace;
+import com.example.wanderfunmobile.presentation.ui.activity.post.AddEditPostActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.tripplace.TripPlaceItemAdapter;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.SelectionDialog;
@@ -31,8 +32,11 @@ import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.TripViewModel;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -45,13 +49,14 @@ public class TripDetailActivity extends AppCompatActivity {
     private ActivityTripDetailBinding viewBinding;
     private TripViewModel tripViewModel;
     private Trip trip;
-    private List<TripPlace> tripPlaceList = new ArrayList<>();
+    private final List<TripPlace> tripPlaceList = new ArrayList<>();
     private TripPlaceItemAdapter tripPlaceItemAdapter;
     @Inject
     ObjectMapper objectMapper;
     private LoadingDialog loadingDialog;
     private SelectionDialog selectionDialog;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,9 +95,7 @@ public class TripDetailActivity extends AppCompatActivity {
 
         // Back button
         ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
-        backButton.setOnClickListener(v -> {
-            finish();
-        });
+        backButton.setOnClickListener(v -> finish());
 
         // Selection dialog
         selectionDialog = viewBinding.selectionDialog;
@@ -126,6 +129,11 @@ public class TripDetailActivity extends AppCompatActivity {
         tripPlaceItemAdapter = new TripPlaceItemAdapter(tripPlaceList, objectMapper, null);
         recyclerView.setAdapter(tripPlaceItemAdapter);
 
+        // Map view button
+        TextView mapViewButton = viewBinding.mapViewButton.findViewById(R.id.button);
+        mapViewButton.setText("Xem trên bản đồ");
+        mapViewButton.setOnClickListener(v -> Toast.makeText(this, "Tạm thời cứ thế thôi hẹ hẹ hẹ", Toast.LENGTH_SHORT).show());
+
         // Delete button
         TextView deleteButton = viewBinding.deleteButton.findViewById(R.id.button);
         deleteButton.setText("Xóa");
@@ -145,6 +153,23 @@ public class TripDetailActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AddEditTripActivity.class);
             intent.putExtra("tripId", trip.getId());
             startActivity(intent);
+        });
+
+        // Clone button
+        TextView cloneButton = viewBinding.cloneButton.findViewById(R.id.button);
+        cloneButton.setText("Sao chép chuyến đi này");
+        cloneButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddEditTripActivity.class);
+            intent.putExtra("tripId", trip.getId());
+            intent.putExtra("isCloned", true);
+            startActivity(intent);
+        });
+
+        // Share button
+        viewBinding.shareButton.setOnClickListener(v -> {
+            Intent shareIntent = new Intent(this, AddEditPostActivity.class);
+            shareIntent.putExtra("shared_trip", Parcels.wrap(objectMapper.map(trip, TripDto.class)));
+            startActivity(shareIntent);
         });
     }
 
@@ -177,8 +202,16 @@ public class TripDetailActivity extends AppCompatActivity {
             tripPlaceItemAdapter.notifyDataSetChanged();
         }
 
-//        if (trip != null && !trip.getImageUrl().isEmpty()) {
-//            Glide.with(this).load(trip.getImageUrl()).into(viewBinding.image);
-//        }
+
+        if( trip != null && Objects.equals(trip.getUserId(), SessionManager.getInstance(getApplicationContext()).getUserId())) {
+            viewBinding.editButton.setVisibility(View.VISIBLE);
+            viewBinding.deleteButton.setVisibility(View.VISIBLE);
+            viewBinding.cloneButton.setVisibility(View.GONE);
+        } else {
+            viewBinding.editButton.setVisibility(View.GONE);
+            viewBinding.deleteButton.setVisibility(View.GONE);
+            viewBinding.cloneButton.setVisibility(View.VISIBLE);
+        }
+
     }
 }
