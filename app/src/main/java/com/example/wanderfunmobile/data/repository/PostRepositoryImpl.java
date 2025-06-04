@@ -39,7 +39,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<List<Post>>> findAllPostsByCursor(Long cursor, int size) {
+    public LiveData<Result<List<Post>>> findAllPostsByCursor(Long cursor, Integer size) {
         MutableLiveData<Result<List<Post>>> findAllPostsByCursorResponseLiveData = new MutableLiveData<>();
         try {
             Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsByCursor(cursor, size);
@@ -72,15 +72,14 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<List<Post>>> findAllPostsWithSize(int size) {
+    public LiveData<Result<List<Post>>> findAllPostsByUser(String bearerToken) {
         MutableLiveData<Result<List<Post>>> findAllPostsByCursorResponseLiveData = new MutableLiveData<>();
         try {
-            Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsWithSize(size);
+            Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsByUser(bearerToken);
             call.enqueue(new Callback<ResponseDto<List<PostDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<PostDto>>> call,
                                        @NonNull Response<ResponseDto<List<PostDto>>> response) {
-                    Log.d("PostRepositoryImpl", "Response: " + response.body());
                     if (response.isSuccessful() && response.body() != null) {
                         Result<List<Post>> result = new Result<>();
                         result.setError(response.body().isError());
@@ -105,39 +104,73 @@ public class PostRepositoryImpl implements PostRepository {
         return findAllPostsByCursorResponseLiveData;
     }
 
-    @Override
-    public LiveData<Result<List<Post>>> findAllPostsNoParam() {
-        MutableLiveData<Result<List<Post>>> findAllPostsByCursorResponseLiveData = new MutableLiveData<>();
-        try {
-            Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsNoParam();
-            call.enqueue(new Callback<ResponseDto<List<PostDto>>>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseDto<List<PostDto>>> call,
-                                       @NonNull Response<ResponseDto<List<PostDto>>> response) {
-                    Log.d("PostRepositoryImpl", "Response: " + response.body());
-                    if (response.isSuccessful() && response.body() != null) {
-                        Result<List<Post>> result = new Result<>();
-                        result.setError(response.body().isError());
-                        result.setMessage(response.body().getMessage());
-                        if (response.body().getData() != null) {
-                            result.setData(objectMapper.mapList(response.body().getData(), Post.class));
-                        }
-                        findAllPostsByCursorResponseLiveData.postValue(result);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResponseDto<List<PostDto>>> call,
-                                      @NonNull Throwable throwable) {
-                    Log.e("PostRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
-                }
-            });
-        } catch (Exception e) {
-            Log.e("PostRepositoryImpl", "Error during findAllPostsByCursor", e);
-        }
-
-        return findAllPostsByCursorResponseLiveData;
-    }
+//    @Override
+//    public LiveData<Result<List<Post>>> findAllPostsWithSize(int size) {
+//        MutableLiveData<Result<List<Post>>> findAllPostsByCursorResponseLiveData = new MutableLiveData<>();
+//        try {
+//            Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsWithSize(size);
+//            call.enqueue(new Callback<ResponseDto<List<PostDto>>>() {
+//                @Override
+//                public void onResponse(@NonNull Call<ResponseDto<List<PostDto>>> call,
+//                                       @NonNull Response<ResponseDto<List<PostDto>>> response) {
+//                    Log.d("PostRepositoryImpl", "Response: " + response.body());
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        Result<List<Post>> result = new Result<>();
+//                        result.setError(response.body().isError());
+//                        result.setMessage(response.body().getMessage());
+//                        if (response.body().getData() != null) {
+//                            result.setData(objectMapper.mapList(response.body().getData(), Post.class));
+//                        }
+//                        findAllPostsByCursorResponseLiveData.postValue(result);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<ResponseDto<List<PostDto>>> call,
+//                                      @NonNull Throwable throwable) {
+//                    Log.e("PostRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+//                }
+//            });
+//        } catch (Exception e) {
+//            Log.e("PostRepositoryImpl", "Error during findAllPostsByCursor", e);
+//        }
+//
+//        return findAllPostsByCursorResponseLiveData;
+//    }
+//
+//    @Override
+//    public LiveData<Result<List<Post>>> findAllPostsNoParam() {
+//        MutableLiveData<Result<List<Post>>> findAllPostsByCursorResponseLiveData = new MutableLiveData<>();
+//        try {
+//            Call<ResponseDto<List<PostDto>>> call = postApi.findAllPostsNoParam();
+//            call.enqueue(new Callback<ResponseDto<List<PostDto>>>() {
+//                @Override
+//                public void onResponse(@NonNull Call<ResponseDto<List<PostDto>>> call,
+//                                       @NonNull Response<ResponseDto<List<PostDto>>> response) {
+//                    Log.d("PostRepositoryImpl", "Response: " + response.body());
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        Result<List<Post>> result = new Result<>();
+//                        result.setError(response.body().isError());
+//                        result.setMessage(response.body().getMessage());
+//                        if (response.body().getData() != null) {
+//                            result.setData(objectMapper.mapList(response.body().getData(), Post.class));
+//                        }
+//                        findAllPostsByCursorResponseLiveData.postValue(result);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<ResponseDto<List<PostDto>>> call,
+//                                      @NonNull Throwable throwable) {
+//                    Log.e("PostRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+//                }
+//            });
+//        } catch (Exception e) {
+//            Log.e("PostRepositoryImpl", "Error during findAllPostsByCursor", e);
+//        }
+//
+//        return findAllPostsByCursorResponseLiveData;
+//    }
 
     @Override
     public LiveData<Result<Post>> findPostById(Long postId) {
@@ -307,7 +340,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<Comment>> createComment(String bearerToken, Long postId, Comment comment) {
+    public LiveData<Result<Comment>> createComment(String bearerToken, Long postId, Comment comment, String localId) {
         MutableLiveData<Result<Comment>> createCommentResponseLiveData = new MutableLiveData<>();
         try {
             Call<ResponseDto<CommentDto>> call = postApi.createComment(bearerToken, postId, objectMapper.map(comment, CommentCreateDto.class));
@@ -321,6 +354,7 @@ public class PostRepositoryImpl implements PostRepository {
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
                             result.setData(objectMapper.map(response.body().getData(), Comment.class));
+                            result.getData().setLocalId(localId);
                         }
                         createCommentResponseLiveData.postValue(result);
                     }
@@ -339,7 +373,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<Comment>> updateComment(String bearerToken, Long commentId, Comment comment) {
+    public LiveData<Result<Comment>> updateComment(String bearerToken, Long commentId, Comment comment, String localId) {
         MutableLiveData<Result<Comment>> updateCommentResponseLiveData = new MutableLiveData<>();
 
         try {
@@ -354,6 +388,7 @@ public class PostRepositoryImpl implements PostRepository {
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
                             result.setData(objectMapper.map(response.body().getData(), Comment.class));
+                            result.getData().setLocalId(localId);
                         }
                         updateCommentResponseLiveData.postValue(result);
                     }
@@ -373,7 +408,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public LiveData<Result<Comment>> deleteComment(String bearerToken, Long commentId) {
+    public LiveData<Result<Comment>> deleteComment(String bearerToken, Long commentId, String localId) {
         MutableLiveData<Result<Comment>> deleteCommentResponseLiveData = new MutableLiveData<>();
 
         try {
@@ -388,7 +423,10 @@ public class PostRepositoryImpl implements PostRepository {
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
                             result.setData(objectMapper.map(response.body().getData(), Comment.class));
+                        } else {
+                            result.setData(new Comment());
                         }
+                        result.getData().setLocalId(localId);
                         deleteCommentResponseLiveData.postValue(result);
                     }
                 }

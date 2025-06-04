@@ -23,8 +23,10 @@ public class PostViewModel extends ViewModel {
     }
 
     private final MutableLiveData<Result<List<Post>>> findAllPostsByCursorLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<List<Post>>> findAllPostsWithSizeLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<List<Post>>> findAllPostsNoParamLiveData = new MutableLiveData<>();
+//    private final MutableLiveData<Result<List<Post>>> findAllPostsWithSizeLiveData = new MutableLiveData<>();
+//    private final MutableLiveData<Result<List<Post>>> findAllPostsNoParamLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<Post>>> findAllPostsByUserLiveData = new MutableLiveData<>();
+
     private final MutableLiveData<Result<Post>> findPostByIdLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<Post>> createPostLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<Post>> updatePostLiveData = new MutableLiveData<>();
@@ -36,12 +38,16 @@ public class PostViewModel extends ViewModel {
         return findAllPostsByCursorLiveData;
     }
 
-    public MutableLiveData<Result<List<Post>>> getFindAllPostsWithSizeLiveData() {
-        return findAllPostsWithSizeLiveData;
-    }
+//    public MutableLiveData<Result<List<Post>>> getFindAllPostsWithSizeLiveData() {
+//        return findAllPostsWithSizeLiveData;
+//    }
+//
+//    public MutableLiveData<Result<List<Post>>> getFindAllPostsNoParamLiveData() {
+//        return findAllPostsNoParamLiveData;
+//    }
 
-    public MutableLiveData<Result<List<Post>>> getFindAllPostsNoParamLiveData() {
-        return findAllPostsNoParamLiveData;
+    public MutableLiveData<Result<List<Post>>> getFindAllPostsByUserLiveData() {
+        return findAllPostsByUserLiveData;
     }
 
     public MutableLiveData<Result<Post>> getFindPostByIdLiveData() {
@@ -64,7 +70,7 @@ public class PostViewModel extends ViewModel {
         return isLoading;
     }
 
-    public void findAllPostsByCursor(Long cursor, int size) {
+    public void findAllPostsByCursor(Long cursor, Integer size) {
         isLoading.setValue(true);
         postRepository.findAllPostsByCursor(cursor, size).observeForever(result -> {
             isLoading.setValue(false);
@@ -72,19 +78,27 @@ public class PostViewModel extends ViewModel {
         });
     }
 
-    public void findAllPostsWithSize(int size) {
-        isLoading.setValue(true);
-        postRepository.findAllPostsWithSize(size).observeForever(result -> {
-            isLoading.setValue(false);
-            findAllPostsWithSizeLiveData.setValue(result);
-        });
-    }
+//    public void findAllPostsWithSize(int size) {
+//        isLoading.setValue(true);
+//        postRepository.findAllPostsWithSize(size).observeForever(result -> {
+//            isLoading.setValue(false);
+//            findAllPostsWithSizeLiveData.setValue(result);
+//        });
+//    }
+//
+//    public void findAllPostsNoParam() {
+//        isLoading.setValue(true);
+//        postRepository.findAllPostsNoParam().observeForever(result -> {
+//            isLoading.setValue(false);
+//            findAllPostsNoParamLiveData.setValue(result);
+//        });
+//    }
 
-    public void findAllPostsNoParam() {
+    public void findAllPostsByUser(String bearerToken) {
         isLoading.setValue(true);
-        postRepository.findAllPostsNoParam().observeForever(result -> {
+        postRepository.findAllPostsByUser(bearerToken).observeForever(result -> {
             isLoading.setValue(false);
-            findAllPostsNoParamLiveData.setValue(result);
+            findAllPostsByUserLiveData.setValue(result);
         });
     }
 

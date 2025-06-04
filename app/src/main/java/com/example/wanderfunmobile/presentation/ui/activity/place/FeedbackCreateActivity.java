@@ -69,7 +69,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getMiniSelfInfo("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
-        userViewModel.miniSelfInfoResponseLiveData().observe(this, result -> {
+        userViewModel.getMiniSelfInfoResponseLiveData().observe(this, result -> {
             if (!result.isError() && result.getData() != null) {
                 user = result.getData();
                 bindUserData();

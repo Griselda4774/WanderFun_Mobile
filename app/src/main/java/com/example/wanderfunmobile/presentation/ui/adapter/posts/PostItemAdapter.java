@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,9 +24,11 @@ import java.util.List;
 
 public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostItemViewHolder> {
     private final List<Post> postList;
+    private ActivityResultLauncher<Intent> launcher;
 
-    public PostItemAdapter(List<Post> postList) {
+    public PostItemAdapter(List<Post> postList, ActivityResultLauncher<Intent> launcher) {
         this.postList = postList;
+        this.launcher = launcher;
     }
 
     @NonNull
@@ -48,7 +51,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
         return postList.size();
     }
 
-    public static class PostItemViewHolder extends RecyclerView.ViewHolder {
+    public class PostItemViewHolder extends RecyclerView.ViewHolder {
         final ItemPostBinding binding;
 
         public PostItemViewHolder(@NonNull ItemPostBinding binding) {
@@ -61,7 +64,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
             binding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(binding.getRoot().getContext(), PostDetailActivity.class);
                 intent.putExtra("postId", post.getId());
-                binding.getRoot().getContext().startActivity(intent);
+                launcher.launch(intent);
             });
 
             // User info
@@ -71,8 +74,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
                 if (post.getUser().getAvatarImage() != null) {
                     Glide.with(binding.getRoot())
                             .load(post.getUser().getAvatarImage().getImageUrl())
-                            .placeholder(R.drawable.ic_avatar)
-                            .error(R.drawable.ic_avatar)
+                            .placeholder(R.drawable.img_placeholder)
+                            .error(R.drawable.img_placeholder)
                             .into(userAvatar);
                 }
 
@@ -151,8 +154,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
             if (post.getImage() != null) {
                 Glide.with(binding.getRoot())
                         .load(post.getImage().getImageUrl())
-                        .error(R.drawable.brown)
+                        .placeholder(R.drawable.img_placeholder)
+                        .error(R.drawable.img_placeholder)
                         .into(image);
+                image.setVisibility(View.VISIBLE);
             } else {
                 image.setVisibility(View.GONE);
             }
@@ -177,7 +182,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
             binding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(binding.getRoot().getContext(), PostDetailActivity.class);
                 intent.putExtra("postId", post.getId());
-                binding.getRoot().getContext().startActivity(intent);
+                launcher.launch(intent);
             });
 
             // Like button
@@ -203,7 +208,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
             binding.commentButton.setOnClickListener(v -> {
                 Intent intent = new Intent(binding.getRoot().getContext(), PostDetailActivity.class);
                 intent.putExtra("postId", post.getId());
-                binding.getRoot().getContext().startActivity(intent);
+                launcher.launch(intent);
             });
 
             if (SessionManager.getInstance(binding.getRoot().getContext()).isLoggedIn()) {

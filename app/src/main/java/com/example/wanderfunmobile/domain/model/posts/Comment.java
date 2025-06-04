@@ -15,7 +15,11 @@ public class Comment {
     private Long likeCount;
     private boolean isLiked;
 
+    private boolean isPending;
+    private String localId;
+
     public Comment() {
+        setPending(false);
     }
 
     public Long getId() {
@@ -88,5 +92,21 @@ public class Comment {
 
     public void setLiked(boolean liked) {
         isLiked = liked;
+    }
+
+    public boolean isPending() {
+        return isPending;
+    }
+
+    public void setPending(boolean pending) {
+        isPending = pending;
+    }
+
+    public String getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(String localId) {
+        this.localId = localId;
     }
 }

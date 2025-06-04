@@ -16,12 +16,28 @@ import com.example.wanderfunmobile.databinding.ItemCommentBinding;
 import com.example.wanderfunmobile.domain.model.posts.Comment;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.CommentItemViewHolder> {
     private final List<Comment> commentList;
 
     public CommentItemAdapter(List<Comment> commentList) {
         this.commentList = commentList;
+    }
+
+    @Override
+    public int getItemCount() {
+        return commentList.size();
+    }
+
+    public interface OnCommentLongClickListener {
+        void onCommentLongClick(View anchorView, int position);
+    }
+
+    private OnCommentLongClickListener longClickListener;
+
+    public void setOnCommentLongClickListener(OnCommentLongClickListener listener) {
+        this.longClickListener = listener;
     }
 
     @NonNull
@@ -39,12 +55,7 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return commentList.size();
-    }
-
-    public static class CommentItemViewHolder extends RecyclerView.ViewHolder {
+    public class CommentItemViewHolder extends RecyclerView.ViewHolder {
         final ItemCommentBinding binding;
 
         public CommentItemViewHolder(@NonNull ItemCommentBinding binding) {
@@ -54,11 +65,21 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
 
         @SuppressLint("SetTextI18n")
         public void bind(Comment comment) {
+            binding.commentContainer.setOnLongClickListener(v -> {
+                int position = getBindingAdapterPosition();
+                if (longClickListener != null
+                        && position != RecyclerView.NO_POSITION
+                        && Objects.equals(SessionManager.getInstance(binding.getRoot().getContext().getApplicationContext()).getUserId(), comment.getUser().getId())) {
+                    longClickListener.onCommentLongClick(binding.commentContainer, position);
+                }
+                return true;
+            });
+
             if (comment.getUser() != null && comment.getUser().getAvatarImage() != null) {
                 Glide.with(binding.getRoot().getContext())
                         .load(comment.getUser().getAvatarImage())
-                        .placeholder(R.drawable.ic_avatar)
-                        .error(R.drawable.ic_avatar)
+                        .placeholder(R.drawable.img_placeholder)
+                        .error(R.drawable.img_placeholder)
                         .into(binding.userAvatar);
             } else {
                 binding.userAvatar.setImageResource(R.drawable.ic_avatar);
@@ -72,12 +93,18 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
 
             binding.content.setText(comment.getContent());
 
-            if (comment.getUpdateAt() != null && !comment.getUpdateAt().equals(comment.getCreateAt())) {
-                binding.timestamp.setText(DateTimeUtil.timeAgoLocalDateTime(comment.getUpdateAt()));
-                binding.modifiedFlag.setVisibility(View.VISIBLE);
+            if (comment.getCreateAt() != null) {
+                if (comment.getUpdateAt() != null && !comment.getUpdateAt().equals(comment.getCreateAt())) {
+                    binding.timestamp.setText(DateTimeUtil.timeAgoLocalDateTime(comment.getUpdateAt()));
+                    binding.modifiedFlag.setVisibility(View.VISIBLE);
+                } else{
+                    binding.timestamp.setText(DateTimeUtil.timeAgoLocalDateTime(comment.getCreateAt()));
+                    binding.modifiedFlag.setVisibility(View.GONE);
+                }
             } else {
-                binding.timestamp.setText(DateTimeUtil.timeAgoLocalDateTime(comment.getCreateAt()));
+                binding.timestamp.setText("Đang gửi");
                 binding.modifiedFlag.setVisibility(View.GONE);
+                binding.likeButton.setVisibility(View.GONE);
             }
 
             if (SessionManager.getInstance(binding.getRoot().getContext().getApplicationContext()).isLoggedIn()) {

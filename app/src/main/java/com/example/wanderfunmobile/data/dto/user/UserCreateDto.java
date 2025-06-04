@@ -1,18 +1,18 @@
 package com.example.wanderfunmobile.data.dto.user;
 
-import java.util.Date;
+import com.example.wanderfunmobile.data.dto.images.ImageDto;
 
-public class ChangeInfoDto {
+import java.time.LocalDate;
+
+public class UserCreateDto {
     private String firstName;
     private String lastName;
-    private String avatarUrl;
-    private String avatarPublicId;
-    private Date dateOfBirth;
+    private ImageDto avatarImage;
+    private LocalDate dateOfBirth;
     private String gender;
     private String phoneNumber;
 
-    public ChangeInfoDto() {
-    }
+    public UserCreateDto() {}
 
     public String getFirstName() {
         return firstName;
@@ -30,27 +30,19 @@ public class ChangeInfoDto {
         this.lastName = lastName;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public ImageDto getAvatarImage() {
+        return avatarImage;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatarImage(ImageDto avatarImage) {
+        this.avatarImage = avatarImage;
     }
 
-    public String getAvatarPublicId() {
-        return avatarPublicId;
-    }
-
-    public void setAvatarPublicId(String avatarPublicId) {
-        this.avatarPublicId = avatarPublicId;
-    }
-
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

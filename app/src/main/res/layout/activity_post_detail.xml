@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ui.activity.post.AddEditPostActivity">
+    tools:context=".presentation.ui.activity.post.PostDetailActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,28 +16,29 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:padding="@dimen/app_margin_medium"
             app:layout_constraintEnd_toEndOf="parent"
-            android:padding="@dimen/app_margin_medium">
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/header_title"
+                style="@style/Text.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Bài viết"
-                style="@style/Text.Title"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <include
                     android:id="@+id/back_button"
@@ -49,28 +50,28 @@
                 android:id="@+id/modify_button_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/edit_button"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    app:tint="@color/black4"
-                    android:src="@drawable/ic_edit"
                     android:clickable="true"
-                    android:stateListAnimator="@animator/touch_opacity_animator"/>
+                    android:src="@drawable/ic_edit"
+                    android:stateListAnimator="@animator/touch_opacity_animator"
+                    app:tint="@color/black4" />
 
                 <ImageView
                     android:id="@+id/delete_button"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_delete"
                     android:clickable="true"
+                    android:src="@drawable/ic_delete"
                     android:stateListAnimator="@animator/touch_opacity_animator"
                     app:tint="@color/red4" />
 
@@ -79,6 +80,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -109,9 +111,12 @@
 
                         <ImageView
                             android:id="@+id/user_avatar"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_avatar" />
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_avatar"
+                            android:background="@drawable/bg_img_rounded"
+                            android:scaleType="centerCrop"
+                            android:clipToOutline="true"/>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -237,7 +242,7 @@
                         android:maxHeight="400dp"
                         android:adjustViewBounds="true"
                         android:src="@drawable/chill_image"
-                        android:visibility="gone"/>
+                        android:visibility="visible"/>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/like_comment_button_wrapper"
@@ -336,6 +341,7 @@
                                 android:src="@drawable/ic_comment" />
 
                             <TextView
+                                android:id="@+id/comment_part"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Bình luận"
@@ -431,18 +437,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog
-        android:id="@+id/loading_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <com.example.wanderfunmobile.presentation.ui.custom.dialog.SelectionDialog
-        android:id="@+id/selection_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible" />
-
     <View
         android:id="@+id/dim_background"
         android:layout_width="match_parent"
@@ -467,6 +461,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autofillHints=""
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
             android:hint="Bình luận về bài viết này..."
@@ -486,9 +481,21 @@
             android:layout_marginStart="16dp"
             android:src="@drawable/ic_send"
             app:tint="@color/blue2"
-            android:clickable="true"
+            android:clickable="false"
             android:stateListAnimator="@animator/touch_opacity_animator"/>
 
     </LinearLayout>
+
+    <com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog
+        android:id="@+id/loading_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.example.wanderfunmobile.presentation.ui.custom.dialog.SelectionDialog
+        android:id="@+id/selection_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
