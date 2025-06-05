@@ -164,7 +164,11 @@ public class AddEditPostActivity extends AppCompatActivity {
         });
 
         // Get shared trip data from intent
-        shareTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("shared_trip")), Trip.class);
+        if (getIntent().hasExtra("shared_trip") && getIntent().getParcelableExtra("shared_trip") != null) {
+            shareTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("shared_trip")), Trip.class);
+        } else {
+            shareTrip = null; // Handle the case where "shared_trip" is not provided
+        }
 
 
         // Initialize bottom sheet

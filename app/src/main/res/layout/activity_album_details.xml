@@ -85,11 +85,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/album_image_list"
         android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
         android:layout_marginHorizontal="@dimen/app_margin_medium"
         android:layout_marginVertical="16dp"
         android:background="@drawable/cl_gradient_splash"
         android:padding="@dimen/item_padding_vertical"
+        android:nestedScrollingEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description_section" />
