@@ -14,6 +14,7 @@ public class Place {
     private float rating;
     private int totalRating;
     private int totalFeedback;
+    private PlaceDetail placeDetail;
 
     public Place() {
     }
@@ -96,5 +97,13 @@ public class Place {
 
     public void setTotalFeedback(int totalFeedback) {
         this.totalFeedback = totalFeedback;
+    }
+
+    public PlaceDetail getPlaceDetail() {
+        return placeDetail;
+    }
+
+    public void setPlaceDetail(PlaceDetail placeDetail) {
+        this.placeDetail = placeDetail;
     }
 }

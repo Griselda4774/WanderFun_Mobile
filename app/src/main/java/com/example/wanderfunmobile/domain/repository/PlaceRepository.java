@@ -8,27 +8,32 @@ import com.example.wanderfunmobile.data.dto.favouriteplace.FavouritePlaceDto;
 import com.example.wanderfunmobile.data.dto.feedback.FeedbackCreateDto;
 import com.example.wanderfunmobile.data.dto.feedback.FeedbackDto;
 import com.example.wanderfunmobile.data.dto.place.PlaceDto;
+import com.example.wanderfunmobile.domain.model.CheckIn;
+import com.example.wanderfunmobile.domain.model.FavouritePlace;
+import com.example.wanderfunmobile.domain.model.Feedback;
+import com.example.wanderfunmobile.domain.model.Result;
+import com.example.wanderfunmobile.domain.model.places.Place;
 
 import java.util.List;
 
 public interface PlaceRepository {
-    LiveData<ResponseDto<List<PlaceDto>>> getAllPlaces();
+    LiveData<Result<List<Place>>> findAllPlaces();
 
-    LiveData<ResponseDto<List<PlaceDto>>> getAllPlacesByProvinceName(String provinceName);
+    LiveData<Result<List<Place>>> findAllPlacesByProvinceName(String provinceName);
 
-    LiveData<ResponseDto<List<PlaceDto>>> searchPlacesByNameContaining(String name);
+    LiveData<Result<List<Place>>> findAllPlacesByNameContaining(String name);
 
-    LiveData<ResponseDto<PlaceDto>> getPlaceById(Long placeId);
+    LiveData<Result<Place>> findPlaceById(Long placeId);
 
-    LiveData<ResponseDto<FeedbackDto>> createFeedback(String bearerToken, FeedbackCreateDto feedbackCreateDto, Long placeId);
+    LiveData<Result<Feedback>> createFeedback(String bearerToken, Feedback feedback, Long placeId);
 
-    LiveData<ResponseDto<List<FavouritePlaceDto>>> getAllFavouritePlaces(String bearerToken);
+    LiveData<Result<List<FavouritePlace>>> findAllFavouritePlaces(String bearerToken);
 
-    LiveData<ResponseDto<FavouritePlaceDto>> addFavouritePlace(String bearerToken, Long placeId);
+    LiveData<Result<FavouritePlace>> addFavouritePlace(String bearerToken, Long placeId);
 
-    LiveData<ResponseDto<FavouritePlaceDto>> deleteFavouritePlaceByIds(String bearerToken, List<Long> placeIds);
+    LiveData<Result<FavouritePlace>> deleteFavouritePlaceByIds(String bearerToken, List<Long> placeIds);
 
-    LiveData<ResponseDto<CheckInDto>> checkInPlace(String bearerToken, Long placeId);
+    LiveData<Result<CheckIn>> checkInPlace(String bearerToken, Long placeId);
 
-    LiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserId(String bearerToken, Long placeId);
+    LiveData<Result<CheckIn>> findCheckInByPlaceId(String bearerToken, Long placeId);
 }

@@ -14,6 +14,7 @@ public class PlaceDto {
     private float rating;
     private int totalRating;
     private int totalFeedback;
+    private PlaceDetailDto placeDetail;
 
     public PlaceDto() {
     }
@@ -96,6 +97,14 @@ public class PlaceDto {
 
     public void setTotalFeedback(int totalFeedback) {
         this.totalFeedback = totalFeedback;
+    }
+
+    public PlaceDetailDto getPlaceDetail() {
+        return placeDetail;
+    }
+
+    public void setPlaceDetail(PlaceDetailDto placeDetail) {
+        this.placeDetail = placeDetail;
     }
 }
 

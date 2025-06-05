@@ -83,9 +83,9 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
 
     private void initViewModel() {
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
-        placeViewModel.getPlaceByIdResponseLiveData().observe(this, response -> {
-            if (!response.isError()) {
-                selectedPlace = objectMapper.map(response.getData(), Place.class);
+        placeViewModel.getFindPlaceByIdResponseLiveData().observe(this, result -> {
+            if (!result.isError()) {
+                selectedPlace = result.getData();
                 binding.placeName.setText(selectedPlace.getName());
             }
         });
@@ -97,7 +97,7 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         long placeId = result.getData().getLongExtra("selected_place", 0);
-                        if (placeId != 0) placeViewModel.getPlaceById(placeId);
+                        if (placeId != 0) placeViewModel.findPlaceById(placeId);
                     }
                 });
 
