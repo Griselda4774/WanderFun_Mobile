@@ -12,8 +12,6 @@ import java.util.List;
 public class TripDto {
     private Long id;
     private String name;
-    private String imageUrl;
-    private String imagePublicId;
     private LocalDate startTime;
     private LocalDate endTime;
     private Long userId;
@@ -36,22 +34,6 @@ public class TripDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getImagePublicId() {
-        return imagePublicId;
-    }
-
-    public void setImagePublicId(String imagePublicId) {
-        this.imagePublicId = imagePublicId;
     }
 
     public LocalDate getStartTime() {

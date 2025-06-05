@@ -58,6 +58,7 @@ public class AddEditPostActivity extends AppCompatActivity {
     private BottomSheetBehavior<ConstraintLayout> postOptionVerticalBottomSheetBehavior;
 
     private Long postId;
+    private Trip shareTrip;
     private UserViewModel userViewModel;
     private PostViewModel postViewModel;
 
@@ -163,7 +164,7 @@ public class AddEditPostActivity extends AppCompatActivity {
         });
 
         // Get shared trip data from intent
-        Trip shareTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("shared_trip")), Trip.class);
+        shareTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("shared_trip")), Trip.class);
 
 
         // Initialize bottom sheet
@@ -272,6 +273,7 @@ public class AddEditPostActivity extends AppCompatActivity {
         viewBinding.postButton.setOnClickListener(v -> {
             showLoadingDialog();
             Post postCreate = new Post();
+            postCreate.setTrip(shareTrip);
             if (viewBinding.textEdittext.getText() != null) {
                 postCreate.setContent(viewBinding.textEdittext.getText().toString());
             }
