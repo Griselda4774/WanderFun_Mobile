@@ -67,7 +67,7 @@ public class PlaceRatingInfoFragment extends Fragment {
         FeedbackItemAdapter feedbackItemAdapter = new FeedbackItemAdapter(feedbackList);
         recyclerView.setAdapter(feedbackItemAdapter);
 
-        placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+        placeViewModel.getFindPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
 //            if (data != null && !data.isError()) {
 //                place = objectMapper.map(data.getData(), Place.class);
 //                feedbackList.clear();

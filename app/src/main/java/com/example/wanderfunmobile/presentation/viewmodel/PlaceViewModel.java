@@ -4,12 +4,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.data.dto.ResponseDto;
-import com.example.wanderfunmobile.data.dto.checkin.CheckInDto;
-import com.example.wanderfunmobile.data.dto.favouriteplace.FavouritePlaceDto;
-import com.example.wanderfunmobile.data.dto.feedback.FeedbackCreateDto;
-import com.example.wanderfunmobile.data.dto.feedback.FeedbackDto;
-import com.example.wanderfunmobile.data.dto.place.PlaceDto;
+import com.example.wanderfunmobile.domain.model.CheckIn;
+import com.example.wanderfunmobile.domain.model.FavouritePlace;
+import com.example.wanderfunmobile.domain.model.Feedback;
+import com.example.wanderfunmobile.domain.model.Result;
+import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.repository.PlaceRepository;
 
 import java.util.List;
@@ -28,57 +27,57 @@ public class PlaceViewModel extends ViewModel {
         this.placeRepository = placeRepository;
     }
 
-    private final MutableLiveData<ResponseDto<List<PlaceDto>>> getAllPlacesResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<List<PlaceDto>>> allPlacesByProvinceNameResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<List<PlaceDto>>> searchPlacesByNameContainingResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<PlaceDto>> getPlaceByIdResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<FeedbackDto>> createFeedbackResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<List<FavouritePlaceDto>>> getAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<FavouritePlaceDto>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<FavouritePlaceDto>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<CheckInDto>> checkInPlaceResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserIdResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<Place>>> findAllPlacesResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<Place>>> findAllPlacesByProvinceNameResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<Place>>> findAllPlacesByNameContainingResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<Place>> findPlaceByIdResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<Feedback>> createFeedbackResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<FavouritePlace>>> findAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<FavouritePlace>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<FavouritePlace>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<CheckIn>> checkInPlaceResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<CheckIn>> findCheckInByPlaceIdResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCheckingIn = new MutableLiveData<>();
 
-    public LiveData<ResponseDto<List<PlaceDto>>> getAllPlacesResponseLiveData() {
-        return getAllPlacesResponseLiveData;
+    public LiveData<Result<List<Place>>> getFindAllPlacesResponseLiveData() {
+        return findAllPlacesResponseLiveData;
     }
 
-    public LiveData<ResponseDto<List<PlaceDto>>> getAllPlacesByProvinceNameResponseLiveData() {
-        return allPlacesByProvinceNameResponseLiveData;
+    public LiveData<Result<List<Place>>> getFindAllPlacesByProvinceNameResponseLiveData() {
+        return findAllPlacesByProvinceNameResponseLiveData;
     }
 
-    public LiveData<ResponseDto<List<PlaceDto>>> searchPlacesByNameContainingResponseLiveData() {
-        return searchPlacesByNameContainingResponseLiveData;
+    public LiveData<Result<List<Place>>> getFindAllPlacesByNameContainingResponseLiveData() {
+        return findAllPlacesByNameContainingResponseLiveData;
     }
 
-    public LiveData<ResponseDto<PlaceDto>> getPlaceByIdResponseLiveData() {
-        return getPlaceByIdResponseLiveData;
+    public LiveData<Result<Place>> getFindPlaceByIdResponseLiveData() {
+        return findPlaceByIdResponseLiveData;
     }
 
-    public LiveData<ResponseDto<FeedbackDto>> createFeedbackResponseLiveData() {
+    public LiveData<Result<Feedback>> getCreateFeedbackResponseLiveData() {
         return createFeedbackResponseLiveData;
     }
 
-    public LiveData<ResponseDto<List<FavouritePlaceDto>>> getAllFavouritePlacesResponseLiveData() {
-        return getAllFavouritePlacesResponseLiveData;
+    public LiveData<Result<List<FavouritePlace>>> getFindAllFavouritePlacesResponseLiveData() {
+        return findAllFavouritePlacesResponseLiveData;
     }
 
-    public LiveData<ResponseDto<FavouritePlaceDto>> addFavouritePlaceResponseLiveData() {
+    public LiveData<Result<FavouritePlace>> getAddFavouritePlaceResponseLiveData() {
         return addFavouritePlaceResponseLiveData;
     }
 
-    public LiveData<ResponseDto<FavouritePlaceDto>> deleteFavouritePlaceByIdsResponseLiveData() {
+    public LiveData<Result<FavouritePlace>> getDeleteFavouritePlaceByIdsResponseLiveData() {
         return deleteFavouritePlaceByIdsResponseLiveData;
     }
 
-    public LiveData<ResponseDto<CheckInDto>> checkInPlaceResponseLiveData() {
+    public LiveData<Result<CheckIn>> getCheckInPlaceResponseLiveData() {
         return checkInPlaceResponseLiveData;
     }
 
-    public LiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserIdResponseLiveData() {
-        return getCheckInByPlaceIdAndUserIdResponseLiveData;
+    public LiveData<Result<CheckIn>> getFindCheckInByPlaceIdResponseLiveData() {
+        return findCheckInByPlaceIdResponseLiveData;
     }
 
     public LiveData<Boolean> getIsLoading() {
@@ -89,50 +88,50 @@ public class PlaceViewModel extends ViewModel {
         return isCheckingIn;
     }
 
-    public void getAllPlaces() {
+    public void findAllPlaces() {
         isLoading.setValue(true);
-        placeRepository.getAllPlaces().observeForever(response -> {
-            getAllPlacesResponseLiveData.setValue(response);
+        placeRepository.findAllPlaces().observeForever(response -> {
+            findAllPlacesResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }
 
-    public void getAllPlacesByProvinceName(String provinceName) {
+    public void findAllPlacesByProvinceName(String provinceName) {
         isLoading.setValue(true);
-        placeRepository.getAllPlacesByProvinceName(provinceName).observeForever(response -> {
-            allPlacesByProvinceNameResponseLiveData.setValue(response);
+        placeRepository.findAllPlacesByProvinceName(provinceName).observeForever(response -> {
+            findAllPlacesByProvinceNameResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }
 
-    public void searchPlacesByNameContaining(String name) {
+    public void findAllPlacesByNameContaining(String name) {
         isLoading.setValue(true);
-        placeRepository.searchPlacesByNameContaining(name).observeForever(response -> {
-            searchPlacesByNameContainingResponseLiveData.setValue(response);
+        placeRepository.findAllPlacesByNameContaining(name).observeForever(response -> {
+            findAllPlacesByNameContainingResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }
 
-    public void getPlaceById(Long placeId) {
+    public void findPlaceById(Long placeId) {
         isLoading.setValue(true);
-        placeRepository.getPlaceById(placeId).observeForever(response -> {
-            getPlaceByIdResponseLiveData.setValue(response);
+        placeRepository.findPlaceById(placeId).observeForever(response -> {
+            findPlaceByIdResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }
 
-    public void createFeedback(String bearerToken, FeedbackCreateDto feedbackCreateDto, Long placeId) {
+    public void createFeedback(String bearerToken, Feedback feedback, Long placeId) {
         isLoading.setValue(true);
-        placeRepository.createFeedback(bearerToken, feedbackCreateDto, placeId).observeForever(response -> {
+        placeRepository.createFeedback(bearerToken, feedback, placeId).observeForever(response -> {
             createFeedbackResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }
 
-    public void getAllFavouritePlaces(String bearerToken) {
+    public void findAllFavouritePlaces(String bearerToken) {
         isLoading.setValue(true);
-        placeRepository.getAllFavouritePlaces(bearerToken).observeForever(response -> {
-            getAllFavouritePlacesResponseLiveData.setValue(response);
+        placeRepository.findAllFavouritePlaces(bearerToken).observeForever(response -> {
+            findAllFavouritePlacesResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }
@@ -153,10 +152,10 @@ public class PlaceViewModel extends ViewModel {
         });
     }
 
-    public void getCheckInByPlaceIdAndUserId(String bearerToken, Long placeId) {
+    public void findCheckInByPlaceId(String bearerToken, Long placeId) {
         isLoading.setValue(true);
-        placeRepository.getCheckInByPlaceIdAndUserId(bearerToken, placeId).observeForever(response -> {
-            getCheckInByPlaceIdAndUserIdResponseLiveData.setValue(response);
+        placeRepository.findCheckInByPlaceId(bearerToken, placeId).observeForever(response -> {
+            findCheckInByPlaceIdResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }

@@ -13,16 +13,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.databinding.FragmentPlaceDescriptionInfoBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.domain.model.Section;
-import com.example.wanderfunmobile.presentation.ui.adapter.place.PlaceDescriptionItemAdapter;
-import com.example.wanderfunmobile.data.mapper.ObjectMapper;
+import com.example.wanderfunmobile.domain.model.places.Section;
+import com.example.wanderfunmobile.presentation.ui.adapter.place.SectionItemAdapter;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -30,11 +30,10 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class PlaceDescriptionInfoFragment extends Fragment {
 
     private FragmentPlaceDescriptionInfoBinding viewBinding;
-    private Place place;
-    private List<Section> descriptionList;
+    private final List<Section> sectionList = new ArrayList<>();
     private PlaceViewModel placeViewModel;
-    @Inject
-    ObjectMapper objectMapper;
+
+    private SectionItemAdapter sectionItemAdapter;
 
     public PlaceDescriptionInfoFragment() {
     }
@@ -53,16 +52,21 @@ public class PlaceDescriptionInfoFragment extends Fragment {
         return viewBinding.getRoot();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (data != null && !data.isError()) {
-                place = objectMapper.map(data.getData(), Place.class);
-//                descriptionList = place.getDescription();
-                setInfo();
-                showDescriptionList();
+        RecyclerView recyclerView = viewBinding.placeDescriptionList;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        sectionItemAdapter = new SectionItemAdapter(sectionList);
+        recyclerView.setAdapter(sectionItemAdapter);
+
+        placeViewModel.getFindPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (!result.isError() && result.getData() != null) {
+                bindPlaceData(result.getData());
+                sectionList.addAll(result.getData().getPlaceDetail().getSectionList());
+                sectionItemAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -74,102 +78,108 @@ public class PlaceDescriptionInfoFragment extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    private void setInfo() {
-//        // Address
-//        ConstraintLayout placeAddress = viewBinding.placeAddress;
-//        TextView placeAddressContent = viewBinding.placeAddressContent;
-//        if (place.getAddress() != null && !place.getAddress().isEmpty()) {
-//            placeAddressContent.setText(place.getAddress());
-//        } else {
-//            placeAddress.setVisibility(View.GONE);
-//        }
-//
-//        // Time open & close
-//        ConstraintLayout placeTimeOpening = viewBinding.placeTimeOpening;
-//        TextView placeTimeOpeningTimeClose = viewBinding.placeTimeOpeningTimeClose;
-//        ConstraintLayout placeTimeClosing = viewBinding.placeTimeClosing;
-//        TextView placeTimeClosingTimeOpen = viewBinding.placeTimeClosingTimeOpen;
-//        if (place.isClosing()) {
-//            placeTimeOpening.setVisibility(View.GONE);
-//            placeTimeClosing.setVisibility(View.GONE);
-//            viewBinding.openAllDay.setVisibility(View.GONE);
-//            viewBinding.closing.setVisibility(View.VISIBLE);
-//        } else {
-//            if (place.isOpenAllDay()) {
-//                placeTimeOpening.setVisibility(View.GONE);
-//                placeTimeClosing.setVisibility(View.GONE);
-//                viewBinding.openAllDay.setVisibility(View.VISIBLE);
-//                viewBinding.closing.setVisibility(View.GONE);
-//            } else {
-//                if (place.getTimeOpen() != null && place.getTimeClose() != null) {
-//                    LocalTime currentTime = LocalTime.now();
-//                    if (place.getTimeClose().isBefore(currentTime) || place.getTimeOpen().isAfter(currentTime)) {
-//                        placeTimeClosing.setVisibility(View.VISIBLE);
-//                        placeTimeOpening.setVisibility(View.GONE);
-//                        viewBinding.openAllDay.setVisibility(View.GONE);
-//                        viewBinding.closing.setVisibility(View.GONE);
-//                        placeTimeClosingTimeOpen.setText(place.getTimeOpen().toString());
-//                    } else {
-//                        placeTimeOpening.setVisibility(View.VISIBLE);
-//                        placeTimeClosing.setVisibility(View.GONE);
-//                        viewBinding.openAllDay.setVisibility(View.GONE);
-//                        viewBinding.closing.setVisibility(View.GONE);
-//                        placeTimeOpeningTimeClose.setText(DateTimeUtil.localTimeToString(place.getTimeClose()));
-//                    }
-//                } else {
-//                    placeTimeOpening.setVisibility(View.GONE);
-//                    placeTimeClosing.setVisibility(View.GONE);
-//                    viewBinding.openAllDay.setVisibility(View.GONE);
-//                    viewBinding.closing.setVisibility(View.GONE);
-//                }
-//            }
-//        }
-//
-//        // Category
-//        ConstraintLayout placeCategory = viewBinding.placeCategory;
-//        TextView placeCategoryContent = viewBinding.placeCategoryContent;
-//        if (place.getCategory() != null) {
-//            placeCategoryContent.setText(place.getCategory().name());
-//        } else {
-//            placeCategory.setVisibility(View.GONE);
-//        }
-//
-//        // Check-in point
-//        TextView placeCheckInPointContent = viewBinding.placeCheckInPointContent;
-//        placeCheckInPointContent.setText("Điểm check-in: " + place.getCheckInPoint());
-//
-//        // Alternative name
-//        ConstraintLayout placeAlternativeName = viewBinding.placeAlternativeName;
-//        TextView placeAlternativeNameContent = viewBinding.placeAlternativeNameContent;
-//        if (place.getAlternativeName() != null && !place.getAlternativeName().isEmpty()) {
-//            placeAlternativeNameContent.setText(place.getAlternativeName());
-//        } else {
-//            placeAlternativeName.setVisibility(View.GONE);
-//        }
-//
-//        // Operator
-//        ConstraintLayout placeOperator = viewBinding.placeOperator;
-//        TextView placeOperatorContent = viewBinding.placeOperatorContent;
-//        if (place.getOperator() != null && !place.getOperator().isEmpty()) {
-//            placeOperatorContent.setText("Trực thuộc: " + place.getOperator());
-//        } else {
-//            placeOperator.setVisibility(View.GONE);
-//        }
-//
-//        // Link
-//        ConstraintLayout placeLink = viewBinding.placeLink;
-//        TextView placeLinkContent = viewBinding.placeLinkContent;
-//        if (place.getLink() != null && !place.getLink().isEmpty()) {
-//            placeLinkContent.setText(place.getLink());
-//        } else {
-//            placeLink.setVisibility(View.GONE);
-//        }
-    }
+    private void bindPlaceData(Place place) {
+        if (place == null) {
+            return;
+        } else {
+            // Address
+            if (place.getAddress() != null) {
+                StringBuilder addressBuilder = new StringBuilder();
 
-    private void showDescriptionList() {
-        RecyclerView recyclerView = viewBinding.placeDescriptionList;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        PlaceDescriptionItemAdapter placeDescriptionItemAdapter = new PlaceDescriptionItemAdapter(descriptionList);
-        recyclerView.setAdapter(placeDescriptionItemAdapter);
+                if (place.getAddress().getStreet() != null && !place.getAddress().getStreet().isEmpty()) {
+                    addressBuilder.append(place.getAddress().getStreet());
+                }
+
+                if (place.getAddress().getWard() != null && place.getAddress().getWard().getFullName() != null && !place.getAddress().getWard().getFullName().isEmpty()) {
+                    if (addressBuilder.length() > 0) addressBuilder.append(", ");
+                    addressBuilder.append(place.getAddress().getWard().getFullName());
+                }
+
+                if (place.getAddress().getDistrict() != null && place.getAddress().getDistrict().getFullName() != null && !place.getAddress().getDistrict().getFullName().isEmpty()) {
+                    if (addressBuilder.length() > 0) addressBuilder.append(", ");
+                    addressBuilder.append(place.getAddress().getDistrict().getFullName());
+                }
+
+                if (place.getAddress().getProvince() != null && place.getAddress().getProvince().getFullName() != null && !place.getAddress().getProvince().getFullName().isEmpty()) {
+                    if (addressBuilder.length() > 0) addressBuilder.append(", ");
+                    addressBuilder.append(place.getAddress().getProvince().getFullName());
+                }
+
+                String address = addressBuilder.toString();
+
+                viewBinding.address.setText(address);
+            } else {
+                viewBinding.address.setText("Không có dữ liệu");
+            }
+
+            // Time open & close
+            if (place.getPlaceDetail().isClosed()) {
+                viewBinding.opening.setVisibility(View.GONE);
+                viewBinding.closing.setVisibility(View.GONE);
+                viewBinding.openAllDay.setVisibility(View.GONE);
+                viewBinding.closed.setVisibility(View.VISIBLE);
+            } else {
+                if (place.getPlaceDetail().isOpenAllDay()) {
+                    viewBinding.opening.setVisibility(View.GONE);
+                    viewBinding.closing.setVisibility(View.GONE);
+                    viewBinding.openAllDay.setVisibility(View.VISIBLE);
+                    viewBinding.closed.setVisibility(View.GONE);
+                } else {
+                    if (place.getPlaceDetail().getTimeOpen() != null && place.getPlaceDetail().getTimeClose() != null) {
+                        LocalTime currentTime = LocalTime.now();
+                        if (place.getPlaceDetail().getTimeClose().isBefore(currentTime) || place.getPlaceDetail().getTimeOpen().isAfter(currentTime)) {
+                            viewBinding.closing.setVisibility(View.VISIBLE);
+                            viewBinding.opening.setVisibility(View.GONE);
+                            viewBinding.openAllDay.setVisibility(View.GONE);
+                            viewBinding.closed.setVisibility(View.GONE);
+                            viewBinding.openTime.setText(place.getPlaceDetail().getTimeOpen().toString());
+                        } else {
+                            viewBinding.opening.setVisibility(View.VISIBLE);
+                            viewBinding.closing.setVisibility(View.GONE);
+                            viewBinding.openAllDay.setVisibility(View.GONE);
+                            viewBinding.closed.setVisibility(View.GONE);
+                            viewBinding.closeTime.setText(DateTimeUtil.localTimeToString(place.getPlaceDetail().getTimeClose()));
+                        }
+                    } else {
+                        viewBinding.opening.setVisibility(View.GONE);
+                        viewBinding.closing.setVisibility(View.GONE);
+                        viewBinding.openAllDay.setVisibility(View.GONE);
+                        viewBinding.closed.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            // Category
+            if (place.getCategory() != null) {
+                viewBinding.category.setText(place.getCategory().getName());
+            } else {
+                viewBinding.category.setText("Không có dữ liệu");
+            }
+
+            // Check-in point
+            viewBinding.checkInPoint.setText(String.valueOf(place.getPlaceDetail().getCheckInPoint()));
+
+
+            // Alternative name
+            if (place.getPlaceDetail().getAlternativeName() != null && !place.getPlaceDetail().getAlternativeName().isEmpty()) {
+                viewBinding.alternativeName.setText(place.getPlaceDetail().getAlternativeName());
+            } else {
+                viewBinding.alternativeName.setText("Không có dữ liệu");
+            }
+
+            // Operator
+            if (place.getPlaceDetail().getOperator() != null && !place.getPlaceDetail().getOperator().isEmpty()) {
+                viewBinding.operator.setText(place.getPlaceDetail().getOperator());
+            } else {
+                viewBinding.operator.setText("Không có dữ liệu");
+            }
+
+            // Link
+            if (place.getPlaceDetail().getUrl() != null && !place.getPlaceDetail().getUrl().isEmpty()) {
+                viewBinding.link.setText(place.getPlaceDetail().getUrl());
+            } else {
+                viewBinding.link.setText("Không có dữ liệu");
+            }
+        }
     }
 }

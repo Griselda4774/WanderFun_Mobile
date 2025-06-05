@@ -22,10 +22,8 @@ public class PlaceInfoTabAdapter extends FragmentStateAdapter {
                 return new PlaceRatingInfoFragment();
             case 2:
                 return new PlaceImageInfoFragment();
-            case 3:
-                return new PlaceDescriptionInfoFragment();
             default:
-                return new PlaceGeneralInfoFragment();
+                return new PlaceDescriptionInfoFragment();
         }
     }
 

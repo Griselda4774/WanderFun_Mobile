@@ -50,8 +50,8 @@ public class RepositoryModule {
 
     @Provides
     @Singleton
-    public PlaceRepository providePlaceRepository(PlaceApi placeApi) {
-        return new PlaceRepositoryImpl(placeApi);
+    public PlaceRepository providePlaceRepository(PlaceApi placeApi, ObjectMapper objectMapper) {
+        return new PlaceRepositoryImpl(placeApi, objectMapper);
     }
 
     @Provides

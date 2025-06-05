@@ -27,6 +27,7 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.data.dto.feedback.FeedbackCreateDto;
 import com.example.wanderfunmobile.databinding.ActivityFeedbackCreateBinding;
+import com.example.wanderfunmobile.domain.model.Feedback;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingOutlineView;
@@ -154,34 +155,34 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         submitButton.setText("Đăng");
         submitButton.setOnClickListener(v -> {
             showLoadingDialog();
-            FeedbackCreateDto feedbackCreateDto = new FeedbackCreateDto();
-            feedbackCreateDto.setRating(starRating.getRating());
+            Feedback feedback = new Feedback();
+            feedback.setRating(starRating.getRating());
             if (comment.getText() != null)
-                feedbackCreateDto.setComment(comment.getText().toString());
+                feedback.setComment(comment.getText().toString());
             if (feedbackImage.getDrawable() != null && imageUri != null && placeName != null) {
                 String folderName = "/wanderfun/places/" + placeName.replaceAll("\\s", "") + "/feedbacks/user_" + user.getId().toString();
                 String fileName = "feedback_user_" + user.getId().toString() + "_" + System.currentTimeMillis();
                 CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), imageUri, fileName, folderName, new CloudinaryUtil.CloudinaryCallback() {
                     @Override
                     public void onSuccess(CloudinaryImageDto result) {
-                        feedbackCreateDto.setImageUrl(result.getUrl());
-                        feedbackCreateDto.setImagePublicId(result.getPublicId());
-                        placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
+                        feedback.setImageUrl(result.getUrl());
+                        feedback.setImagePublicId(result.getPublicId());
+                        placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedback, placeId);
                     }
 
                     @Override
                     public void onError(String error) {
-                        feedbackCreateDto.setImagePublicId(null);
-                        feedbackCreateDto.setImageUrl(null);
-                        placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
+                        feedback.setImagePublicId(null);
+                        feedback.setImageUrl(null);
+                        placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedback, placeId);
                     }
                 });
             } else {
-                placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedbackCreateDto, placeId);
+                placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedback, placeId);
             }
         });
 
-        placeViewModel.createFeedbackResponseLiveData().observe(this, data -> {
+        placeViewModel.getCreateFeedbackResponseLiveData().observe(this, data -> {
             if (data != null && !data.isError()) {
                 hideLoadingDialog();
                 Toast.makeText(getApplicationContext(), "Tạo đánh giá thành công", Toast.LENGTH_SHORT).show();
@@ -202,10 +203,11 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         }
         // Avatar
         ImageView userAvatar = viewBinding.userAvatar;
-        if (user != null && user.getAvatarImage().getImageUrl() != null) {
+        if (user != null && user.getAvatarImage() != null && user.getAvatarImage().getImageUrl() != null) {
             Glide.with(viewBinding.getRoot())
                     .load(user.getAvatarImage().getImageUrl())
-                    .error(R.drawable.brown)
+                    .placeholder(R.drawable.img_placeholder)
+                    .error(R.drawable.img_placeholder)
                     .into(userAvatar);
         }
     }

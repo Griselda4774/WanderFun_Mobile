@@ -80,7 +80,7 @@ public class PlaceGeneralInfoFragment extends Fragment {
             }
         });
 
-        placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+        placeViewModel.getFindPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
 //            if (data != null && !data.isError()) {
 //                place = objectMapper.map(data.getData(), Place.class);
 //                feedbackList.clear();

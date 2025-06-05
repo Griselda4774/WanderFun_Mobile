@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,25 +40,32 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.cloudinary.Transformation;
 import com.cloudinary.android.MediaManager;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.core.util.GeoJsonUtil;
+import com.example.wanderfunmobile.core.util.ViewPager2HeightAdjuster;
 import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.databinding.BottomSheetLocationPinBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPlaceInfoBinding;
 import com.example.wanderfunmobile.databinding.FragmentExploreBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
+import com.example.wanderfunmobile.presentation.ui.adapter.place.PlaceInfoTabAdapter;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.SelectionDialog;
 import com.example.wanderfunmobile.core.util.BitMapUtil;
 import com.example.wanderfunmobile.core.util.ColorHexUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
+import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingView;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -91,6 +99,7 @@ import org.maplibre.geojson.MultiPolygon;
 import org.maplibre.geojson.Point;
 import org.maplibre.geojson.Polygon;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -103,7 +112,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private String selectedProvinceName = null;
     private PlaceViewModel placeViewModel;
-    private MapView mapView;
     private MapLibreMap mapLibreMap;
     private Style mapStyle;
     private SymbolManager symbolManager;
@@ -115,8 +123,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private long lastUpdateTime = 0;
     private FragmentExploreBinding viewBinding;
     private String mapStyleUrl;
-
-    private LinearLayout gpsButton;
     private Location currentLocation;
 
     private BottomSheetPlaceInfoBinding placeInfoBottomSheetBinding;
@@ -129,7 +135,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     @Inject
     ObjectMapper objectMapper;
     private LoadingDialog loadingDialog;
-    private SelectionDialog selectionDialog;
     private boolean canCheckIn;
     private Long currentCheckInPlaceId;
 
@@ -150,9 +155,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
 
-        mapView = viewBinding.mapView;
-        gpsButton = viewBinding.gpsButton;
-
         placeInfoBottomSheetBinding = viewBinding.placeInfoBottomSheetContainer;
         placeInfoBottomSheetBehavior = BottomSheetBehavior.from(placeInfoBottomSheetBinding.getRoot());
         placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -161,18 +163,16 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         locationPinBottomSheetBehavior = BottomSheetBehavior.from(locationPinBottomSheetBinding.getRoot());
         locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-        // Khởi tạo launcher cho yêu cầu quyền
         requestPermissionsLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
                     Boolean isLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
 
                     if (Boolean.FALSE.equals(isLocationGranted)) {
-                        Toast.makeText(requireContext(), "Permission denied!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Quyền truy cập bị từ chối!", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
-
         return viewBinding.getRoot();
     }
 
@@ -180,154 +180,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Place info bottom sheet
-        placeInfoBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    placeInfoBottomSheetBinding.placeInfoBottomSheetContent.smoothScrollTo(0, 0);
-                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    currentPlace = null;
-                }
-            }
+        setUpFragment(savedInstanceState);
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
-        });
-
-        // Location pin info bottom sheet
-        locationPinBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    locationPinBottomSheetBinding.bottomSheetContent.smoothScrollTo(0, 0);
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-        // Selection dialog
-        selectionDialog = viewBinding.selectionDialog;
-        selectionDialog.setOnAcceptListener(() -> {
-            if (currentCheckInPlaceId != null) {
-                placeViewModel.getCheckInByPlaceIdAndUserId("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
-            }
-            selectionDialog.hide();
-            Log.d("SelectionDialog", "Accept");
-        });
-
-        selectionDialog.setOnRejectListener(() -> {
-            selectionDialog.hide();
-            Log.d("SelectionDialog", "Reject");
-        });
-
-        // Loading dialog
-        loadingDialog = viewBinding.loadingDialog;
-//        placeViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-//            if (isLoading) {
-//                loadingDialog.show();
-//                loadingDialog.setVisibility(View.VISIBLE);
-//            } else {
-//                loadingDialog.hide();
-//                loadingDialog.setVisibility(View.GONE);
-//            }
-//        });
-//        placeViewModel.getIsCheckingIn().observe(getViewLifecycleOwner(), isCheckingIn -> {
-//            if (isCheckingIn) {
-//                loadingDialog.show();
-//                loadingDialog.setVisibility(View.VISIBLE);
-//            } else {
-//                loadingDialog.hide();
-//                loadingDialog.setVisibility(View.GONE);
-//            }
-//        });
-
-        // Map
-        mapView.onCreate(savedInstanceState);
-        mapStyleUrl = String.format("%s/assets/goong_map_web.json?api_key=%s",
-                getString(R.string.goong_map_url),
-                getString(R.string.goong_map_key));
-
-        mapView.getMapAsync(this);
-
-        placeViewModel.getAllPlaces();
-        placeViewModel.getAllPlacesResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (data != null && !data.isError()) {
-                List<PlaceDto> placeDtoList = data.getData();
-                if (placeDtoList.isEmpty()) {
-                    placeDtoList = new ArrayList<>();
-                }
-                placeList = objectMapper.mapList(placeDtoList, Place.class);
-            }
-        });
-
-//        placeViewModel.getAllPlacesByProvinceName("Binh Dinh");
-        placeViewModel.getAllPlacesByProvinceNameResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-            if (data != null && !data.isError()) {
-                List<PlaceDto> placeDtoList = data.getData();
-                if (placeDtoList.isEmpty()) {
-                    placeDtoList = new ArrayList<>();
-                }
-                removePlaceImagesFromMap(mapStyle, placeList);
-                placeList = objectMapper.mapList(placeDtoList, Place.class);
-            }
-            removePlaceMarkers(symbolManager);
-            addPlaceImageToMap(requireContext(), mapStyle, placeList);
-            drawPlaceMarker(symbolManager, placeList);
-        });
-
-//        placeViewModel.getPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-//            if (data != null && !data.isError()) {
-//                currentPlace = objectMapper.map(data.getData(), Place.class);
-//                showPlaceInfoBottomSheet(currentPlace);
-//            }
-//        });
-
-//        placeViewModel.getCheckInByPlaceIdAndUserIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-//            if (data != null && !data.isError()) {
-//                CheckIn checkIn = objectMapper.map(data.getData(), CheckIn.class);
-//                if (System.currentTimeMillis() - checkIn.getLastCheckInTime().getTime() > 50000) {
-//                    canCheckIn = true;
-//                    placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
-//                } else {
-//                    canCheckIn = false;
-//                    Toast.makeText(requireContext(), "Bạn đã check-in tại đây trước đó", Toast.LENGTH_SHORT).show();
-//                }
-//            } else {
-//                canCheckIn = true;
-//                placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
-//            }
-//        });
-
-//        placeViewModel.checkInPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-//            if (data != null && !data.isError()) {
-//                Toast.makeText(requireContext(), "Check-in thành công", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(requireContext(), "Check-in thất bại", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
-//        gpsButton.setOnClickListener(v -> {
-//            if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
-//                if (currentMarker != null) {
-//                    symbolManager.delete(currentMarker);
-//                    currentMarker = null;
-//                }
-//                initializeLocationComponent(mapStyle, mapLibreMap);
-//                mapLibreMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
-//                        .target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-//                        .zoom(15)
-//                        .build()), 1000);
-//
-//            } else {
-//                checkPermissions();
-//            }
-//        });
+        setUpViewModel();
     }
 
     @Override
@@ -372,7 +227,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-            symbolManager = new SymbolManager(mapView, map, style);
+            symbolManager = new SymbolManager(viewBinding.mapView, map, style);
             symbolManager.setIconAllowOverlap(true);
             symbolManager.setIconIgnorePlacement(true);
 
@@ -415,7 +270,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 }
 
                 if (place != null) {
-                    placeViewModel.getPlaceById(place.getId());
+                    placeViewModel.findPlaceById(place.getId());
                 }
                 return true;
             });
@@ -456,7 +311,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                     if (selectedLayer != null) {
                         if (selectedProvinceName != null) {
                             selectedLayer.setFilter(eq(get("Name"), literal(selectedProvinceName)));
-                            placeViewModel.getAllPlacesByProvinceName(selectedProvinceName);
+                            placeViewModel.findAllPlacesByProvinceName(selectedProvinceName);
                         } else {
                             removePlaceImagesFromMap(style, placeList);
                             removePlaceMarkers(symbolManager);
@@ -477,18 +332,14 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onStart() {
         super.onStart();
-        if (mapView != null) {
-            mapView.onStart();
-        }
+        viewBinding.mapView.onStart();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        if (mapView != null) {
-//            mapView.onResume();
-//        }
-//        if (currentPlace != null) {
+        viewBinding.mapView.onResume();
+        //        if (currentPlace != null) {
 //            placeViewModel.getPlaceById(currentPlace.getId());
 //        } else {
 //            placeViewModel.getAllPlaces();
@@ -498,42 +349,164 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onStop() {
         super.onStop();
-        if (mapView != null) {
-            mapView.onStop();
-        }
+        viewBinding.mapView.onStop();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mapView != null) {
-            mapView.onPause();
-        }
+        viewBinding.mapView.onPause();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        if (mapView != null) {
-            mapView.onLowMemory();
-        }
+        viewBinding.mapView.onLowMemory();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        viewBinding.mapView.onDestroy();
         viewBinding = null;
-        if (mapView != null) {
-            mapView.onDestroy();
-        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mapView != null) {
-            mapView.onSaveInstanceState(outState);
-        }
+        viewBinding.mapView.onSaveInstanceState(outState);
+    }
+
+    private void setUpFragment(Bundle savedInstanceState) {
+        setUpBottomSheet();
+        setUpDialog();
+        setUpMapView(savedInstanceState);
+        setUpButton();
+    }
+
+    private void setUpViewModel() {
+        placeViewModel.getFindAllPlacesResponseLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (result != null && !result.isError()) {
+                placeList = result.getData();
+            }
+        });
+
+        placeViewModel.getFindAllPlacesByProvinceNameResponseLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (result != null && !result.isError()) {
+                removePlaceImagesFromMap(mapStyle, placeList);
+                placeList = objectMapper.mapList(result.getData(), Place.class);
+            }
+            removePlaceMarkers(symbolManager);
+            addPlaceImageToMap(requireContext(), mapStyle, placeList);
+            drawPlaceMarker(symbolManager, placeList);
+        });
+
+        placeViewModel.getFindPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (!result.isError() && result.getData() != null) {
+                showPlaceInfoBottomSheet(result.getData());
+            }
+        });
+
+//        placeViewModel.getCheckInByPlaceIdAndUserIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+//            if (data != null && !data.isError()) {
+//                CheckIn checkIn = objectMapper.map(data.getData(), CheckIn.class);
+//                if (System.currentTimeMillis() - checkIn.getLastCheckInTime().getTime() > 50000) {
+//                    canCheckIn = true;
+//                    placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
+//                } else {
+//                    canCheckIn = false;
+//                    Toast.makeText(requireContext(), "Bạn đã check-in tại đây trước đó", Toast.LENGTH_SHORT).show();
+//                }
+//            } else {
+//                canCheckIn = true;
+//                placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
+//            }
+//        });
+
+//        placeViewModel.checkInPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
+//            if (data != null && !data.isError()) {
+//                Toast.makeText(requireContext(), "Check-in thành công", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(requireContext(), "Check-in thất bại", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+    }
+
+    private void setUpBottomSheet() {
+        // Place info bottom sheet
+        placeInfoBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    placeInfoBottomSheetBinding.placeInfoBottomSheetContent.smoothScrollTo(0, 0);
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    currentPlace = null;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        // Location pin info bottom sheet
+        locationPinBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    locationPinBottomSheetBinding.bottomSheetContent.smoothScrollTo(0, 0);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+    }
+
+    private void setUpDialog() {
+        // Selection dialog
+        viewBinding.selectionDialog.setOnAcceptListener(() -> {
+            if (currentCheckInPlaceId != null) {
+                placeViewModel.findCheckInByPlaceId("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
+            }
+            viewBinding.selectionDialog.hide();
+            Log.d("SelectionDialog", "Accept");
+        });
+
+        viewBinding.selectionDialog.setOnRejectListener(() -> {
+            viewBinding.selectionDialog.hide();
+            Log.d("SelectionDialog", "Reject");
+        });
+    }
+
+    private void setUpMapView(Bundle savedInstanceState) {
+        viewBinding.mapView.onCreate(savedInstanceState);
+        mapStyleUrl = String.format("%s/assets/goong_map_web.json?api_key=%s",
+                getString(R.string.goong_map_url),
+                getString(R.string.goong_map_key));
+
+        viewBinding.mapView.getMapAsync(this);
+    }
+
+    private void setUpButton() {
+        viewBinding.gpsButton.setOnClickListener(v -> {
+            if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
+                if (currentMarker != null) {
+                    symbolManager.delete(currentMarker);
+                    currentMarker = null;
+                }
+                initializeLocationComponent(mapStyle, mapLibreMap);
+                mapLibreMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
+                        .target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                        .zoom(15)
+                        .build()), 1000);
+
+            } else {
+                checkPermissions();
+            }
+        });
     }
 
     private void checkPermissions() {
@@ -585,7 +558,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 .zoom(8)
                 .build()), 1000);
     }
-//
+
     private final LocationEngineCallback<LocationEngineResult> locationEngineCallback = new LocationEngineCallback<LocationEngineResult>() {
         @Override
         public void onSuccess(LocationEngineResult result) {
@@ -607,7 +580,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                     if (distanceInMeters <= 20) {
                         Log.d("UserLocation", "Place can check-in: " + place.getName());
                         currentCheckInPlaceId = place.getId();
-                        selectionDialog.show("Có thể check-in tại đây",
+                        viewBinding.selectionDialog.show("Có thể check-in tại đây",
                                 "Địa điểm được tìm thấy là: " + place.getName(),
                                 "Bạn có muốn check-in tại đây?", "Có", "Không");
                     }
@@ -760,131 +733,156 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-//    @SuppressLint("SetTextI18n")
-//    private void showPlaceInfoBottomSheet(Place place) {
-//        placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//        locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-//
-//        // Place info tab
-//        // View pager
-//        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(this);
-//        ViewPager2 viewPager = placeInfoBottomSheetBinding.viewPager;
-//        viewPager.setAdapter(placeInfoTabAdapter);
-//        ViewPager2HeightAdjuster.autoAdjustHeight(viewPager, true);
-//
-//        // Tab layout
-//        TabLayout tabLayout = placeInfoBottomSheetBinding.tabLayout;
-//        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-//            @SuppressLint("InflateParams") View customView = LayoutInflater.from(requireContext()).inflate(R.layout.tab_item, null);
-//            TextView tabText = customView.findViewById(R.id.tab_text);
-//            tabText.setTextAppearance(R.style.Text_TabLabel);
-//
-//            switch (position) {
-//                case 0:
-//                    tabText.setText("Tổng quan");
-//                    tabText.setTextAppearance(R.style.Text_TabLabel_Active_Blue);
-//                    break;
-//                case 1:
-//                    tabText.setText("Đánh giá");
-//                    break;
-//                case 2:
-//                    tabText.setText("Ảnh");
-//                    break;
-//                case 3:
-//                    tabText.setText("Giới thiệu");
-//                    break;
-//            }
-//
-//            tab.setCustomView(customView);
-//        }).attach();
-//
-//        tabLayout.selectTab(tabLayout.getTabAt(0));
-//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//                TextView tabText = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab_text);
-//                tabText.setTextAppearance(R.style.Text_TabLabel);
-//            }
-//
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                TextView tabText = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab_text);
-//                tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(), R.color.blue2));
-//                tabText.setTextAppearance(R.style.Text_TabLabel_Active_Blue);
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//            }
-//        });
-//
-//        TextView placeName = placeInfoBottomSheetBinding.placeName;
-//        placeName.setText(place.getName());
-//
-//        TextView placeAddress = placeInfoBottomSheetBinding.placeAddressContent;
-//        placeAddress.setText(place.getAddress());
-//
-//        StarRatingView starRatingView = placeInfoBottomSheetBinding.placeRatingView;
-//        int roundedRating = (int) Math.floor(place.getAverageRating());
-//        starRatingView.setRating(roundedRating);
-//
-//        TextView placeRating = placeInfoBottomSheetBinding.placeRatingScore;
-//        placeRating.setText(String.valueOf(place.getAverageRating()));
-//
-//        TextView placeRatingCount = placeInfoBottomSheetBinding.placeRatingCount;
-//        placeRatingCount.setText("(" + place.getFeedbacks().size() + ")");
-//
-//        ConstraintLayout placeTimeOpening = placeInfoBottomSheetBinding.placeTimeOpening;
-//        TextView placeTimeOpeningTimeClose = placeInfoBottomSheetBinding.placeTimeOpeningTimeClose;
-//        ConstraintLayout placeTimeClosing = placeInfoBottomSheetBinding.placeTimeClosing;
-//        TextView placeTimeClosingTimeOpen = placeInfoBottomSheetBinding.placeTimeClosingTimeOpen;
-//        if (place.isClosing()) {
-//            placeTimeOpening.setVisibility(View.GONE);
-//            placeTimeClosing.setVisibility(View.GONE);
-//            placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
-//            placeInfoBottomSheetBinding.closing.setVisibility(View.VISIBLE);
-//        } else {
-//            if (place.isOpenAllDay()) {
-//                placeTimeOpening.setVisibility(View.GONE);
-//                placeTimeClosing.setVisibility(View.GONE);
-//                placeInfoBottomSheetBinding.openAllDay.setVisibility(View.VISIBLE);
-//                placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
-//            } else {
-//                if (place.getTimeOpen() != null && place.getTimeClose() != null) {
-//                    LocalTime currentTime = LocalTime.now();
-//                    if (place.getTimeClose().isBefore(currentTime) || place.getTimeOpen().isAfter(currentTime)) {
-//                        placeTimeClosing.setVisibility(View.VISIBLE);
-//                        placeTimeOpening.setVisibility(View.GONE);
-//                        placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
-//                        placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
-//                        placeTimeClosingTimeOpen.setText(place.getTimeOpen().toString());
-//                    } else {
-//                        placeTimeOpening.setVisibility(View.VISIBLE);
-//                        placeTimeClosing.setVisibility(View.GONE);
-//                        placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
-//                        placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
-//                        placeTimeOpeningTimeClose.setText(DateTimeUtil.localTimeToString(place.getTimeClose()));
-//                    }
-//                } else {
-//                    placeTimeOpening.setVisibility(View.GONE);
-//                    placeTimeClosing.setVisibility(View.GONE);
-//                    placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
-//                    placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
-//                }
-//            }
-//        }
-//
-//        ImageView placeCoverImage = placeInfoBottomSheetBinding.placeCoverImage;
-//        String transformUrl = MediaManager.get().url()
-//                .transformation(new Transformation<>()
-//                        .width(800)
-//                        .crop("scale"))
-//                .generate(place.getCoverImagePublicId());
-//        Glide.with(this)
-//                .load(transformUrl)
-//                .error(R.drawable.brown)
-//                .into(placeCoverImage);
-//    }
+    @SuppressLint("SetTextI18n")
+    private void showPlaceInfoBottomSheet(Place place) {
+        placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        // Place info tab
+        // View pager
+        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(this);
+        ViewPager2 viewPager = placeInfoBottomSheetBinding.viewPager;
+        viewPager.setAdapter(placeInfoTabAdapter);
+        ViewPager2HeightAdjuster.autoAdjustHeight(viewPager, true);
+
+        // Tab layout
+        TabLayout tabLayout = placeInfoBottomSheetBinding.tabLayout;
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            @SuppressLint("InflateParams") View customView = LayoutInflater.from(requireContext()).inflate(R.layout.tab_item, null);
+            TextView tabText = customView.findViewById(R.id.tab_text);
+            tabText.setTextAppearance(R.style.Text_TabLabel);
+
+            switch (position) {
+                case 0:
+                    tabText.setText("Giới thiệu");
+                    tabText.setTextAppearance(R.style.Text_TabLabel_Active_Blue);
+                    break;
+                case 1:
+                    tabText.setText("Đánh giá");
+                    break;
+                case 2:
+                    tabText.setText("Ảnh");
+                    break;
+            }
+
+            tab.setCustomView(customView);
+        }).attach();
+
+        tabLayout.selectTab(tabLayout.getTabAt(0));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                TextView tabText = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab_text);
+                tabText.setTextAppearance(R.style.Text_TabLabel);
+            }
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                TextView tabText = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab_text);
+                tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(), R.color.blue2));
+                tabText.setTextAppearance(R.style.Text_TabLabel_Active_Blue);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        TextView placeName = placeInfoBottomSheetBinding.placeName;
+        placeName.setText(place.getName());
+
+        // Address
+        if (place.getAddress() != null) {
+            StringBuilder addressBuilder = new StringBuilder();
+
+            if (place.getAddress().getStreet() != null && !place.getAddress().getStreet().isEmpty()) {
+                addressBuilder.append(place.getAddress().getStreet());
+            }
+
+            if (place.getAddress().getWard() != null && place.getAddress().getWard().getFullName() != null && !place.getAddress().getWard().getFullName().isEmpty()) {
+                if (addressBuilder.length() > 0) addressBuilder.append(", ");
+                addressBuilder.append(place.getAddress().getWard().getFullName());
+            }
+
+            if (place.getAddress().getDistrict() != null && place.getAddress().getDistrict().getFullName() != null && !place.getAddress().getDistrict().getFullName().isEmpty()) {
+                if (addressBuilder.length() > 0) addressBuilder.append(", ");
+                addressBuilder.append(place.getAddress().getDistrict().getFullName());
+            }
+
+            if (place.getAddress().getProvince() != null && place.getAddress().getProvince().getFullName() != null && !place.getAddress().getProvince().getFullName().isEmpty()) {
+                if (addressBuilder.length() > 0) addressBuilder.append(", ");
+                addressBuilder.append(place.getAddress().getProvince().getFullName());
+            }
+
+            String address = addressBuilder.toString();
+
+            placeInfoBottomSheetBinding.placeAddressContent.setText(address);
+        } else {
+            placeInfoBottomSheetBinding.placeAddressContent.setText("Chưa có địa chỉ");
+        }
+
+        StarRatingView starRatingView = placeInfoBottomSheetBinding.placeRatingView;
+        int roundedRating = (int) Math.floor(place.getRating());
+        starRatingView.setRating(roundedRating);
+
+        TextView placeRating = placeInfoBottomSheetBinding.placeRatingScore;
+        placeRating.setText(String.valueOf(place.getRating()));
+
+        TextView placeRatingCount = placeInfoBottomSheetBinding.placeRatingCount;
+        placeRatingCount.setText("(" + place.getTotalFeedback() + ")");
+
+        ConstraintLayout placeTimeOpening = placeInfoBottomSheetBinding.placeTimeOpening;
+        TextView placeTimeOpeningTimeClose = placeInfoBottomSheetBinding.placeTimeOpeningTimeClose;
+        ConstraintLayout placeTimeClosing = placeInfoBottomSheetBinding.placeTimeClosing;
+        TextView placeTimeClosingTimeOpen = placeInfoBottomSheetBinding.placeTimeClosingTimeOpen;
+        if (place.getPlaceDetail().isClosed()) {
+            placeTimeOpening.setVisibility(View.GONE);
+            placeTimeClosing.setVisibility(View.GONE);
+            placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
+            placeInfoBottomSheetBinding.closing.setVisibility(View.VISIBLE);
+        } else {
+            if (place.getPlaceDetail().isOpenAllDay()) {
+                placeTimeOpening.setVisibility(View.GONE);
+                placeTimeClosing.setVisibility(View.GONE);
+                placeInfoBottomSheetBinding.openAllDay.setVisibility(View.VISIBLE);
+                placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
+            } else {
+                if (place.getPlaceDetail().getTimeOpen() != null && place.getPlaceDetail().getTimeClose() != null) {
+                    LocalTime currentTime = LocalTime.now();
+                    if (place.getPlaceDetail().getTimeClose().isBefore(currentTime) || place.getPlaceDetail().getTimeOpen().isAfter(currentTime)) {
+                        placeTimeClosing.setVisibility(View.VISIBLE);
+                        placeTimeOpening.setVisibility(View.GONE);
+                        placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
+                        placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
+                        placeTimeClosingTimeOpen.setText(place.getPlaceDetail().getTimeOpen().toString());
+                    } else {
+                        placeTimeOpening.setVisibility(View.VISIBLE);
+                        placeTimeClosing.setVisibility(View.GONE);
+                        placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
+                        placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
+                        placeTimeOpeningTimeClose.setText(DateTimeUtil.localTimeToString(place.getPlaceDetail().getTimeClose()));
+                    }
+                } else {
+                    placeTimeOpening.setVisibility(View.GONE);
+                    placeTimeClosing.setVisibility(View.GONE);
+                    placeInfoBottomSheetBinding.openAllDay.setVisibility(View.GONE);
+                    placeInfoBottomSheetBinding.closing.setVisibility(View.GONE);
+                }
+            }
+        }
+
+        ImageView placeCoverImage = placeInfoBottomSheetBinding.placeCoverImage;
+        String transformUrl = MediaManager.get().url()
+                .transformation(new Transformation<>()
+                        .width(800)
+                        .crop("scale"))
+                .generate(place.getCoverImage().getImagePublicId());
+        Glide.with(this)
+                .load(transformUrl)
+                .placeholder(R.drawable.img_placeholder)
+                .error(R.drawable.img_placeholder)
+                .into(placeCoverImage);
+    }
 
     @SuppressLint("SetTextI18n")
     private void showLocationPinBottomSheet(LatLng latLng) {

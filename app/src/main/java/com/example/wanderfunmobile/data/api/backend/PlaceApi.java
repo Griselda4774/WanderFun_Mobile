@@ -19,16 +19,16 @@ import retrofit2.http.Path;
 
 public interface PlaceApi {
     @GET("place")
-    Call<ResponseDto<List<PlaceDto>>> getAllPlaces();
+    Call<ResponseDto<List<PlaceDto>>> findAllPlaces();
 
     @GET("place/search/province/{provinceName}")
-    Call<ResponseDto<List<PlaceDto>>> getAllPlacesByProvinceName(@Path("provinceName") String provinceName);
+    Call<ResponseDto<List<PlaceDto>>> findAllPlacesByProvinceName(@Path("provinceName") String provinceName);
 
     @GET("place/search/{name}")
-    Call<ResponseDto<List<PlaceDto>>> searchPlacesByNameContaining(@Path("name") String name);
+    Call<ResponseDto<List<PlaceDto>>> findAllPlacesByNameContaining(@Path("name") String name);
 
     @GET("place/{placeId}")
-    Call<ResponseDto<PlaceDto>> getPlaceById(@Path("placeId") Long placeId);
+    Call<ResponseDto<PlaceDto>> findPlaceById(@Path("placeId") Long placeId);
 
     @POST("place/feedback/{placeId}")
     Call<ResponseDto<FeedbackDto>> createFeedback(@Header("Authorization") String bearerToken,
@@ -36,7 +36,7 @@ public interface PlaceApi {
                                                   @Path("placeId") Long placeId);
 
     @GET("place/favourite")
-    Call<ResponseDto<List<FavouritePlaceDto>>> getAllFavouritePlaces(@Header("Authorization") String bearerToken);
+    Call<ResponseDto<List<FavouritePlaceDto>>> findAllFavouritePlaces(@Header("Authorization") String bearerToken);
 
     @POST("place/favourite/{placeId}")
     Call<ResponseDto<FavouritePlaceDto>> addFavouritePlace(@Header("Authorization") String bearerToken,
@@ -47,7 +47,7 @@ public interface PlaceApi {
                                                                    @Body List<Long> placeIds);
 
     @GET("place/checkin/{placeId}")
-    Call<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserId(@Header("Authorization") String bearerToken,
+    Call<ResponseDto<CheckInDto>> findCheckInByPlaceId(@Header("Authorization") String bearerToken,
                                                                @Path("placeId") Long placeId);
 
     @POST("place/checkin/{placeId}")

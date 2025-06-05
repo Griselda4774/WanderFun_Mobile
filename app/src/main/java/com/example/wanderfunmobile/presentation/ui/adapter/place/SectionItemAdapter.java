@@ -10,27 +10,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
-import com.example.wanderfunmobile.databinding.ItemPlaceDescriptionBinding;
-import com.example.wanderfunmobile.domain.model.Section;
+import com.example.wanderfunmobile.databinding.ItemSectionBinding;
+import com.example.wanderfunmobile.domain.model.places.Section;
 
 import java.util.List;
 
-public class PlaceDescriptionItemAdapter extends RecyclerView.Adapter<PlaceDescriptionItemAdapter.PlaceDescriptionItemViewHolder> {
+public class SectionItemAdapter extends RecyclerView.Adapter<SectionItemAdapter.SectionItemViewHolder> {
     private final List<Section> descriptionList;
 
-    public PlaceDescriptionItemAdapter(List<Section> descriptionList) {
+    public SectionItemAdapter(List<Section> descriptionList) {
         this.descriptionList = descriptionList;
     }
 
     @NonNull
     @Override
-    public PlaceDescriptionItemAdapter.PlaceDescriptionItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemPlaceDescriptionBinding binding = ItemPlaceDescriptionBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new PlaceDescriptionItemAdapter.PlaceDescriptionItemViewHolder(binding);
+    public SectionItemAdapter.SectionItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemSectionBinding binding = ItemSectionBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new SectionItemAdapter.SectionItemViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlaceDescriptionItemAdapter.PlaceDescriptionItemViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SectionItemAdapter.SectionItemViewHolder holder, int position) {
         Section description = descriptionList.get(position);
         holder.bind(description);
     }
@@ -40,10 +40,10 @@ public class PlaceDescriptionItemAdapter extends RecyclerView.Adapter<PlaceDescr
         return descriptionList.size();
     }
 
-    public static class PlaceDescriptionItemViewHolder extends RecyclerView.ViewHolder {
-        final ItemPlaceDescriptionBinding binding;
+    public static class SectionItemViewHolder extends RecyclerView.ViewHolder {
+        final ItemSectionBinding binding;
 
-        public PlaceDescriptionItemViewHolder(@NonNull ItemPlaceDescriptionBinding binding) {
+        public SectionItemViewHolder(@NonNull ItemSectionBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
@@ -60,9 +60,9 @@ public class PlaceDescriptionItemAdapter extends RecyclerView.Adapter<PlaceDescr
             }
 
             ImageView image = binding.image;
-            if (description.getImageUrl() != null) {
+            if (description.getImage().getImageUrl() != null) {
                 Glide.with(binding.getRoot())
-                        .load(description.getImageUrl())
+                        .load(description.getImage().getImageUrl())
                         .error(R.drawable.brown)
                         .into(image);
                 image.setVisibility(ImageView.VISIBLE);

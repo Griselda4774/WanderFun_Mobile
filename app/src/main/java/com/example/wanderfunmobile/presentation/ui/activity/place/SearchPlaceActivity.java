@@ -1,5 +1,6 @@
 package com.example.wanderfunmobile.presentation.ui.activity.place;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -36,7 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class SearchPlaceActivity extends AppCompatActivity {
     @Inject
     ObjectMapper objectMapper;
-    private List<Place> placeList = new ArrayList<>();
+    private final List<Place> placeList = new ArrayList<>();
     private ActivitySearchPlaceBinding viewBinding;
     private PlaceViewModel placeViewModel;
     private PlaceItemAdapter placeItemAdapter;
@@ -54,6 +55,14 @@ public class SearchPlaceActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+        placeItemAdapter = new PlaceItemAdapter(placeList, this);
+
+        RecyclerView recyclerView = viewBinding.searchPlaceList;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(placeItemAdapter);
+
 
         EditText searchPlace = viewBinding.searchBarLayout.findViewById(R.id.search_edittext);
         searchPlace.setHint("Tìm kiếm địa điểm");
@@ -77,21 +86,14 @@ public class SearchPlaceActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void performSearch(String query) {
         // Implement your search logic here
-        placeViewModel.searchPlacesByNameContaining(query);
-        placeViewModel.searchPlacesByNameContainingResponseLiveData().observe(this, response -> {
-            if (!response.isError()) {
-                List<PlaceDto> placeListDto = response.getData();
-                if (placeListDto.isEmpty()) {
-                    placeListDto = new ArrayList<>();
-                }
-                placeList = objectMapper.mapList(placeListDto, Place.class);
-                placeItemAdapter = new PlaceItemAdapter(placeList, this);
-
-                RecyclerView recyclerView = viewBinding.searchPlaceList;
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                recyclerView.setAdapter(placeItemAdapter);
+        placeViewModel.findAllPlacesByNameContaining(query);
+        placeViewModel.getFindAllPlacesByNameContainingResponseLiveData().observe(this, result -> {
+            if (!result.isError() && result.getData() != null) {
+                placeList.addAll(result.getData());
+                placeItemAdapter.notifyDataSetChanged();
             } else {
                 Toast.makeText(this, "Không tìm thấy được địa điểm", Toast.LENGTH_SHORT).show();
             }

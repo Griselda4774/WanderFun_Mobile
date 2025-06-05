@@ -14,6 +14,12 @@ import com.example.wanderfunmobile.data.dto.feedback.FeedbackDto;
 import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.data.api.backend.PlaceApi;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
+import com.example.wanderfunmobile.domain.model.CheckIn;
+import com.example.wanderfunmobile.domain.model.FavouritePlace;
+import com.example.wanderfunmobile.domain.model.Feedback;
+import com.example.wanderfunmobile.domain.model.Result;
+import com.example.wanderfunmobile.domain.model.places.Place;
+import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.repository.PlaceRepository;
 
 import java.util.List;
@@ -26,23 +32,33 @@ import retrofit2.Response;
 
 public class PlaceRepositoryImpl implements PlaceRepository {
     private final PlaceApi placeApi;
+    private final ObjectMapper objectMapper;
 
     @Inject
-    public PlaceRepositoryImpl(PlaceApi placeApi) {
+    public PlaceRepositoryImpl(PlaceApi placeApi, ObjectMapper objectMapper) {
         this.placeApi = placeApi;
+        this.objectMapper = objectMapper;
     }
 
     @Override
-    public LiveData<ResponseDto<List<PlaceDto>>> getAllPlaces() {
-        MutableLiveData<ResponseDto<List<PlaceDto>>> getAllPlacesResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl GetAllPlaces Error";
+    public LiveData<Result<List<Place>>> findAllPlaces() {
+        MutableLiveData<Result<List<Place>>> findAllPlacesResponseLiveData = new MutableLiveData<>();
+        String errorType = "PlaceRepositoryImpl FindAllPlaces Error";
         try {
-            Call<ResponseDto<List<PlaceDto>>> call = placeApi.getAllPlaces();
+            Call<ResponseDto<List<PlaceDto>>> call = placeApi.findAllPlaces();
             call.enqueue(new Callback<ResponseDto<List<PlaceDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<PlaceDto>>> call,
                                        @NonNull Response<ResponseDto<List<PlaceDto>>> response) {
-                    getAllPlacesResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<List<Place>> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.mapList(response.body().getData(), Place.class));
+                        }
+                        findAllPlacesResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -56,20 +72,28 @@ public class PlaceRepositoryImpl implements PlaceRepository {
             Log.e(errorType, "Error during catch");
         }
 
-        return getAllPlacesResponseLiveData;
+        return findAllPlacesResponseLiveData;
     }
 
     @Override
-    public LiveData<ResponseDto<List<PlaceDto>>> getAllPlacesByProvinceName(String provinceName) {
-        MutableLiveData<ResponseDto<List<PlaceDto>>> getAllPlacesByProvinceNameResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl GetAllPlacesByProvinceName Error";
+    public LiveData<Result<List<Place>>> findAllPlacesByProvinceName(String provinceName) {
+        MutableLiveData<Result<List<Place>>> findAllPlacesByProvinceNameResponseLiveData = new MutableLiveData<>();
+        String errorType = "PlaceRepositoryImpl FindAllPlacesByProvinceName Error";
         try {
-            Call<ResponseDto<List<PlaceDto>>> call = placeApi.getAllPlacesByProvinceName(provinceName);
+            Call<ResponseDto<List<PlaceDto>>> call = placeApi.findAllPlacesByProvinceName(provinceName);
             call.enqueue(new Callback<ResponseDto<List<PlaceDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<PlaceDto>>> call,
                                        @NonNull Response<ResponseDto<List<PlaceDto>>> response) {
-                    getAllPlacesByProvinceNameResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<List<Place>> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.mapList(response.body().getData(), Place.class));
+                        }
+                        findAllPlacesByProvinceNameResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -83,20 +107,28 @@ public class PlaceRepositoryImpl implements PlaceRepository {
             Log.e(errorType, "Error during catch: " + e);
         }
 
-        return getAllPlacesByProvinceNameResponseLiveData;
+        return findAllPlacesByProvinceNameResponseLiveData;
     }
 
     @Override
-    public LiveData<ResponseDto<List<PlaceDto>>> searchPlacesByNameContaining(String name) {
-        MutableLiveData<ResponseDto<List<PlaceDto>>> searchPlacesByNameContainingResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl searchPlacesByNameContaining Error";
+    public LiveData<Result<List<Place>>> findAllPlacesByNameContaining(String name) {
+        MutableLiveData<Result<List<Place>>> findAllPlacesByNameContainingResponseLiveData = new MutableLiveData<>();
+        String errorType = "PlaceRepositoryImpl FindAllPlacesByNameContaining Error";
         try {
-            Call<ResponseDto<List<PlaceDto>>> call = placeApi.searchPlacesByNameContaining(name);
+            Call<ResponseDto<List<PlaceDto>>> call = placeApi.findAllPlacesByNameContaining(name);
             call.enqueue(new Callback<ResponseDto<List<PlaceDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<PlaceDto>>> call,
                                        @NonNull Response<ResponseDto<List<PlaceDto>>> response) {
-                    searchPlacesByNameContainingResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<List<Place>> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.mapList(response.body().getData(), Place.class));
+                        }
+                        findAllPlacesByNameContainingResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -110,21 +142,29 @@ public class PlaceRepositoryImpl implements PlaceRepository {
             Log.e(errorType, "Error during catch");
         }
 
-        return searchPlacesByNameContainingResponseLiveData;
+        return findAllPlacesByNameContainingResponseLiveData;
     }
 
     @Override
-    public LiveData<ResponseDto<PlaceDto>> getPlaceById(Long placeId) {
-        MutableLiveData<ResponseDto<PlaceDto>> getPlaceByIdResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl GetPlaceById Error";
+    public LiveData<Result<Place>> findPlaceById(Long placeId) {
+        MutableLiveData<Result<Place>> findPlaceByIdResponseLiveData = new MutableLiveData<>();
+        String errorType = "PlaceRepositoryImpl FindPlaceById Error";
 
         try {
-            Call<ResponseDto<PlaceDto>> call = placeApi.getPlaceById(placeId);
+            Call<ResponseDto<PlaceDto>> call = placeApi.findPlaceById(placeId);
             call.enqueue(new Callback<ResponseDto<PlaceDto>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<PlaceDto>> call,
                                        @NonNull Response<ResponseDto<PlaceDto>> response) {
-                    getPlaceByIdResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<Place> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), Place.class));
+                        }
+                        findPlaceByIdResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -137,20 +177,29 @@ public class PlaceRepositoryImpl implements PlaceRepository {
             Log.e(errorType, "Error during catch");
         }
 
-        return getPlaceByIdResponseLiveData;
+        return findPlaceByIdResponseLiveData;
     }
 
     @Override
-    public LiveData<ResponseDto<FeedbackDto>> createFeedback(String bearerToken, FeedbackCreateDto feedbackCreateDto, Long placeId) {
-        MutableLiveData<ResponseDto<FeedbackDto>> createFeedbackResponseLiveData = new MutableLiveData<>();
+    public LiveData<Result<Feedback>> createFeedback(String bearerToken, Feedback feedback, Long placeId) {
+        MutableLiveData<Result<Feedback>> createFeedbackResponseLiveData = new MutableLiveData<>();
         String errorType = "PlaceRepositoryImpl CreateFeedback Error";
         try {
-            Call<ResponseDto<FeedbackDto>> call = placeApi.createFeedback(bearerToken, feedbackCreateDto, placeId);
+            Call<ResponseDto<FeedbackDto>> call = placeApi.createFeedback(bearerToken,
+                    objectMapper.map(feedback, FeedbackCreateDto.class), placeId);
             call.enqueue(new Callback<ResponseDto<FeedbackDto>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<FeedbackDto>> call,
                                        @NonNull Response<ResponseDto<FeedbackDto>> response) {
-                    createFeedbackResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<Feedback> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), Feedback.class));
+                        }
+                        createFeedbackResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -167,16 +216,24 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public LiveData<ResponseDto<List<FavouritePlaceDto>>> getAllFavouritePlaces(String bearerToken) {
-        MutableLiveData<ResponseDto<List<FavouritePlaceDto>>> getAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl getAllFavouritePlaces Error";
+    public LiveData<Result<List<FavouritePlace>>> findAllFavouritePlaces(String bearerToken) {
+        MutableLiveData<Result<List<FavouritePlace>>> findAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
+        String errorType = "PlaceRepositoryImpl FindAllFavouritePlaces Error";
         try {
-            Call<ResponseDto<List<FavouritePlaceDto>>> call = placeApi.getAllFavouritePlaces(bearerToken);
+            Call<ResponseDto<List<FavouritePlaceDto>>> call = placeApi.findAllFavouritePlaces(bearerToken);
             call.enqueue(new Callback<ResponseDto<List<FavouritePlaceDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<FavouritePlaceDto>>> call,
                                        @NonNull Response<ResponseDto<List<FavouritePlaceDto>>> response) {
-                    getAllFavouritePlacesResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<List<FavouritePlace>> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.mapList(response.body().getData(), FavouritePlace.class));
+                        }
+                        findAllFavouritePlacesResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -189,12 +246,12 @@ public class PlaceRepositoryImpl implements PlaceRepository {
             Log.e(errorType, "Error during catch");
         }
 
-        return getAllFavouritePlacesResponseLiveData;
+        return findAllFavouritePlacesResponseLiveData;
     }
 
     @Override
-    public LiveData<ResponseDto<FavouritePlaceDto>> addFavouritePlace(String bearerToken, Long placeId) {
-        MutableLiveData<ResponseDto<FavouritePlaceDto>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
+    public LiveData<Result<FavouritePlace>> addFavouritePlace(String bearerToken, Long placeId) {
+        MutableLiveData<Result<FavouritePlace>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
         String errorType = "PlaceRepositoryImpl addFavouritePlace Error";
         try {
             Call<ResponseDto<FavouritePlaceDto>> call = placeApi.addFavouritePlace(bearerToken, placeId);
@@ -202,7 +259,15 @@ public class PlaceRepositoryImpl implements PlaceRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
                                        @NonNull Response<ResponseDto<FavouritePlaceDto>> response) {
-                    addFavouritePlaceResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<FavouritePlace> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), FavouritePlace.class));
+                        }
+                        addFavouritePlaceResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -219,8 +284,8 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public LiveData<ResponseDto<FavouritePlaceDto>> deleteFavouritePlaceByIds(String bearerToken, List<Long> placeIds) {
-        MutableLiveData<ResponseDto<FavouritePlaceDto>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
+    public LiveData<Result<FavouritePlace>> deleteFavouritePlaceByIds(String bearerToken, List<Long> placeIds) {
+        MutableLiveData<Result<FavouritePlace>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
         String errorType = "PlaceRepositoryImpl CreateFeedback Error";
         try {
             Call<ResponseDto<FavouritePlaceDto>> call = placeApi.deleteFavouritePlaceByIds(bearerToken, placeIds);
@@ -228,7 +293,15 @@ public class PlaceRepositoryImpl implements PlaceRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
                                        @NonNull Response<ResponseDto<FavouritePlaceDto>> response) {
-                    deleteFavouritePlaceByIdsResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<FavouritePlace> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), FavouritePlace.class));
+                        }
+                        deleteFavouritePlaceByIdsResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -245,8 +318,8 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public LiveData<ResponseDto<CheckInDto>> checkInPlace(String bearerToken, Long placeId) {
-        MutableLiveData<ResponseDto<CheckInDto>> checkInPlaceResponseLiveData = new MutableLiveData<>();
+    public LiveData<Result<CheckIn>> checkInPlace(String bearerToken, Long placeId) {
+        MutableLiveData<Result<CheckIn>> checkInPlaceResponseLiveData = new MutableLiveData<>();
         String errorType = "PlaceRepositoryImpl CheckInPlace Error";
         try {
             Call<ResponseDto<CheckInDto>> call = placeApi.checkInPlace(bearerToken, placeId);
@@ -254,7 +327,15 @@ public class PlaceRepositoryImpl implements PlaceRepository {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<CheckInDto>> call,
                                        @NonNull Response<ResponseDto<CheckInDto>> response) {
-                    checkInPlaceResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<CheckIn> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), CheckIn.class));
+                        }
+                        checkInPlaceResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -271,16 +352,24 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public LiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserId(String bearerToken, Long placeId) {
-        MutableLiveData<ResponseDto<CheckInDto>> getCheckInByPlaceIdAndUserIdResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl getCheckInByPlaceIdAndUserId Error";
+    public LiveData<Result<CheckIn>> findCheckInByPlaceId(String bearerToken, Long placeId) {
+        MutableLiveData<Result<CheckIn>> findCheckInByPlaceIdResponseLiveData = new MutableLiveData<>();
+        String errorType = "PlaceRepositoryImpl findCheckInByPlaceId Error";
         try {
-            Call<ResponseDto<CheckInDto>> call = placeApi.getCheckInByPlaceIdAndUserId(bearerToken, placeId);
+            Call<ResponseDto<CheckInDto>> call = placeApi.findCheckInByPlaceId(bearerToken, placeId);
             call.enqueue(new Callback<ResponseDto<CheckInDto>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<CheckInDto>> call,
                                        @NonNull Response<ResponseDto<CheckInDto>> response) {
-                    getCheckInByPlaceIdAndUserIdResponseLiveData.postValue(response.body());
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<CheckIn> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.map(response.body().getData(), CheckIn.class));
+                        }
+                        findCheckInByPlaceIdResponseLiveData.postValue(result);
+                    }
                 }
 
                 @Override
@@ -293,6 +382,6 @@ public class PlaceRepositoryImpl implements PlaceRepository {
             Log.e(errorType, "Error during catch");
         }
 
-        return getCheckInByPlaceIdAndUserIdResponseLiveData;
+        return findCheckInByPlaceIdResponseLiveData;
     }
 }
