@@ -28,6 +28,8 @@ import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
+import com.example.wanderfunmobile.core.util.LocalDateDeserializer;
+import com.example.wanderfunmobile.core.util.LocalDateSerializer;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.databinding.ActivityEditProfileBinding;
@@ -36,8 +38,10 @@ import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.viewmodel.UserViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Locale;
 
@@ -163,14 +167,14 @@ public class EditProfileActivity extends AppCompatActivity {
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getUpdateSelfInfoResponseLiveData().observe(this, result -> {
             if (!result.isError()) {
-                viewBinding.loadingDialog.hide();
+                hideLoadingDialog();
                 Toast.makeText(getApplicationContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("status", "profile_updated");
                 setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
-                viewBinding.loadingDialog.hide();
+                hideLoadingDialog();
                 Toast.makeText(this, "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();
 
             }
@@ -181,7 +185,11 @@ public class EditProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String userJson = intent.getStringExtra("user");
         if (userJson != null && !userJson.isEmpty()) {
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+                    .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                    .setDateFormat("yyyy-MM-dd")
+                    .create();
             user = gson.fromJson(userJson, User.class);
             bindUserData(user);
         }
@@ -207,9 +215,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 viewBinding.lastnameInput.input.textEdittext.setText(user.getLastName());
             }
 
-            if (user.getDateOfBirth() != null) {
+            if (user.getDateOfBirth() != null && DateTimeUtil.localDateToString(user.getDateOfBirth()) != null) {
                 viewBinding.birthdayInput.input.dateEdittext
                         .setText(DateTimeUtil.localDateToString(user.getDateOfBirth()));
+            } else {
+                viewBinding.birthdayInput.input.dateEdittext.setText("");
             }
 
             if (user.getGender() != null && !user.getGender().isEmpty()) {
@@ -227,17 +237,18 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void updateUserData() {
-        viewBinding.loadingDialog.show();
+        showLoadingDialog();
         User updatedUser = new User();
-        String firstName = viewBinding.firstnameInput.input.textEdittext.getText().toString();
-        String lastName = viewBinding.lastnameInput.input.textEdittext.getText().toString();
-        String dateOfBirth = viewBinding.birthdayInput.input.dateEdittext.getText().toString();
-        String gender = viewBinding.genderSelector.input.autoCompleteText.getText().toString();
-        String phoneNumber = viewBinding.phoneInput.input.phoneEdittext.getText().toString();
+        String firstName = viewBinding.firstnameInput.input.textEdittext.getText().toString().trim();
+        String lastName = viewBinding.lastnameInput.input.textEdittext.getText().toString().trim();
+        String dateOfBirth = viewBinding.birthdayInput.input.dateEdittext.getText().toString().trim();
+        String gender = viewBinding.genderSelector.input.autoCompleteText.getText().toString().trim();
+        String phoneNumber = viewBinding.phoneInput.input.phoneEdittext.getText().toString().trim();
         if (!firstName.isEmpty()) {
             updatedUser.setFirstName(firstName);
         } else {
             Toast.makeText(this, "Vui lòng nhập tên", Toast.LENGTH_SHORT).show();
+            hideLoadingDialog();
             return;
         }
 
@@ -245,6 +256,7 @@ public class EditProfileActivity extends AppCompatActivity {
             updatedUser.setLastName(lastName);
         } else {
             Toast.makeText(this, "Vui lòng nhập họ", Toast.LENGTH_SHORT).show();
+            hideLoadingDialog();
             return;
         }
 
@@ -288,5 +300,15 @@ public class EditProfileActivity extends AppCompatActivity {
             updatedUser.setAvatarImage(null);
             userViewModel.updateSelfInfo("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), updatedUser);
         }
+    }
+
+    private void showLoadingDialog() {
+        viewBinding.loadingDialog.setVisibility(View.VISIBLE);
+        viewBinding.loadingDialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        viewBinding.loadingDialog.setVisibility(View.GONE);
+        viewBinding.loadingDialog.hide();
     }
 }

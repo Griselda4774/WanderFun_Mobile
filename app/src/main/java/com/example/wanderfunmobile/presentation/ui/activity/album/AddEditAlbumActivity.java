@@ -68,7 +68,6 @@ public class AddEditAlbumActivity extends AppCompatActivity {
     private ImageWithDeleteAdapter imageWithDeleteAdapter;
     private ActivityResultLauncher<PickVisualMediaRequest> pickAlbumImages, pickCoverImage;
     private ActivityResultLauncher<Intent> placePickerLauncher;
-    private LoadingDialog loadingDialog;
     @Inject
     ObjectMapper objectMapper;
 
@@ -116,6 +115,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
                     imageWithDeleteAdapter = new ImageWithDeleteAdapter(imageList);
                     recyclerView.setAdapter(imageWithDeleteAdapter);
+                    hideLoadingDialog();
                 }
             });
         }
@@ -133,7 +133,6 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void initViewModels() {
-        loadingDialog = new LoadingDialog(this); // Initialize loading dialog
         hideLoadingDialog();
 
         albumViewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
@@ -147,6 +146,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                     imageList.add(Uri.parse(image.getImageUrl()));
                 }
                 imageWithDeleteAdapter.notifyDataSetChanged();
+                hideLoadingDialog();
             }
         });
 
@@ -281,6 +281,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
 
     private void saveAlbum(AlbumCreateDto albumCreateDto) {
+        showLoadingDialog();
         String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
         boolean isUpdate = albumId != 0;
 
@@ -371,13 +372,13 @@ public class AddEditAlbumActivity extends AppCompatActivity {
     }
 
     private void showLoadingDialog() {
-        loadingDialog.setVisibility(View.VISIBLE);
-        loadingDialog.show();
+        viewBinding.loadingDialog.setVisibility(View.VISIBLE);
+        viewBinding.loadingDialog.show();
     }
 
     private void hideLoadingDialog() {
-        loadingDialog.setVisibility(View.GONE);
-        loadingDialog.hide();
+        viewBinding.loadingDialog.setVisibility(View.GONE);
+        viewBinding.loadingDialog.hide();
     }
 
     private void showToast(String msg) {

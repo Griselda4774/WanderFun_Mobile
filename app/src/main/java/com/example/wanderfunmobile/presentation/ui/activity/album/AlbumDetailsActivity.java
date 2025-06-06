@@ -88,22 +88,23 @@ public class AlbumDetailsActivity extends AppCompatActivity {
             if (!response.isError()) {
                 Toast.makeText(getApplicationContext(), "Xóa album thành công", Toast.LENGTH_SHORT).show();
                 finish();
+            } else {
+                Toast.makeText(this, "Xóa album thất bại", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(getApplicationContext(), "Xóa album thất bại", Toast.LENGTH_SHORT).show();
         });
 
         selectionDialog = viewBinding.selectionDialog;
         selectionDialog.hide();
         selectionDialog.setVisibility(View.GONE);
         selectionDialog.setOnAcceptListener(() -> {
-            albumViewModel.deleteAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), album.getId());
             selectionDialog.hide();
-            Log.d("SelectionDialog", "Accept");
+            Log.d("SelectionDialog", "Reject");
         });
 
         selectionDialog.setOnRejectListener(() -> {
+            albumViewModel.deleteAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), album.getId());
             selectionDialog.hide();
-            Log.d("SelectionDialog", "Reject");
+            Log.d("SelectionDialog", "Accept");
         });
 
         // Loading dialog
@@ -122,11 +123,11 @@ public class AlbumDetailsActivity extends AppCompatActivity {
         deleteButton.setText("Xóa");
         deleteButton.setOnClickListener(v -> {
             selectionDialog.setVisibility(View.VISIBLE);
-            selectionDialog.show("Xóa chuyến đi",
-                    "Bạn có chắc chắn muốn xóa chuyến đi này?",
+            selectionDialog.show("Xóa album",
+                    "Bạn có chắc chắn muốn xóa album này?",
                     "Thao tác này không thể hoàn tác",
-                    "Xóa",
-                    "Hủy");
+                    "Hủy",
+                    "Vẫn xóa");
         });
 
         TextView editButton = viewBinding.editButton.findViewById(R.id.button);
