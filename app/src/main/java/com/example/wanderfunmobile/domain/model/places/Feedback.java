@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.domain.model;
+package com.example.wanderfunmobile.domain.model.places;
 
 import java.util.Date;
 
