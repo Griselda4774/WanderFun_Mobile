@@ -278,8 +278,12 @@ public class AddEditPostActivity extends AppCompatActivity {
             showLoadingDialog();
             Post postCreate = new Post();
             postCreate.setTrip(shareTrip);
-            if (viewBinding.textEdittext.getText() != null) {
+            if (viewBinding.textEdittext.getText() != null && !viewBinding.textEdittext.getText().toString().isEmpty()) {
                 postCreate.setContent(viewBinding.textEdittext.getText().toString());
+            } else {
+                hideLoadingDialog();
+                Toast.makeText(this, "Nội dung bài viết không được để trống", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             if (viewBinding.image.getDrawable() != null && imageUri != null) {
