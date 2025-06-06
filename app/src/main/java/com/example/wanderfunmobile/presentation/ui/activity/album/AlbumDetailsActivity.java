@@ -66,6 +66,7 @@ public class AlbumDetailsActivity extends AppCompatActivity {
         RecyclerView recyclerView = viewBinding.albumImageList.findViewById(R.id.album_image_list);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
+
         albumViewModel.getAlbumById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), getIntent().getLongExtra("albumId", 0));
         albumViewModel.getAlbumByIdResponseLiveData().observe(this, albumResponseDto -> {
             if (!albumResponseDto.isError()) {

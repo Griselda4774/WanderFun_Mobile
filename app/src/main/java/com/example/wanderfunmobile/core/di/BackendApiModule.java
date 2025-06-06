@@ -145,10 +145,15 @@ public class BackendApiModule {
     @Provides
     @Singleton
     public UserApi provideUserApi(@ApplicationContext Context context) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+                .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                .setDateFormat("yyyy-MM-dd")
+                .create();
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
