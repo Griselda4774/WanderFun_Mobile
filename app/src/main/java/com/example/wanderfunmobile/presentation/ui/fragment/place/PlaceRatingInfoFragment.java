@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.databinding.FragmentPlaceRatingInfoBinding;
-import com.example.wanderfunmobile.domain.model.Feedback;
+import com.example.wanderfunmobile.domain.model.places.Feedback;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.FeedbackItemAdapter;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;

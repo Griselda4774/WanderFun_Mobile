@@ -2,15 +2,9 @@ package com.example.wanderfunmobile.domain.repository;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.wanderfunmobile.data.dto.ResponseDto;
-import com.example.wanderfunmobile.data.dto.checkin.CheckInDto;
-import com.example.wanderfunmobile.data.dto.favouriteplace.FavouritePlaceDto;
-import com.example.wanderfunmobile.data.dto.feedback.FeedbackCreateDto;
-import com.example.wanderfunmobile.data.dto.feedback.FeedbackDto;
-import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.domain.model.CheckIn;
 import com.example.wanderfunmobile.domain.model.FavouritePlace;
-import com.example.wanderfunmobile.domain.model.Feedback;
+import com.example.wanderfunmobile.domain.model.places.Feedback;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.places.Place;
 

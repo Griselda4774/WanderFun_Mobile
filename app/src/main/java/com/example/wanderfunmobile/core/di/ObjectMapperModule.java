@@ -10,6 +10,7 @@ import com.example.wanderfunmobile.domain.model.trips.Trip;
 
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 
 import javax.inject.Singleton;
@@ -32,12 +33,6 @@ public class ObjectMapperModule {
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
                 .setPropertyCondition(context -> context.getSource() != null)
                 .setMatchingStrategy(MatchingStrategies.STRICT);
-      
-        modelMapper.typeMap(Post.class, PostCreateDto.class)
-                .addMapping(src -> src.getTrip().getId(), PostCreateDto::setTripId);
-
-        modelMapper.typeMap(Post.class, PostCreateDto.class)
-                .addMapping(src -> src.getPlace().getId(), PostCreateDto::setPlaceId);
 
         return modelMapper;
     }

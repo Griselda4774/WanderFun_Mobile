@@ -16,10 +16,9 @@ import com.example.wanderfunmobile.data.api.backend.PlaceApi;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.domain.model.CheckIn;
 import com.example.wanderfunmobile.domain.model.FavouritePlace;
-import com.example.wanderfunmobile.domain.model.Feedback;
+import com.example.wanderfunmobile.domain.model.places.Feedback;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.repository.PlaceRepository;
 
 import java.util.List;

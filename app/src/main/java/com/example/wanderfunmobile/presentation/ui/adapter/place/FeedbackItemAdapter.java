@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ItemFeedbackBinding;
-import com.example.wanderfunmobile.domain.model.Feedback;
+import com.example.wanderfunmobile.domain.model.places.Feedback;
 import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingView;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 
