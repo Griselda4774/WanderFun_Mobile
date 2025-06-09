@@ -1,9 +1,12 @@
 package com.example.wanderfunmobile.presentation.ui.activity.post;
 
+import static android.view.View.GONE;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
+import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
@@ -144,8 +148,8 @@ public class AddEditPostActivity extends AppCompatActivity {
         if (postId > 0) {
             postViewModel.findPostById(postId);
         } else {
-            viewBinding.image.setVisibility(View.GONE);
-            viewBinding.removeImageButton.getRoot().setVisibility(View.GONE);
+            viewBinding.image.setVisibility(GONE);
+            viewBinding.removeImageButton.getRoot().setVisibility(GONE);
         }
 
         // Fetch user info
@@ -166,9 +170,13 @@ public class AddEditPostActivity extends AppCompatActivity {
         // Get shared trip data from intent
         if (getIntent().hasExtra("shared_trip") && getIntent().getParcelableExtra("shared_trip") != null) {
             shareTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("shared_trip")), Trip.class);
+            bindTripData(shareTrip);
         } else {
-            shareTrip = null; // Handle the case where "shared_trip" is not provided
+            shareTrip = null;
+            viewBinding.tagTripContainer.setVisibility(GONE);
         }
+
+        viewBinding.tagPlaceContainer.setVisibility(GONE);
 
 
         // Initialize bottom sheet
@@ -177,10 +185,10 @@ public class AddEditPostActivity extends AppCompatActivity {
 
         initActivityButtons();
 
-        viewBinding.removeImageButton.getRoot().setVisibility(View.GONE);
+        viewBinding.removeImageButton.getRoot().setVisibility(GONE);
         viewBinding.removeImageButton.getRoot().setOnClickListener(v -> {
-            viewBinding.removeImageButton.getRoot().setVisibility(View.GONE);
-            viewBinding.image.setVisibility(ImageView.GONE);
+            viewBinding.removeImageButton.getRoot().setVisibility(GONE);
+            viewBinding.image.setVisibility(GONE);
             viewBinding.image.setImageDrawable(null);
             imageUri = null;
         });
@@ -254,8 +262,16 @@ public class AddEditPostActivity extends AppCompatActivity {
             viewBinding.image.setVisibility(ImageView.VISIBLE);
             viewBinding.removeImageButton.getRoot().setVisibility(View.VISIBLE);
         } else {
-            viewBinding.image.setVisibility(View.GONE);
-            viewBinding.removeImageButton.getRoot().setVisibility(View.GONE);
+            viewBinding.image.setVisibility(GONE);
+            viewBinding.removeImageButton.getRoot().setVisibility(GONE);
+        }
+    }
+
+    private void bindTripData(Trip trip) {
+        if (trip != null) {
+            viewBinding.trip.name.setText(trip.getName());
+            viewBinding.trip.startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
+            viewBinding.trip.endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
         }
     }
 
@@ -315,7 +331,7 @@ public class AddEditPostActivity extends AppCompatActivity {
     }
 
     private void hideLoadingDialog() {
-        loadingDialog.setVisibility(View.GONE);
+        loadingDialog.setVisibility(GONE);
         loadingDialog.hide();
     }
 
