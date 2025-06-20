@@ -1,7 +1,6 @@
 package com.example.wanderfunmobile.presentation.ui.activity.album;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,17 +31,14 @@ import com.example.wanderfunmobile.data.dto.album.AlbumCreateDto;
 import com.example.wanderfunmobile.data.dto.album.AlbumDto;
 import com.example.wanderfunmobile.data.dto.album.AlbumImageDto;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
-import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.ActivityAddEditAlbumBinding;
-import com.example.wanderfunmobile.domain.model.albums.Album;
 import com.example.wanderfunmobile.domain.model.albums.AlbumImage;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.activity.place.SearchPlaceActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.ImageWithDeleteAdapter;
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
-import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.AlbumViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
 
@@ -57,10 +53,9 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class AddEditAlbumActivity extends AppCompatActivity {
     private ActivityAddEditAlbumBinding viewBinding;
-    private AlbumCreateDto albumCreateDto = new AlbumCreateDto();
-    private List<Uri> imageList = new ArrayList<>();
+    private final AlbumCreateDto albumCreateDto = new AlbumCreateDto();
+    private final List<Uri> imageList = new ArrayList<>();
     private Uri coverImageUri;
-    private Album album;
     private Long albumId;
     private Place selectedPlace;
     private AlbumViewModel albumViewModel;
@@ -139,13 +134,13 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
         albumViewModel.getAlbumByIdResponseLiveData().observe(this, response -> {
             if (response != null && !response.isError() && response.getData() != null) {
-                album = objectMapper.map(response.getData(), Album.class);
                 List<AlbumImage> albumImages = objectMapper.mapList(response.getData().getAlbumImageList(), AlbumImage.class);
                 imageList.clear();
                 for (AlbumImage image : albumImages) {
                     imageList.add(Uri.parse(image.getImageUrl()));
                 }
                 imageWithDeleteAdapter.notifyDataSetChanged();
+                updateRecyclerViewVisibility();
                 hideLoadingDialog();
             }
         });
@@ -188,15 +183,8 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         recyclerView.setAdapter(imageWithDeleteAdapter);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setUpButtonEvents() {
-        viewBinding.addImageButton.findViewById(R.id.button).setOnClickListener(v -> {
-            pickAlbumImages.launch(
-                    new PickVisualMediaRequest.Builder()
-                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                            .build()
-            );
-        });
-
         ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
         backButton.setOnClickListener(v -> {
             finish();
@@ -210,6 +198,13 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
         TextView addImageBtn = viewBinding.addImageButton.findViewById(R.id.button);
         addImageBtn.setText("Thêm ảnh");
+        addImageBtn.findViewById(R.id.button).setOnClickListener(v -> {
+            pickAlbumImages.launch(
+                    new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build()
+            );
+        });
 
         // Feedback image
         ImageView coverImage = viewBinding.coverImage;
@@ -229,10 +224,9 @@ public class AddEditAlbumActivity extends AppCompatActivity {
             coverImage.setImageDrawable(null);
             coverImageUri = null;
         });
-
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
     private void setupPickMultipleMedia() {
         pickAlbumImages = registerForActivityResult(
                 new ActivityResultContracts.PickMultipleVisualMedia(9),
@@ -368,6 +362,15 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+    }
+
+    private void updateRecyclerViewVisibility() {
+        RecyclerView recyclerView = viewBinding.albumImageList;
+        if (imageList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE); // Hide RecyclerView
+        } else {
+            recyclerView.setVisibility(View.VISIBLE); // Show RecyclerView
         }
     }
 

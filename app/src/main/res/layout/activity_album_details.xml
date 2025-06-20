@@ -89,7 +89,7 @@
         android:minHeight="100dp"
         android:layout_marginHorizontal="@dimen/app_margin_medium"
         android:layout_marginVertical="16dp"
-        android:background="@drawable/cl_gradient_splash"
+        android:background="@drawable/bg_image_zone"
         android:padding="@dimen/item_padding_vertical"
         android:nestedScrollingEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
