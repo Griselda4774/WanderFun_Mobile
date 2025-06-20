@@ -210,8 +210,9 @@ public class PostRepositoryImpl implements PostRepository {
     public LiveData<Result<Post>> createPost(String bearerToken, Post post) {
         MutableLiveData<Result<Post>> createPostResponseLiveData = new MutableLiveData<>();
         try {
-            Call<ResponseDto<PostDto>> call = postApi.createPost(bearerToken, objectMapper.map(post, PostCreateDto.class));
             PostCreateDto postCreateDto = objectMapper.map(post, PostCreateDto.class);
+            postCreateDto.setTripId(post.getTrip().getId());
+            Call<ResponseDto<PostDto>> call = postApi.createPost(bearerToken, postCreateDto);
             call.enqueue(new Callback<ResponseDto<PostDto>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<PostDto>> call,
@@ -244,7 +245,9 @@ public class PostRepositoryImpl implements PostRepository {
         MutableLiveData<Result<Post>> updatePostResponseLiveData = new MutableLiveData<>();
 
         try {
-            Call<ResponseDto<PostDto>> call = postApi.updatePost(bearerToken, postId, objectMapper.map(post, PostCreateDto.class));
+            PostCreateDto postCreateDto = objectMapper.map(post, PostCreateDto.class);
+            postCreateDto.setTripId(post.getTrip().getId());
+            Call<ResponseDto<PostDto>> call = postApi.updatePost(bearerToken, postId, postCreateDto);
             call.enqueue(new Callback<ResponseDto<PostDto>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<PostDto>> call,

@@ -222,12 +222,13 @@
                         android:id="@+id/album_image_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="100dp"
                         android:layout_marginVertical="16dp"
-                        android:background="@drawable/cl_gradient_splash"
+                        android:layout_marginBottom="48dp"
+                        android:background="@drawable/bg_image_zone"
+                        android:minHeight="100dp"
                         android:padding="@dimen/item_padding_vertical"
-
-                        app:layout_constraintBottom_toBottomOf="parent" />
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:layout_editor_absoluteX="0dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

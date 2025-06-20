@@ -74,8 +74,12 @@ public class AlbumDetailsActivity extends AppCompatActivity {
                 album = objectMapper.map(albumResponseDto.getData(), Album.class);
                 album.setAlbumImageList(objectMapper.mapList(albumImageListDto, AlbumImage.class));
 
-                albumImageItemAdapter = new AlbumImageItemAdapter(album.getAlbumImageList());
-                recyclerView.setAdapter(albumImageItemAdapter);
+                if(album.getAlbumImageList().isEmpty()) {
+                    viewBinding.albumImageList.setVisibility(View.GONE);
+                } else {
+                    albumImageItemAdapter = new AlbumImageItemAdapter(album.getAlbumImageList());
+                    recyclerView.setAdapter(albumImageItemAdapter);
+                }
 
                 viewBinding.headerTitle.setText(albumResponseDto.getData().getName());
                 viewBinding.description.setText(albumResponseDto.getData().getDescription());
