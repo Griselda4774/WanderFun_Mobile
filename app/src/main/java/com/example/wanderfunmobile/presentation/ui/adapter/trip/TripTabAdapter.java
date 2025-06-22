@@ -2,6 +2,7 @@ package com.example.wanderfunmobile.presentation.ui.adapter.trip;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.wanderfunmobile.presentation.ui.fragment.trip.AllTripFragment;
@@ -9,8 +10,8 @@ import com.example.wanderfunmobile.presentation.ui.fragment.trip.DeletedTripFrag
 import com.example.wanderfunmobile.presentation.ui.fragment.trip.PastTripFragment;
 
 public class TripTabAdapter extends FragmentStateAdapter {
-    public TripTabAdapter(@NonNull Fragment fragment) {
-        super(fragment);
+    public TripTabAdapter(@NonNull FragmentActivity fa) {
+        super(fa);
     }
 
     @NonNull

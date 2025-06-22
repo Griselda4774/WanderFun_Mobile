@@ -19,12 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.R;
-import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.databinding.ActivitySearchPlaceBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.PlaceItemAdapter;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
-import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

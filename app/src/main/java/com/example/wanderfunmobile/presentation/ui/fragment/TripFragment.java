@@ -46,7 +46,7 @@ public class TripFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TripTabAdapter tripTabAdapter = new TripTabAdapter(this);
+        TripTabAdapter tripTabAdapter = new TripTabAdapter(requireActivity());
         viewBinding.viewPager.setAdapter(tripTabAdapter);
 
         new TabLayoutMediator(viewBinding.tabLayout, viewBinding.viewPager, (tab, position) -> {

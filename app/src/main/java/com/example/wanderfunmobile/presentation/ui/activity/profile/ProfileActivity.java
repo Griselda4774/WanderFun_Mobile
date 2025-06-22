@@ -29,7 +29,7 @@ import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.activity.post.AddEditPostActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.posts.PostItemAdapter;
-import com.example.wanderfunmobile.presentation.viewmodel.PostViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.posts.PostViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.UserViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

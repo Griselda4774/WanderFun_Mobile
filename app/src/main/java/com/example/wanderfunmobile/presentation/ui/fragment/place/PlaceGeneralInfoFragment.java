@@ -19,7 +19,7 @@ import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.FeedbackItemAdapter;
 import com.example.wanderfunmobile.presentation.ui.fragment.ExploreFragment;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
-import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

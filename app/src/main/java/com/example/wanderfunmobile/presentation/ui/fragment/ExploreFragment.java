@@ -27,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,20 +48,18 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.core.util.GeoJsonUtil;
 import com.example.wanderfunmobile.core.util.ViewPager2HeightAdjuster;
-import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.databinding.BottomSheetLocationPinBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPlaceInfoBinding;
 import com.example.wanderfunmobile.databinding.FragmentExploreBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.PlaceInfoTabAdapter;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
-import com.example.wanderfunmobile.presentation.ui.custom.dialog.SelectionDialog;
 import com.example.wanderfunmobile.core.util.BitMapUtil;
 import com.example.wanderfunmobile.core.util.ColorHexUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingView;
-import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -82,7 +79,6 @@ import org.maplibre.android.location.engine.LocationEngineResult;
 import org.maplibre.android.location.modes.CameraMode;
 import org.maplibre.android.location.permissions.PermissionsManager;
 import org.maplibre.android.maps.MapLibreMap;
-import org.maplibre.android.maps.MapView;
 import org.maplibre.android.maps.OnMapReadyCallback;
 import org.maplibre.android.maps.Projection;
 import org.maplibre.android.maps.Style;
@@ -469,7 +465,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         // Selection dialog
         viewBinding.selectionDialog.setOnAcceptListener(() -> {
             if (currentCheckInPlaceId != null) {
-                placeViewModel.findCheckInByPlaceId("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
+//                placeViewModel.findCheckInByPlaceId("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
             }
             viewBinding.selectionDialog.hide();
             Log.d("SelectionDialog", "Accept");
@@ -829,7 +825,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         placeRating.setText(String.valueOf(place.getRating()));
 
         TextView placeRatingCount = placeInfoBottomSheetBinding.placeRatingCount;
-        placeRatingCount.setText("(" + place.getTotalFeedback() + ")");
+        placeRatingCount.setText("(" + place.getFeedbackCount() + ")");
 
         ConstraintLayout placeTimeOpening = placeInfoBottomSheetBinding.placeTimeOpening;
         TextView placeTimeOpeningTimeClose = placeInfoBottomSheetBinding.placeTimeOpeningTimeClose;

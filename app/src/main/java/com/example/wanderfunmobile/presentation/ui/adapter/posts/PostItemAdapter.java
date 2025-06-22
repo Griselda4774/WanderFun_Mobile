@@ -19,6 +19,7 @@ import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.databinding.ItemPostBinding;
 import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.presentation.ui.activity.post.PostDetailActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.trip.TripDetailActivity;
 
 import java.util.List;
 
@@ -112,10 +113,20 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
                 binding.place.getRoot().setVisibility(View.GONE);
                 binding.tripShareStatus.setVisibility(View.VISIBLE);
                 binding.trip.getRoot().setVisibility(View.VISIBLE);
+
+                binding.trip.name.setText(post.getTrip().getName());
+                binding.trip.startTime.setText(DateTimeUtil.localDateToString(post.getTrip().getStartTime()));
+                binding.trip.endTime.setText(DateTimeUtil.localDateToString(post.getTrip().getEndTime()));
             } else {
                 binding.tripShareStatus.setVisibility(View.GONE);
                 binding.trip.getRoot().setVisibility(View.GONE);
             }
+
+            binding.trip.getRoot().setOnClickListener(v -> {
+                Intent intent = new Intent(binding.getRoot().getContext(), TripDetailActivity.class);
+                intent.putExtra("tripId", post.getTrip().getId());
+                launcher.launch(intent);
+            });
 
             // Post content
             TextView content = binding.content;

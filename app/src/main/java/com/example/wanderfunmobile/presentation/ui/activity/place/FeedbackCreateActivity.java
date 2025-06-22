@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.databinding.ActivityFeedbackCreateBinding;
+import com.example.wanderfunmobile.domain.model.images.Image;
 import com.example.wanderfunmobile.domain.model.places.Feedback;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
@@ -33,7 +34,8 @@ import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingO
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
-import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.FeedbackViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
@@ -44,7 +46,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class FeedbackCreateActivity extends AppCompatActivity {
 
     private ActivityFeedbackCreateBinding viewBinding;
-    private PlaceViewModel placeViewModel;
+    private FeedbackViewModel feedbackViewModel;
     private UserViewModel userViewModel;
     private User user;
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
@@ -66,7 +68,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
             return insets;
         });
 
-        placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
+        feedbackViewModel = new ViewModelProvider(this).get(FeedbackViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getMiniSelfInfo("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
         userViewModel.getMiniSelfInfoResponseLiveData().observe(this, result -> {
@@ -75,6 +77,17 @@ public class FeedbackCreateActivity extends AppCompatActivity {
                 bindUserData();
             } else {
                 Toast.makeText(this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        feedbackViewModel.getCreateFeedbackLiveData().observe(this, data -> {
+            if (data != null && !data.isError()) {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Tạo đánh giá thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                hideLoadingDialog();
+                Toast.makeText(getApplicationContext(), "Tạo đánh giá thất bại", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -157,38 +170,28 @@ public class FeedbackCreateActivity extends AppCompatActivity {
             Feedback feedback = new Feedback();
             feedback.setRating(starRating.getRating());
             if (comment.getText() != null)
-                feedback.setComment(comment.getText().toString());
+                feedback.setContent(comment.getText().toString());
+            feedback.setImage(new Image());
             if (feedbackImage.getDrawable() != null && imageUri != null && placeName != null) {
                 String folderName = "/wanderfun/places/" + placeName.replaceAll("\\s", "") + "/feedbacks/user_" + user.getId().toString();
                 String fileName = "feedback_user_" + user.getId().toString() + "_" + System.currentTimeMillis();
                 CloudinaryUtil.uploadImageToCloudinary(getApplicationContext(), imageUri, fileName, folderName, new CloudinaryUtil.CloudinaryCallback() {
                     @Override
                     public void onSuccess(CloudinaryImageDto result) {
-                        feedback.setImageUrl(result.getUrl());
-                        feedback.setImagePublicId(result.getPublicId());
-                        placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedback, placeId);
+                        feedback.getImage().setImageUrl(result.getUrl());
+                        feedback.getImage().setImagePublicId(result.getPublicId());
+                        feedbackViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), placeId, feedback);
                     }
 
                     @Override
                     public void onError(String error) {
-                        feedback.setImagePublicId(null);
-                        feedback.setImageUrl(null);
-                        placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedback, placeId);
+                        feedback.getImage().setImagePublicId(null);
+                        feedback.getImage().setImageUrl(null);
+                        feedbackViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), placeId, feedback);
                     }
                 });
             } else {
-                placeViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), feedback, placeId);
-            }
-        });
-
-        placeViewModel.getCreateFeedbackResponseLiveData().observe(this, data -> {
-            if (data != null && !data.isError()) {
-                hideLoadingDialog();
-                Toast.makeText(getApplicationContext(), "Tạo đánh giá thành công", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                hideLoadingDialog();
-                Toast.makeText(getApplicationContext(), "Tạo đánh giá thất bại", Toast.LENGTH_SHORT).show();
+                feedbackViewModel.createFeedback("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), placeId, feedback);
             }
         });
     }

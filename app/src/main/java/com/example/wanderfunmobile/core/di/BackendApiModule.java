@@ -182,7 +182,8 @@ public class BackendApiModule {
     public PostApi providePostApi(@ApplicationContext Context context) {
         String baseUrl = context.getString(R.string.base_url);
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
                 .create();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)

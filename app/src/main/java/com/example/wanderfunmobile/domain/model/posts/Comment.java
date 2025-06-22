@@ -14,7 +14,6 @@ public class Comment {
     private Long parentId;
     private Long likeCount;
     private boolean isLiked;
-
     private boolean isPending;
     private String localId;
 

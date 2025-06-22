@@ -371,7 +371,7 @@ public class PostRepositoryImpl implements PostRepository {
                 }
             });
         } catch (Exception e) {
-            Log.e("PostRepositoryImpl", "Error during createPost", e);
+            Log.e("PostRepositoryImpl", "Error during create comment", e);
         }
         return createCommentResponseLiveData;
     }
@@ -405,7 +405,7 @@ public class PostRepositoryImpl implements PostRepository {
                 }
             });
         } catch (Exception e) {
-            Log.e("CommentRepositoryImpl", "Error during updateComment", e);
+            Log.e("CommentRepositoryImpl", "Error during update comment", e);
         }
 
         return updateCommentResponseLiveData;
@@ -442,7 +442,7 @@ public class PostRepositoryImpl implements PostRepository {
                 }
             });
         } catch (Exception e) {
-            Log.e("CommentRepositoryImpl", "Error during deleteComment", e);
+            Log.e("CommentRepositoryImpl", "Error during delete comment", e);
         }
 
         return deleteCommentResponseLiveData;

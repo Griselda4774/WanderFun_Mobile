@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.presentation.viewmodel;
+package com.example.wanderfunmobile.presentation.viewmodel.posts;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
