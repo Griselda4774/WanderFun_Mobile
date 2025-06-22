@@ -218,11 +218,17 @@ public class AddEditTripActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void setTripInfo() {
-        if (trip != null && trip.getName() != null) {
+        if (trip != null) {
             EditText nameInput = binding.name.findViewById(R.id.text_edittext);
             nameInput.setText(trip.getName());
             tripPlaceItemAdapter.setEditMode(true);
+            
+            if(isCloned) {
+                trip.setStartTime(null);
+                trip.setEndTime(null);
+            }
         }
+
     }
 
     private void showLoadingDialog() {

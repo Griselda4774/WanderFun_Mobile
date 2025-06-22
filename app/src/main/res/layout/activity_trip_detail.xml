@@ -170,13 +170,10 @@
 
     </ScrollView>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:gravity="center"
         android:paddingHorizontal="@dimen/app_margin_medium"
         android:layout_marginBottom="@dimen/app_section_margin"
         android:layout_marginTop="@dimen/double_app_section_margin"
@@ -187,12 +184,17 @@
 
         <LinearLayout
             android:id="@+id/delete_button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_weight="1"
-            android:layout_marginEnd="@dimen/half_app_section_margin">
+            android:layout_marginHorizontal="@dimen/half_app_section_margin"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/edit_button"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <include layout="@layout/button_highlight_red" />
 
@@ -200,12 +202,17 @@
 
         <LinearLayout
             android:id="@+id/edit_button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_weight="1"
-            android:layout_marginStart="@dimen/half_app_section_margin">
+            android:layout_marginHorizontal="@dimen/half_app_section_margin"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/delete_button"
+            app:layout_constraintEnd_toStartOf="@id/clone_button"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <include layout="@layout/button_highlight" />
 
@@ -213,17 +220,22 @@
 
         <LinearLayout
             android:id="@+id/clone_button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_weight="1"
-            android:layout_marginStart="@dimen/half_app_section_margin">
+            android:layout_marginHorizontal="@dimen/half_app_section_margin"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/edit_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <include layout="@layout/button_highlight" />
 
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog
         android:id="@+id/loading_dialog"
