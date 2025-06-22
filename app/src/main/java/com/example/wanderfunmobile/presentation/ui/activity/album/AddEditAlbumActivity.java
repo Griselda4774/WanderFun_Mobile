@@ -40,7 +40,7 @@ import com.example.wanderfunmobile.presentation.ui.adapter.ImageWithDeleteAdapte
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.presentation.viewmodel.AlbumViewModel;
-import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

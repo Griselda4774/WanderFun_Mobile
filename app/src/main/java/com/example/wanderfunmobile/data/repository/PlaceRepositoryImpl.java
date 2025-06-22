@@ -7,15 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.wanderfunmobile.data.dto.ResponseDto;
-import com.example.wanderfunmobile.data.dto.checkin.CheckInDto;
-import com.example.wanderfunmobile.data.dto.favouriteplace.FavouritePlaceDto;
-import com.example.wanderfunmobile.data.dto.feedback.FeedbackCreateDto;
-import com.example.wanderfunmobile.data.dto.feedback.FeedbackDto;
+import com.example.wanderfunmobile.data.dto.place.FeedbackCreateDto;
+import com.example.wanderfunmobile.data.dto.place.FeedbackDto;
 import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.data.api.backend.PlaceApi;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
-import com.example.wanderfunmobile.domain.model.CheckIn;
-import com.example.wanderfunmobile.domain.model.FavouritePlace;
 import com.example.wanderfunmobile.domain.model.places.Feedback;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.places.Place;
@@ -180,12 +176,43 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public LiveData<Result<Feedback>> createFeedback(String bearerToken, Feedback feedback, Long placeId) {
-        MutableLiveData<Result<Feedback>> createFeedbackResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl CreateFeedback Error";
+    public LiveData<Result<List<Feedback>>> findAllFeedbacksByPlaceId(String bearerToken, Long placeId) {
+        MutableLiveData<Result<List<Feedback>>> findAllFeedbacksByPlaceIdResponseLiveData = new MutableLiveData<>();
         try {
-            Call<ResponseDto<FeedbackDto>> call = placeApi.createFeedback(bearerToken,
-                    objectMapper.map(feedback, FeedbackCreateDto.class), placeId);
+            Call<ResponseDto<List<FeedbackDto>>> call = placeApi.findAllFeedbacksByPlaceId(bearerToken, placeId);
+            call.enqueue(new Callback<ResponseDto<List<FeedbackDto>>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<List<FeedbackDto>>> call,
+                                       @NonNull Response<ResponseDto<List<FeedbackDto>>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<List<Feedback>> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        if (response.body().getData() != null) {
+                            result.setData(objectMapper.mapList(response.body().getData(), Feedback.class));
+                        }
+                        findAllFeedbacksByPlaceIdResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<List<FeedbackDto>>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e("PlaceRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("PlaceRepositoryImpl", "Error during findAllPlacesByCursor", e);
+        }
+
+        return findAllFeedbacksByPlaceIdResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<Feedback>> createFeedback(String bearerToken, Long placeId, Feedback feedback) {
+        MutableLiveData<Result<Feedback>> createFeedbackResponseLiveData = new MutableLiveData<>();
+        try {
+            Call<ResponseDto<FeedbackDto>> call = placeApi.createFeedback(bearerToken, placeId, objectMapper.map(feedback, FeedbackCreateDto.class));
             call.enqueue(new Callback<ResponseDto<FeedbackDto>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<FeedbackDto>> call,
@@ -204,183 +231,252 @@ public class PlaceRepositoryImpl implements PlaceRepository {
                 @Override
                 public void onFailure(@NonNull Call<ResponseDto<FeedbackDto>> call,
                                       @NonNull Throwable throwable) {
-                    Log.e(errorType, "Error during onFailure");
+                    Log.e("PlaceRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
                 }
             });
         } catch (Exception e) {
-            Log.e(errorType, "Error during catch");
+            Log.e("PlaceRepositoryImpl", "Error during create place", e);
         }
-
         return createFeedbackResponseLiveData;
     }
 
     @Override
-    public LiveData<Result<List<FavouritePlace>>> findAllFavouritePlaces(String bearerToken) {
-        MutableLiveData<Result<List<FavouritePlace>>> findAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl FindAllFavouritePlaces Error";
+    public LiveData<Result<Feedback>> updateFeedback(String bearerToken, Long feedbackId, Feedback feedback) {
+        MutableLiveData<Result<Feedback>> updateFeedbackResponseLiveData = new MutableLiveData<>();
         try {
-            Call<ResponseDto<List<FavouritePlaceDto>>> call = placeApi.findAllFavouritePlaces(bearerToken);
-            call.enqueue(new Callback<ResponseDto<List<FavouritePlaceDto>>>() {
+            Call<ResponseDto<FeedbackDto>> call = placeApi.updateFeedback(bearerToken, feedbackId, objectMapper.map(feedback, FeedbackCreateDto.class));
+            call.enqueue(new Callback<ResponseDto<FeedbackDto>>() {
                 @Override
-                public void onResponse(@NonNull Call<ResponseDto<List<FavouritePlaceDto>>> call,
-                                       @NonNull Response<ResponseDto<List<FavouritePlaceDto>>> response) {
+                public void onResponse(@NonNull Call<ResponseDto<FeedbackDto>> call,
+                                       @NonNull Response<ResponseDto<FeedbackDto>> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Result<List<FavouritePlace>> result = new Result<>();
+                        Result<Feedback> result = new Result<>();
                         result.setError(response.body().isError());
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
-                            result.setData(objectMapper.mapList(response.body().getData(), FavouritePlace.class));
+                            result.setData(objectMapper.map(response.body().getData(), Feedback.class));
                         }
-                        findAllFavouritePlacesResponseLiveData.postValue(result);
+                        updateFeedbackResponseLiveData.postValue(result);
                     }
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<ResponseDto<List<FavouritePlaceDto>>> call,
+                public void onFailure(@NonNull Call<ResponseDto<FeedbackDto>> call,
                                       @NonNull Throwable throwable) {
-                    Log.e(errorType, "Error during onFailure");
+                    Log.e("FeedbackRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
                 }
             });
         } catch (Exception e) {
-            Log.e(errorType, "Error during catch");
+            Log.e("feedbackRepositoryImpl", "Error during update feedback", e);
         }
 
-        return findAllFavouritePlacesResponseLiveData;
+        return updateFeedbackResponseLiveData;
     }
 
     @Override
-    public LiveData<Result<FavouritePlace>> addFavouritePlace(String bearerToken, Long placeId) {
-        MutableLiveData<Result<FavouritePlace>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl addFavouritePlace Error";
+    public LiveData<Result<Feedback>> deleteFeedback(String bearerToken, Long feedbackId, String localId) {
+        MutableLiveData<Result<Feedback>> deleteFeedbackResponseLiveData = new MutableLiveData<>();
+
         try {
-            Call<ResponseDto<FavouritePlaceDto>> call = placeApi.addFavouritePlace(bearerToken, placeId);
-            call.enqueue(new Callback<ResponseDto<FavouritePlaceDto>>() {
+            Call<ResponseDto<FeedbackDto>> call = placeApi.deleteFeedback(bearerToken, feedbackId);
+            call.enqueue(new Callback<ResponseDto<FeedbackDto>>() {
                 @Override
-                public void onResponse(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
-                                       @NonNull Response<ResponseDto<FavouritePlaceDto>> response) {
+                public void onResponse(@NonNull Call<ResponseDto<FeedbackDto>> call,
+                                       @NonNull Response<ResponseDto<FeedbackDto>> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Result<FavouritePlace> result = new Result<>();
+                        Result<Feedback> result = new Result<>();
                         result.setError(response.body().isError());
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
-                            result.setData(objectMapper.map(response.body().getData(), FavouritePlace.class));
+                            result.setData(objectMapper.map(response.body().getData(), Feedback.class));
+                        } else {
+                            result.setData(new Feedback());
                         }
-                        addFavouritePlaceResponseLiveData.postValue(result);
+                        result.getData().setLocalId(localId);
+                        deleteFeedbackResponseLiveData.postValue(result);
                     }
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
+                public void onFailure(@NonNull Call<ResponseDto<FeedbackDto>> call,
                                       @NonNull Throwable throwable) {
-                    Log.e(errorType, "Error during onFailure");
+                    Log.e("FeedbackRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
                 }
             });
         } catch (Exception e) {
-            Log.e(errorType, "Error during catch");
+            Log.e("feedbackRepositoryImpl", "Error during delete feedback", e);
         }
 
-        return addFavouritePlaceResponseLiveData;
+        return deleteFeedbackResponseLiveData;
     }
 
-    @Override
-    public LiveData<Result<FavouritePlace>> deleteFavouritePlaceByIds(String bearerToken, List<Long> placeIds) {
-        MutableLiveData<Result<FavouritePlace>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl CreateFeedback Error";
-        try {
-            Call<ResponseDto<FavouritePlaceDto>> call = placeApi.deleteFavouritePlaceByIds(bearerToken, placeIds);
-            call.enqueue(new Callback<ResponseDto<FavouritePlaceDto>>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
-                                       @NonNull Response<ResponseDto<FavouritePlaceDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Result<FavouritePlace> result = new Result<>();
-                        result.setError(response.body().isError());
-                        result.setMessage(response.body().getMessage());
-                        if (response.body().getData() != null) {
-                            result.setData(objectMapper.map(response.body().getData(), FavouritePlace.class));
-                        }
-                        deleteFavouritePlaceByIdsResponseLiveData.postValue(result);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
-                                      @NonNull Throwable throwable) {
-                    Log.e(errorType, "Error during onFailure");
-                }
-            });
-        } catch (Exception e) {
-            Log.e(errorType, "Error during catch");
-        }
-
-        return deleteFavouritePlaceByIdsResponseLiveData;
-    }
-
-    @Override
-    public LiveData<Result<CheckIn>> checkInPlace(String bearerToken, Long placeId) {
-        MutableLiveData<Result<CheckIn>> checkInPlaceResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl CheckInPlace Error";
-        try {
-            Call<ResponseDto<CheckInDto>> call = placeApi.checkInPlace(bearerToken, placeId);
-            call.enqueue(new Callback<ResponseDto<CheckInDto>>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseDto<CheckInDto>> call,
-                                       @NonNull Response<ResponseDto<CheckInDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Result<CheckIn> result = new Result<>();
-                        result.setError(response.body().isError());
-                        result.setMessage(response.body().getMessage());
-                        if (response.body().getData() != null) {
-                            result.setData(objectMapper.map(response.body().getData(), CheckIn.class));
-                        }
-                        checkInPlaceResponseLiveData.postValue(result);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResponseDto<CheckInDto>> call,
-                                      @NonNull Throwable throwable) {
-                    Log.e(errorType, "Error during onFailure");
-                }
-            });
-        } catch (Exception e) {
-            Log.e(errorType, "Error during catch");
-        }
-
-        return checkInPlaceResponseLiveData;
-    }
-
-    @Override
-    public LiveData<Result<CheckIn>> findCheckInByPlaceId(String bearerToken, Long placeId) {
-        MutableLiveData<Result<CheckIn>> findCheckInByPlaceIdResponseLiveData = new MutableLiveData<>();
-        String errorType = "PlaceRepositoryImpl findCheckInByPlaceId Error";
-        try {
-            Call<ResponseDto<CheckInDto>> call = placeApi.findCheckInByPlaceId(bearerToken, placeId);
-            call.enqueue(new Callback<ResponseDto<CheckInDto>>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseDto<CheckInDto>> call,
-                                       @NonNull Response<ResponseDto<CheckInDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Result<CheckIn> result = new Result<>();
-                        result.setError(response.body().isError());
-                        result.setMessage(response.body().getMessage());
-                        if (response.body().getData() != null) {
-                            result.setData(objectMapper.map(response.body().getData(), CheckIn.class));
-                        }
-                        findCheckInByPlaceIdResponseLiveData.postValue(result);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResponseDto<CheckInDto>> call,
-                                      @NonNull Throwable throwable) {
-                    Log.e(errorType, "Error during onFailure");
-                }
-            });
-        } catch (Exception e) {
-            Log.e(errorType, "Error during catch");
-        }
-
-        return findCheckInByPlaceIdResponseLiveData;
-    }
+//    @Override
+//    public LiveData<Result<List<FavouritePlace>>> findAllFavouritePlaces(String bearerToken) {
+//        MutableLiveData<Result<List<FavouritePlace>>> findAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
+//        String errorType = "PlaceRepositoryImpl FindAllFavouritePlaces Error";
+//        try {
+//            Call<ResponseDto<List<FavouritePlaceDto>>> call = placeApi.findAllFavouritePlaces(bearerToken);
+//            call.enqueue(new Callback<ResponseDto<List<FavouritePlaceDto>>>() {
+//                @Override
+//                public void onResponse(@NonNull Call<ResponseDto<List<FavouritePlaceDto>>> call,
+//                                       @NonNull Response<ResponseDto<List<FavouritePlaceDto>>> response) {
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        Result<List<FavouritePlace>> result = new Result<>();
+//                        result.setError(response.body().isError());
+//                        result.setMessage(response.body().getMessage());
+//                        if (response.body().getData() != null) {
+//                            result.setData(objectMapper.mapList(response.body().getData(), FavouritePlace.class));
+//                        }
+//                        findAllFavouritePlacesResponseLiveData.postValue(result);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<ResponseDto<List<FavouritePlaceDto>>> call,
+//                                      @NonNull Throwable throwable) {
+//                    Log.e(errorType, "Error during onFailure");
+//                }
+//            });
+//        } catch (Exception e) {
+//            Log.e(errorType, "Error during catch");
+//        }
+//
+//        return findAllFavouritePlacesResponseLiveData;
+//    }
+//
+//    @Override
+//    public LiveData<Result<FavouritePlace>> addFavouritePlace(String bearerToken, Long placeId) {
+//        MutableLiveData<Result<FavouritePlace>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
+//        String errorType = "PlaceRepositoryImpl addFavouritePlace Error";
+//        try {
+//            Call<ResponseDto<FavouritePlaceDto>> call = placeApi.addFavouritePlace(bearerToken, placeId);
+//            call.enqueue(new Callback<ResponseDto<FavouritePlaceDto>>() {
+//                @Override
+//                public void onResponse(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
+//                                       @NonNull Response<ResponseDto<FavouritePlaceDto>> response) {
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        Result<FavouritePlace> result = new Result<>();
+//                        result.setError(response.body().isError());
+//                        result.setMessage(response.body().getMessage());
+//                        if (response.body().getData() != null) {
+//                            result.setData(objectMapper.map(response.body().getData(), FavouritePlace.class));
+//                        }
+//                        addFavouritePlaceResponseLiveData.postValue(result);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
+//                                      @NonNull Throwable throwable) {
+//                    Log.e(errorType, "Error during onFailure");
+//                }
+//            });
+//        } catch (Exception e) {
+//            Log.e(errorType, "Error during catch");
+//        }
+//
+//        return addFavouritePlaceResponseLiveData;
+//    }
+//
+//    @Override
+//    public LiveData<Result<FavouritePlace>> deleteFavouritePlaceByIds(String bearerToken, List<Long> placeIds) {
+//        MutableLiveData<Result<FavouritePlace>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
+//        String errorType = "PlaceRepositoryImpl CreateFeedback Error";
+//        try {
+//            Call<ResponseDto<FavouritePlaceDto>> call = placeApi.deleteFavouritePlaceByIds(bearerToken, placeIds);
+//            call.enqueue(new Callback<ResponseDto<FavouritePlaceDto>>() {
+//                @Override
+//                public void onResponse(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
+//                                       @NonNull Response<ResponseDto<FavouritePlaceDto>> response) {
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        Result<FavouritePlace> result = new Result<>();
+//                        result.setError(response.body().isError());
+//                        result.setMessage(response.body().getMessage());
+//                        if (response.body().getData() != null) {
+//                            result.setData(objectMapper.map(response.body().getData(), FavouritePlace.class));
+//                        }
+//                        deleteFavouritePlaceByIdsResponseLiveData.postValue(result);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<ResponseDto<FavouritePlaceDto>> call,
+//                                      @NonNull Throwable throwable) {
+//                    Log.e(errorType, "Error during onFailure");
+//                }
+//            });
+//        } catch (Exception e) {
+//            Log.e(errorType, "Error during catch");
+//        }
+//
+//        return deleteFavouritePlaceByIdsResponseLiveData;
+//    }
+//
+//    @Override
+//    public LiveData<Result<CheckIn>> checkInPlace(String bearerToken, Long placeId) {
+//        MutableLiveData<Result<CheckIn>> checkInPlaceResponseLiveData = new MutableLiveData<>();
+//        String errorType = "PlaceRepositoryImpl CheckInPlace Error";
+//        try {
+//            Call<ResponseDto<CheckInDto>> call = placeApi.checkInPlace(bearerToken, placeId);
+//            call.enqueue(new Callback<ResponseDto<CheckInDto>>() {
+//                @Override
+//                public void onResponse(@NonNull Call<ResponseDto<CheckInDto>> call,
+//                                       @NonNull Response<ResponseDto<CheckInDto>> response) {
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        Result<CheckIn> result = new Result<>();
+//                        result.setError(response.body().isError());
+//                        result.setMessage(response.body().getMessage());
+//                        if (response.body().getData() != null) {
+//                            result.setData(objectMapper.map(response.body().getData(), CheckIn.class));
+//                        }
+//                        checkInPlaceResponseLiveData.postValue(result);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<ResponseDto<CheckInDto>> call,
+//                                      @NonNull Throwable throwable) {
+//                    Log.e(errorType, "Error during onFailure");
+//                }
+//            });
+//        } catch (Exception e) {
+//            Log.e(errorType, "Error during catch");
+//        }
+//
+//        return checkInPlaceResponseLiveData;
+//    }
+//
+//    @Override
+//    public LiveData<Result<CheckIn>> findCheckInByPlaceId(String bearerToken, Long placeId) {
+//        MutableLiveData<Result<CheckIn>> findCheckInByPlaceIdResponseLiveData = new MutableLiveData<>();
+//        String errorType = "PlaceRepositoryImpl findCheckInByPlaceId Error";
+//        try {
+//            Call<ResponseDto<CheckInDto>> call = placeApi.findCheckInByPlaceId(bearerToken, placeId);
+//            call.enqueue(new Callback<ResponseDto<CheckInDto>>() {
+//                @Override
+//                public void onResponse(@NonNull Call<ResponseDto<CheckInDto>> call,
+//                                       @NonNull Response<ResponseDto<CheckInDto>> response) {
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        Result<CheckIn> result = new Result<>();
+//                        result.setError(response.body().isError());
+//                        result.setMessage(response.body().getMessage());
+//                        if (response.body().getData() != null) {
+//                            result.setData(objectMapper.map(response.body().getData(), CheckIn.class));
+//                        }
+//                        findCheckInByPlaceIdResponseLiveData.postValue(result);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<ResponseDto<CheckInDto>> call,
+//                                      @NonNull Throwable throwable) {
+//                    Log.e(errorType, "Error during onFailure");
+//                }
+//            });
+//        } catch (Exception e) {
+//            Log.e(errorType, "Error during catch");
+//        }
+//
+//        return findCheckInByPlaceIdResponseLiveData;
+//    }
 }

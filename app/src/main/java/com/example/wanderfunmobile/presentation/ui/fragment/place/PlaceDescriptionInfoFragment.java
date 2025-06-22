@@ -18,7 +18,7 @@ import com.example.wanderfunmobile.databinding.FragmentPlaceDescriptionInfoBindi
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.model.places.Section;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.SectionItemAdapter;
-import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 
 import java.time.LocalTime;
 import java.util.ArrayList;

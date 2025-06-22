@@ -1,6 +1,5 @@
 package com.example.wanderfunmobile.presentation.ui.activity.trip;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -18,15 +17,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
-import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceDto;
 import com.example.wanderfunmobile.databinding.ActivityTripPlaceCreateBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.domain.model.trips.TripPlace;
 import com.example.wanderfunmobile.presentation.ui.activity.place.SearchPlaceActivity;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
-import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -34,7 +31,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import org.parceler.Parcels;
 
 import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import javax.inject.Inject;
