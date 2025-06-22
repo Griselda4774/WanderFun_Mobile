@@ -42,176 +42,180 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-
 @AndroidEntryPoint
 public class TripDetailActivity extends AppCompatActivity {
 
-    private ActivityTripDetailBinding viewBinding;
+    private ActivityTripDetailBinding binding;
     private TripViewModel tripViewModel;
     private Trip trip;
     private final List<TripPlace> tripPlaceList = new ArrayList<>();
     private TripPlaceItemAdapter tripPlaceItemAdapter;
-    @Inject
-    ObjectMapper objectMapper;
+
+    @Inject ObjectMapper objectMapper;
+
     private LoadingDialog loadingDialog;
     private SelectionDialog selectionDialog;
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        viewBinding = ActivityTripDetailBinding.inflate(getLayoutInflater());
-        setContentView(viewBinding.getRoot());
-        ViewCompat.setOnApplyWindowInsetsListener(viewBinding.getRoot(), (v, insets) -> {
+
+        binding = ActivityTripDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // ViewModel
-        tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
-        tripViewModel.getTripByIdResponseLiveData().observe(this, data -> {
-            if (data != null && !data.isError()) {
-                trip = objectMapper.map(data.getData(), Trip.class);
-                setInfo();
-            }
-        });
-        tripViewModel.deleteTripByIdResponseLiveData().observe(this, data -> {
-            if (data != null && !data.isError()) {
-                Toast.makeText(getApplicationContext(), "Xóa chuyến đi thành công", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(getApplicationContext(), "Xóa chuyến đi thất bại", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Get trip info
-        Long tripId = getIntent().getLongExtra("tripId", -1);
-        if (tripId != -1) {
-            tripViewModel.getTripById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), tripId);
-        }
-
-
-        // Back button
-        ConstraintLayout backButton = viewBinding.backButton.findViewById(R.id.button);
-        backButton.setOnClickListener(v -> finish());
-
-        // Selection dialog
-        selectionDialog = viewBinding.selectionDialog;
-        selectionDialog.hide();
-        selectionDialog.setVisibility(View.GONE);
-        selectionDialog.setOnAcceptListener(() -> {
-            tripViewModel.deleteTripById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), trip.getId());
-            selectionDialog.hide();
-            Log.d("SelectionDialog", "Accept");
-        });
-
-        selectionDialog.setOnRejectListener(() -> {
-            selectionDialog.hide();
-            Log.d("SelectionDialog", "Reject");
-        });
-
-        // Loading dialog
-        loadingDialog = viewBinding.loadingDialog;
-        tripViewModel.getIsLoading().observe(this, isLoading -> {
-            if (isLoading) {
-                loadingDialog.show();
-                loadingDialog.setVisibility(View.VISIBLE);
-            } else {
-                loadingDialog.hide();
-                loadingDialog.setVisibility(View.GONE);
-            }
-        });
-
-        RecyclerView recyclerView = viewBinding.tripPlaceList;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        tripPlaceItemAdapter = new TripPlaceItemAdapter(tripPlaceList, objectMapper, null);
-        recyclerView.setAdapter(tripPlaceItemAdapter);
-
-        // Map view button
-        TextView mapViewButton = viewBinding.mapViewButton.findViewById(R.id.button);
-        mapViewButton.setText("Xem trên bản đồ");
-        mapViewButton.setOnClickListener(v -> Toast.makeText(this, "Tạm thời cứ thế thôi hẹ hẹ hẹ", Toast.LENGTH_SHORT).show());
-
-        // Delete button
-        TextView deleteButton = viewBinding.deleteButton.findViewById(R.id.button);
-        deleteButton.setText("Xóa");
-        deleteButton.setOnClickListener(v -> {
-            selectionDialog.setVisibility(View.VISIBLE);
-            selectionDialog.show("Xóa chuyến đi",
-                    "Bạn có chắc chắn muốn xóa chuyến đi này?",
-                    "Thao tác này không thể hoàn tác",
-                    "Xóa",
-                    "Hủy");
-        });
-
-        // Edit button
-        TextView editButton = viewBinding.editButton.findViewById(R.id.button);
-        editButton.setText("Sửa");
-        editButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddEditTripActivity.class);
-            intent.putExtra("tripId", trip.getId());
-            startActivity(intent);
-        });
-
-        // Clone button
-        TextView cloneButton = viewBinding.cloneButton.findViewById(R.id.button);
-        cloneButton.setText("Sao chép chuyến đi này");
-        cloneButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddEditTripActivity.class);
-            intent.putExtra("tripId", trip.getId());
-            intent.putExtra("isCloned", true);
-            startActivity(intent);
-        });
-
-        // Share button
-        viewBinding.shareButton.setOnClickListener(v -> {
-            Intent shareIntent = new Intent(this, AddEditPostActivity.class);
-            shareIntent.putExtra("shared_trip", Parcels.wrap(objectMapper.map(trip, TripDto.class)));
-            startActivity(shareIntent);
-        });
+        initViewModel();
+        setupDialogs();
+        setupRecyclerView();
+        handleIntentData();
+        setupUIEvents();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (trip != null) {
-            tripViewModel.getTripById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), trip.getId());
+            fetchTripById(trip.getId());
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private void setInfo() {
-        if (trip != null && trip.getName() != null) {
-            viewBinding.name.setText(trip.getName());
-        }
+    //region Setup Methods
+    private void initViewModel() {
+        tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
 
-        if (trip != null && trip.getStartTime() != null) {
-            viewBinding.startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
-        }
+        tripViewModel.getTripByIdResponseLiveData().observe(this, response -> {
+            if (response != null && !response.isError()) {
+                trip = objectMapper.map(response.getData(), Trip.class);
+                updateTripInfo();
+            }
+        });
 
-        if (trip != null && trip.getEndTime() != null) {
-            viewBinding.endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
-        }
+        tripViewModel.deleteTripByIdResponseLiveData().observe(this, response -> {
+            String message = (response != null && !response.isError())
+                    ? "Xóa chuyến đi thành công"
+                    : "Xóa chuyến đi thất bại";
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            if (response != null && !response.isError()) finish();
+        });
 
-        if (trip != null && !trip.getTripPlaceList().isEmpty()) {
-            tripPlaceList.clear();
-            tripPlaceList.addAll(trip.getTripPlaceList());
-            tripPlaceItemAdapter.setEditMode(false);
-            tripPlaceItemAdapter.notifyDataSetChanged();
-        }
-
-
-        if( trip != null && Objects.equals(trip.getUserId(), SessionManager.getInstance(getApplicationContext()).getUserId())) {
-            viewBinding.editButton.setVisibility(View.VISIBLE);
-            viewBinding.deleteButton.setVisibility(View.VISIBLE);
-            viewBinding.cloneButton.setVisibility(View.GONE);
-        } else {
-            viewBinding.editButton.setVisibility(View.GONE);
-            viewBinding.deleteButton.setVisibility(View.GONE);
-            viewBinding.cloneButton.setVisibility(View.VISIBLE);
-        }
-
+        tripViewModel.getIsLoading().observe(this, isLoading -> {
+            loadingDialog.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            if (isLoading) loadingDialog.show();
+            else loadingDialog.hide();
+        });
     }
+
+    private void setupDialogs() {
+        loadingDialog = binding.loadingDialog;
+
+        selectionDialog = binding.selectionDialog;
+        selectionDialog.hide();
+        selectionDialog.setVisibility(View.GONE);
+
+        selectionDialog.setOnAcceptListener(() -> {
+            fetchTripDelete(trip.getId());
+            selectionDialog.hide();
+        });
+
+        selectionDialog.setOnRejectListener(selectionDialog::hide);
+    }
+
+    private void setupRecyclerView() {
+        RecyclerView recyclerView = binding.tripPlaceList;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        tripPlaceItemAdapter = new TripPlaceItemAdapter(tripPlaceList, objectMapper, null);
+        recyclerView.setAdapter(tripPlaceItemAdapter);
+    }
+
+    private void handleIntentData() {
+        Long tripId = getIntent().getLongExtra("tripId", -1);
+
+        if (tripId != -1) {
+            fetchTripById(tripId);
+        }
+    }
+
+    private void setupUIEvents() {
+        binding.backButton.findViewById(R.id.button).setOnClickListener(v -> finish());
+
+        binding.mapViewButton.findViewById(R.id.button).setOnClickListener(v ->
+                Toast.makeText(this, "Tạm thời cứ thế thôi hẹ hẹ hẹ", Toast.LENGTH_SHORT).show());
+
+        binding.deleteButton.findViewById(R.id.button).setOnClickListener(v ->
+                selectionDialog.show("Xóa chuyến đi",
+                        "Bạn có chắc chắn muốn xóa chuyến đi này?",
+                        "Thao tác này không thể hoàn tác",
+                        "Xóa",
+                        "Hủy"));
+
+        binding.editButton.findViewById(R.id.button).setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddEditTripActivity.class);
+            intent.putExtra("tripId", trip.getId());
+            startActivity(intent);
+        });
+
+        binding.cloneButton.findViewById(R.id.button).setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddEditTripActivity.class);
+            intent.putExtra("tripId", trip.getId());
+            intent.putExtra("isCloned", true);
+            startActivity(intent);
+        });
+
+        binding.shareButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddEditPostActivity.class);
+            TripDto tripDto = objectMapper.map(trip, TripDto.class);
+            intent.putExtra("shared_trip", Parcels.wrap(tripDto));
+            startActivity(intent);
+        });
+    }
+
+    //endregion
+
+    //region Business Logic
+
+    private void fetchTripById(Long tripId) {
+        String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
+        tripViewModel.getTripById(token, tripId);
+    }
+
+    private void fetchTripDelete(Long tripId) {
+        String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
+        tripViewModel.deleteTripById(token, tripId);
+    }
+
+    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
+    private void updateTripInfo() {
+        if (trip == null) return;
+
+        TextView editButton = binding.editButton.findViewById(R.id.button);
+        editButton.setText("Chỉnh sửa chuyến đi");
+        TextView deleteButton = binding.deleteButton.findViewById(R.id.button);
+        deleteButton.setText("Xóa chuyến đi");
+        TextView cloneButton = binding.cloneButton.findViewById(R.id.button);
+        cloneButton.setText("Sao chép chuyến đi");
+        TextView mapViewButton = binding.mapViewButton.findViewById(R.id.button);
+        mapViewButton.setText("Xem trên bản đồ");
+
+        binding.name.setText(trip.getName());
+        binding.startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
+        binding.endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
+
+        tripPlaceList.clear();
+        tripPlaceList.addAll(trip.getTripPlaceList());
+        tripPlaceItemAdapter.setEditMode(false);
+        tripPlaceItemAdapter.notifyDataSetChanged();
+
+        boolean isOwner = Objects.equals(trip.getUserId(), SessionManager.getInstance(this).getUserId());
+        binding.editButton.setVisibility(isOwner ? View.VISIBLE : View.GONE);
+        binding.deleteButton.setVisibility(isOwner ? View.VISIBLE : View.GONE);
+        binding.cloneButton.setVisibility(isOwner ? View.GONE : View.VISIBLE);
+    }
+
+    //endregion
 }
