@@ -51,8 +51,7 @@ public class PlaceGeneralInfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewBinding = FragmentPlaceGeneralInfoBinding.inflate(inflater, container, false);
-        assert getParentFragment() != null;
-        placeViewModel = new ViewModelProvider(getParentFragment()).get(PlaceViewModel.class);
+        placeViewModel = new ViewModelProvider(requireActivity()).get(PlaceViewModel.class);
         return viewBinding.getRoot();
     }
 
@@ -128,6 +127,7 @@ public class PlaceGeneralInfoFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         viewBinding = null;
+        placeViewModel = null;
     }
 
     @SuppressLint("SetTextI18n")

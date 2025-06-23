@@ -15,7 +15,9 @@ import static org.maplibre.android.style.layers.PropertyFactory.lineWidth;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PointF;
@@ -130,9 +132,13 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private Place currentPlace = null;
     @Inject
     ObjectMapper objectMapper;
+    @Inject
+    Gson gson;
     private LoadingDialog loadingDialog;
     private boolean canCheckIn;
     private Long currentCheckInPlaceId;
+
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
     public ExploreFragment() {
     }
@@ -142,6 +148,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         // Init maplibre
         MapLibre.getInstance(requireContext());
+
+        setUpActivityResultLauncher();
+
+        setUpRequestPermissionsLauncher();
     }
 
     @Override
@@ -151,24 +161,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
 
-        placeInfoBottomSheetBinding = viewBinding.placeInfoBottomSheetContainer;
-        placeInfoBottomSheetBehavior = BottomSheetBehavior.from(placeInfoBottomSheetBinding.getRoot());
-        placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-        locationPinBottomSheetBinding = viewBinding.locationPinBottomSheetContainer;
-        locationPinBottomSheetBehavior = BottomSheetBehavior.from(locationPinBottomSheetBinding.getRoot());
-        locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-        requestPermissionsLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestMultiplePermissions(),
-                result -> {
-                    Boolean isLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
-
-                    if (Boolean.FALSE.equals(isLocationGranted)) {
-                        Toast.makeText(requireContext(), "Quyền truy cập bị từ chối!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
         return viewBinding.getRoot();
     }
 
@@ -255,7 +248,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
                 focusOnLocation(symbol.getLatLng(), map, 17, -200);
 
-                Gson gson = new Gson();
                 String title;
                 Place place = null;
                 if (symbol.getData() != null) {
@@ -373,6 +365,39 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         viewBinding.mapView.onSaveInstanceState(outState);
     }
 
+    private void setUpActivityResultLauncher() {
+        activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null ) {
+                            switch (Objects.requireNonNull(data.getStringExtra("status")))
+                            {
+                                case "feedback_created":
+                                    placeViewModel.findPlaceById(data.getLongExtra("place_id", -1L));
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void setUpRequestPermissionsLauncher() {
+        requestPermissionsLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                result -> {
+                    Boolean isLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
+
+                    if (Boolean.FALSE.equals(isLocationGranted)) {
+                        Toast.makeText(requireContext(), "Quyền truy cập bị từ chối!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+    }
+
     private void setUpFragment(Bundle savedInstanceState) {
         setUpBottomSheet();
         setUpDialog();
@@ -430,6 +455,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
     private void setUpBottomSheet() {
         // Place info bottom sheet
+
+        placeInfoBottomSheetBinding = viewBinding.placeInfoBottomSheetContainer;
+        placeInfoBottomSheetBehavior = BottomSheetBehavior.from(placeInfoBottomSheetBinding.getRoot());
+        placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         placeInfoBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -446,6 +475,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         });
 
         // Location pin info bottom sheet
+        locationPinBottomSheetBinding = viewBinding.locationPinBottomSheetContainer;
+        locationPinBottomSheetBehavior = BottomSheetBehavior.from(locationPinBottomSheetBinding.getRoot());
+        locationPinBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         locationPinBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -679,7 +711,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void addPlaceMarker(SymbolManager symbolManager, Place place) {
-        Gson gson = new Gson();
         JsonObject placeJson = gson.toJsonTree(place).getAsJsonObject();
         JsonObject data = new JsonObject();
         data.addProperty("title", "Place Marker");
@@ -727,8 +758,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         symbolManager.delete(symbolsToRemove);
     }
 
-
-
     @SuppressLint("SetTextI18n")
     private void showPlaceInfoBottomSheet(Place place) {
         placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -736,7 +765,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
         // Place info tab
         // View pager
-        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(this);
+        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(requireActivity(), place.getId());
         ViewPager2 viewPager = placeInfoBottomSheetBinding.viewPager;
         viewPager.setAdapter(placeInfoTabAdapter);
         ViewPager2HeightAdjuster.autoAdjustHeight(viewPager, true);

@@ -18,6 +18,7 @@ import com.example.wanderfunmobile.domain.model.places.Feedback;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.FeedbackItemAdapter;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
+import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingOutlineView;
 import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class PlaceRatingInfoFragment extends Fragment {
 
     private FragmentPlaceRatingInfoBinding viewBinding;
     private Place place;
+    private Long placeId;
     private List<Feedback> feedbackList = new ArrayList<>();
     private List<Float> ratingList = new ArrayList<>(List.of(0f, 0f, 0f, 0f, 0f));
     private PlaceViewModel placeViewModel;
@@ -45,6 +47,9 @@ public class PlaceRatingInfoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            placeId = getArguments().getLong("place_id");
+        }
     }
 
     @Override
@@ -52,8 +57,7 @@ public class PlaceRatingInfoFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         viewBinding = FragmentPlaceRatingInfoBinding.inflate(inflater, container, false);
-        assert getParentFragment() != null;
-        placeViewModel = new ViewModelProvider(getParentFragment()).get(PlaceViewModel.class);
+        placeViewModel = new ViewModelProvider(requireActivity()).get(PlaceViewModel.class);
         return viewBinding.getRoot();
     }
 
@@ -66,6 +70,8 @@ public class PlaceRatingInfoFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         FeedbackItemAdapter feedbackItemAdapter = new FeedbackItemAdapter(feedbackList);
         recyclerView.setAdapter(feedbackItemAdapter);
+
+        setInfo();
 
         placeViewModel.getFindPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
 //            if (data != null && !data.isError()) {
@@ -112,6 +118,7 @@ public class PlaceRatingInfoFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         viewBinding = null;
+        placeViewModel = null;
     }
 
     @SuppressLint("SetTextI18n")
@@ -136,10 +143,10 @@ public class PlaceRatingInfoFragment extends Fragment {
 //        recyclerView.setAdapter(ratingBarItemAdapter);
 //
 //        // Star rating outline
-//        StarRatingOutlineView starRatingOutlineView = viewBinding.starRatingOutlineView;
-//        starRatingOutlineView.setRating(0);
-//        starRatingOutlineView.setPlaceId(place.getId());
-//        starRatingOutlineView.setPlaceName(place.getName());
-//        starRatingOutlineView.enableIntent();
+        StarRatingOutlineView starRatingOutlineView = viewBinding.starRatingOutlineView;
+        starRatingOutlineView.setRating(0);
+        starRatingOutlineView.setPlaceId(placeId);
+        starRatingOutlineView.setPlaceName("Place Name");
+        starRatingOutlineView.enableIntent();
     }
 }

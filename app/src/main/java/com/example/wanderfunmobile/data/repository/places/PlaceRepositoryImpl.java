@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.data.repository;
+package com.example.wanderfunmobile.data.repository.places;
 
 import android.util.Log;
 
@@ -7,15 +7,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.wanderfunmobile.data.dto.ResponseDto;
-import com.example.wanderfunmobile.data.dto.place.FeedbackCreateDto;
-import com.example.wanderfunmobile.data.dto.place.FeedbackDto;
 import com.example.wanderfunmobile.data.dto.place.PlaceDto;
-import com.example.wanderfunmobile.data.api.backend.PlaceApi;
+import com.example.wanderfunmobile.data.api.backend.places.PlaceApi;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
-import com.example.wanderfunmobile.domain.model.places.Feedback;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.domain.repository.PlaceRepository;
+import com.example.wanderfunmobile.domain.repository.places.PlaceRepository;
 
 import java.util.List;
 
@@ -173,141 +170,6 @@ public class PlaceRepositoryImpl implements PlaceRepository {
         }
 
         return findPlaceByIdResponseLiveData;
-    }
-
-    @Override
-    public LiveData<Result<List<Feedback>>> findAllFeedbacksByPlaceId(String bearerToken, Long placeId) {
-        MutableLiveData<Result<List<Feedback>>> findAllFeedbacksByPlaceIdResponseLiveData = new MutableLiveData<>();
-        try {
-            Call<ResponseDto<List<FeedbackDto>>> call = placeApi.findAllFeedbacksByPlaceId(bearerToken, placeId);
-            call.enqueue(new Callback<ResponseDto<List<FeedbackDto>>>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseDto<List<FeedbackDto>>> call,
-                                       @NonNull Response<ResponseDto<List<FeedbackDto>>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Result<List<Feedback>> result = new Result<>();
-                        result.setError(response.body().isError());
-                        result.setMessage(response.body().getMessage());
-                        if (response.body().getData() != null) {
-                            result.setData(objectMapper.mapList(response.body().getData(), Feedback.class));
-                        }
-                        findAllFeedbacksByPlaceIdResponseLiveData.postValue(result);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResponseDto<List<FeedbackDto>>> call,
-                                      @NonNull Throwable throwable) {
-                    Log.e("PlaceRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
-                }
-            });
-        } catch (Exception e) {
-            Log.e("PlaceRepositoryImpl", "Error during findAllPlacesByCursor", e);
-        }
-
-        return findAllFeedbacksByPlaceIdResponseLiveData;
-    }
-
-    @Override
-    public LiveData<Result<Feedback>> createFeedback(String bearerToken, Long placeId, Feedback feedback) {
-        MutableLiveData<Result<Feedback>> createFeedbackResponseLiveData = new MutableLiveData<>();
-        try {
-            Call<ResponseDto<FeedbackDto>> call = placeApi.createFeedback(bearerToken, placeId, objectMapper.map(feedback, FeedbackCreateDto.class));
-            call.enqueue(new Callback<ResponseDto<FeedbackDto>>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseDto<FeedbackDto>> call,
-                                       @NonNull Response<ResponseDto<FeedbackDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Result<Feedback> result = new Result<>();
-                        result.setError(response.body().isError());
-                        result.setMessage(response.body().getMessage());
-                        if (response.body().getData() != null) {
-                            result.setData(objectMapper.map(response.body().getData(), Feedback.class));
-                        }
-                        createFeedbackResponseLiveData.postValue(result);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResponseDto<FeedbackDto>> call,
-                                      @NonNull Throwable throwable) {
-                    Log.e("PlaceRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
-                }
-            });
-        } catch (Exception e) {
-            Log.e("PlaceRepositoryImpl", "Error during create place", e);
-        }
-        return createFeedbackResponseLiveData;
-    }
-
-    @Override
-    public LiveData<Result<Feedback>> updateFeedback(String bearerToken, Long feedbackId, Feedback feedback) {
-        MutableLiveData<Result<Feedback>> updateFeedbackResponseLiveData = new MutableLiveData<>();
-        try {
-            Call<ResponseDto<FeedbackDto>> call = placeApi.updateFeedback(bearerToken, feedbackId, objectMapper.map(feedback, FeedbackCreateDto.class));
-            call.enqueue(new Callback<ResponseDto<FeedbackDto>>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseDto<FeedbackDto>> call,
-                                       @NonNull Response<ResponseDto<FeedbackDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Result<Feedback> result = new Result<>();
-                        result.setError(response.body().isError());
-                        result.setMessage(response.body().getMessage());
-                        if (response.body().getData() != null) {
-                            result.setData(objectMapper.map(response.body().getData(), Feedback.class));
-                        }
-                        updateFeedbackResponseLiveData.postValue(result);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResponseDto<FeedbackDto>> call,
-                                      @NonNull Throwable throwable) {
-                    Log.e("FeedbackRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
-                }
-            });
-        } catch (Exception e) {
-            Log.e("feedbackRepositoryImpl", "Error during update feedback", e);
-        }
-
-        return updateFeedbackResponseLiveData;
-    }
-
-    @Override
-    public LiveData<Result<Feedback>> deleteFeedback(String bearerToken, Long feedbackId, String localId) {
-        MutableLiveData<Result<Feedback>> deleteFeedbackResponseLiveData = new MutableLiveData<>();
-
-        try {
-            Call<ResponseDto<FeedbackDto>> call = placeApi.deleteFeedback(bearerToken, feedbackId);
-            call.enqueue(new Callback<ResponseDto<FeedbackDto>>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseDto<FeedbackDto>> call,
-                                       @NonNull Response<ResponseDto<FeedbackDto>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Result<Feedback> result = new Result<>();
-                        result.setError(response.body().isError());
-                        result.setMessage(response.body().getMessage());
-                        if (response.body().getData() != null) {
-                            result.setData(objectMapper.map(response.body().getData(), Feedback.class));
-                        } else {
-                            result.setData(new Feedback());
-                        }
-                        result.getData().setLocalId(localId);
-                        deleteFeedbackResponseLiveData.postValue(result);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResponseDto<FeedbackDto>> call,
-                                      @NonNull Throwable throwable) {
-                    Log.e("FeedbackRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
-                }
-            });
-        } catch (Exception e) {
-            Log.e("feedbackRepositoryImpl", "Error during delete feedback", e);
-        }
-
-        return deleteFeedbackResponseLiveData;
     }
 
 //    @Override

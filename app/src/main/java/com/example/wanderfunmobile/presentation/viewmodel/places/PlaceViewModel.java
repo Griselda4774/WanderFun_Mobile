@@ -8,7 +8,7 @@ import com.example.wanderfunmobile.domain.model.CheckIn;
 import com.example.wanderfunmobile.domain.model.FavouritePlace;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.domain.repository.PlaceRepository;
+import com.example.wanderfunmobile.domain.repository.places.PlaceRepository;
 
 import java.util.List;
 
