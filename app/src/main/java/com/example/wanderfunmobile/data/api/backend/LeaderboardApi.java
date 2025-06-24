@@ -8,11 +8,12 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 
 public interface LeaderboardApi {
-    @GET("leaderboard/user")
-    Call<ResponseDto<List<LeaderboardUserDto>>> getLeaderboardUser();
+    @GET("statistics/user-ranking")
+    Call<ResponseDto<List<LeaderboardUserDto>>> getLeaderboardUser(@Header("Authorization") String bearerToken);
 
-    @GET("leaderboard/place")
-    Call<ResponseDto<List<LeaderboardPlaceDto>>> getLeaderboardPlace();
+    @GET("statistics/place-ranking")
+    Call<ResponseDto<List<LeaderboardPlaceDto>>> getLeaderboardPlace(@Header("Authorization") String bearerToken);
 }

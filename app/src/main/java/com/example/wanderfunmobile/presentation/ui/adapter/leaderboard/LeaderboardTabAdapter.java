@@ -2,14 +2,15 @@ package com.example.wanderfunmobile.presentation.ui.adapter.leaderboard;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.wanderfunmobile.presentation.ui.fragment.leaderboard.LeaderboardPlaceFragment;
-import com.example.wanderfunmobile.presentation.ui.fragment.leaderboard.LeaderboardUserFragment;
+import com.example.wanderfunmobile.presentation.ui.fragment.ranking.LeaderboardPlaceFragment;
+import com.example.wanderfunmobile.presentation.ui.fragment.ranking.LeaderboardUserFragment;
 
 public class LeaderboardTabAdapter extends FragmentStateAdapter {
-    public LeaderboardTabAdapter(@NonNull Fragment fragment) {
-        super(fragment);
+    public LeaderboardTabAdapter(@NonNull FragmentActivity fa) {
+        super(fa);
     }
 
     @NonNull

@@ -29,11 +29,11 @@ public class LeaderboardRepositoryImpl implements LeaderboardRepository {
     }
 
     @Override
-    public LiveData<ResponseDto<List<LeaderboardUserDto>>> getLeaderboardUser() {
+    public LiveData<ResponseDto<List<LeaderboardUserDto>>> getLeaderboardUser(String bearerToken) {
         MutableLiveData<ResponseDto<List<LeaderboardUserDto>>> getLeaderboardUserResponseLiveData = new MutableLiveData<>();
         String errorType = "PlaceRepositoryImpl GetLeaderboardUser Error";
         try {
-            Call<ResponseDto<List<LeaderboardUserDto>>> call = leaderboardApi.getLeaderboardUser();
+            Call<ResponseDto<List<LeaderboardUserDto>>> call = leaderboardApi.getLeaderboardUser(bearerToken);
             call.enqueue(new Callback<ResponseDto<List<LeaderboardUserDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<LeaderboardUserDto>>> call,
@@ -55,11 +55,11 @@ public class LeaderboardRepositoryImpl implements LeaderboardRepository {
     }
 
     @Override
-    public LiveData<ResponseDto<List<LeaderboardPlaceDto>>> getLeaderboardPlace() {
+    public LiveData<ResponseDto<List<LeaderboardPlaceDto>>> getLeaderboardPlace(String bearerToken) {
         MutableLiveData<ResponseDto<List<LeaderboardPlaceDto>>> getLeaderboardPlaceResponseLiveData = new MutableLiveData<>();
         String errorType = "PlaceRepositoryImpl GetLeaderboardPlace Error";
         try {
-            Call<ResponseDto<List<LeaderboardPlaceDto>>> call = leaderboardApi.getLeaderboardPlace();
+            Call<ResponseDto<List<LeaderboardPlaceDto>>> call = leaderboardApi.getLeaderboardPlace(bearerToken);
             call.enqueue(new Callback<ResponseDto<List<LeaderboardPlaceDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<LeaderboardPlaceDto>>> call,

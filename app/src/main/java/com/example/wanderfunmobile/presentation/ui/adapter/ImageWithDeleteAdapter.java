@@ -14,11 +14,52 @@ import com.example.wanderfunmobile.databinding.ItemImageWithDeleteBinding;
 
 import java.util.List;
 
+
 public class ImageWithDeleteAdapter extends RecyclerView.Adapter<ImageWithDeleteAdapter.ImageWithDeleteViewHolder> {
     private final List<Uri> imageList;
+    private OnImageListChangedListener changeListener;
+
+    public interface OnImageListChangedListener {
+        void onImageListChanged(int newSize);
+    }
+
+    public void setOnImageListChangedListener(OnImageListChangedListener listener) {
+        this.changeListener = listener;
+    }
 
     public ImageWithDeleteAdapter(List<Uri> imageList) {
         this.imageList = imageList;
+    }
+
+    public void addImage(Uri uri) {
+        imageList.add(uri);
+        notifyItemInserted(imageList.size() - 1);
+        if (changeListener != null) {
+            changeListener.onImageListChanged(imageList.size());
+        }
+    }
+
+    public void addImages(List<Uri> uris) {
+        int start = imageList.size();
+        imageList.addAll(uris);
+        notifyItemRangeInserted(start, uris.size());
+        if (changeListener != null) {
+            changeListener.onImageListChanged(imageList.size());
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setImages(List<Uri> images) {
+        imageList.clear();
+        imageList.addAll(images);
+        notifyDataSetChanged();
+        if (changeListener != null) {
+            changeListener.onImageListChanged(imageList.size());
+        }
+    }
+
+    public List<Uri> getImageList() {
+        return imageList;
     }
 
     @NonNull
@@ -59,6 +100,10 @@ public class ImageWithDeleteAdapter extends RecyclerView.Adapter<ImageWithDelete
                     imageList.remove(adapterPosition);
                     notifyItemRemoved(adapterPosition);
                     notifyItemRangeChanged(adapterPosition, imageList.size());
+
+                    if (changeListener != null) {
+                        changeListener.onImageListChanged(imageList.size());
+                    }
                 }
             });
         }

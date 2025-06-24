@@ -1,4 +1,6 @@
-package com.example.wanderfunmobile.presentation.ui.fragment.leaderboard;
+package com.example.wanderfunmobile.presentation.ui.fragment.ranking;
+
+import static org.maplibre.android.MapLibre.getApplicationContext;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.dto.leaderboard.LeaderboardUserDto;
 import com.example.wanderfunmobile.databinding.FragmentLeaderboardUserBinding;
 import com.example.wanderfunmobile.domain.model.LeaderboardUser;
@@ -67,7 +71,8 @@ public class LeaderboardUserFragment extends Fragment {
         TextView[] userScores = {viewBinding.firstPlaceScore, viewBinding.secondPlaceScore, viewBinding.thirdPlaceScore};
         ImageView[] userAvatars = {viewBinding.firstPlaceAvatar, viewBinding.secondPlaceAvatar, viewBinding.thirdPlaceAvatar};
 
-        leaderboardViewModel.getLeaderboardUser();
+
+        leaderboardViewModel.getLeaderboardUser("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken());
         leaderboardViewModel.getLeaderboardUserResponseLiveData().observe(getViewLifecycleOwner(), data -> {
             if (!data.isError()) {
                 List<LeaderboardUserDto> leaderboardUserDtoList = data.getData();
@@ -101,6 +106,9 @@ public class LeaderboardUserFragment extends Fragment {
                     // Set an empty adapter or show a placeholder message
                     recyclerView.setAdapter(new LeaderboardUserCardAdapter(new ArrayList<>()));
                 }
+            }
+            else {
+                Toast.makeText(getContext(), data.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

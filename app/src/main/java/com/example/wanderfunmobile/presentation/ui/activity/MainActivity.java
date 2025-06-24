@@ -13,7 +13,6 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityMainBinding;
 import com.example.wanderfunmobile.presentation.ui.fragment.ExploreFragment;
 import com.example.wanderfunmobile.presentation.ui.fragment.HomeFragment;
-import com.example.wanderfunmobile.presentation.ui.fragment.LeaderboardFragment;
 import com.example.wanderfunmobile.presentation.ui.fragment.NotSignedInFragment;
 import com.example.wanderfunmobile.presentation.ui.fragment.ProfileFragment;
 import com.example.wanderfunmobile.presentation.ui.fragment.TripFragment;
