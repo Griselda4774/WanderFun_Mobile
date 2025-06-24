@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class FeedbackDto {
     private Long id;
     private MiniUserDto user;
-    private float rating;
+    private int rating;
     private String content;
     private ImageDto image;
     private LocalDateTime createAt;
@@ -34,11 +34,11 @@ public class FeedbackDto {
         this.user = user;
     }
 
-    public float getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 

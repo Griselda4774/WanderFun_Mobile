@@ -3,18 +3,18 @@ package com.example.wanderfunmobile.data.dto.place;
 import com.example.wanderfunmobile.data.dto.images.ImageDto;
 
 public class FeedbackCreateDto {
-    private float rating;
+    private int rating;
     private String content;
     private ImageDto image;
 
     public FeedbackCreateDto() {
     }
 
-    public float getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 

@@ -59,14 +59,10 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         });
 
-        ConstraintLayout emailInput = viewBinding.emailInput;
-        EditText emailEditText = emailInput.findViewById(R.id.text_edittext);
+        EditText emailEditText = viewBinding.emailInput.input.textEdittext;
 
-        ConstraintLayout passwordInput = viewBinding.passwordInput;
-        EditText passwordEditText = passwordInput.findViewById(R.id.password_edittext);
-        ImageView hidePassIcon = passwordInput.findViewById(R.id.hide_pass_icon);
-        ImageView viewPassIcon = passwordInput.findViewById(R.id.view_pass_icon);
-        setupPasswordToggle(passwordEditText, hidePassIcon, viewPassIcon);
+        EditText passwordEditText = viewBinding.passwordInput.input.passwordEdittext;
+        setupPasswordToggle(passwordEditText, viewBinding.passwordInput.hidePassIcon, viewBinding.passwordInput.viewPassIcon);
 
 
         TextView loginButton = viewBinding.loginButton.button;
