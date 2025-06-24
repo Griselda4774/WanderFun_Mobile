@@ -34,10 +34,10 @@ public class FeedbackRepositoryImpl implements FeedbackRepository {
     }
 
     @Override
-    public LiveData<Result<List<Feedback>>> findAllByPlaceId(String bearerToken, Long placeId) {
+    public LiveData<Result<List<Feedback>>> findAllByPlaceId(Long placeId) {
         MutableLiveData<Result<List<Feedback>>> findAllFeedbacksByPlaceIdResponseLiveData = new MutableLiveData<>();
         try {
-            Call<ResponseDto<List<FeedbackDto>>> call = feedbackApi.findAllByPlaceId(bearerToken, placeId);
+            Call<ResponseDto<List<FeedbackDto>>> call = feedbackApi.findAllByPlaceId(placeId);
             call.enqueue(new Callback<ResponseDto<List<FeedbackDto>>>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseDto<List<FeedbackDto>>> call,

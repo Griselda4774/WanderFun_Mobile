@@ -8,22 +8,21 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.wanderfunmobile.presentation.ui.fragment.place.PlaceDescriptionInfoFragment;
-import com.example.wanderfunmobile.presentation.ui.fragment.place.PlaceGeneralInfoFragment;
 import com.example.wanderfunmobile.presentation.ui.fragment.place.PlaceImageInfoFragment;
 import com.example.wanderfunmobile.presentation.ui.fragment.place.PlaceRatingInfoFragment;
 
 public class PlaceInfoTabAdapter extends FragmentStateAdapter {
-    private final Long placeId;
-    public PlaceInfoTabAdapter(@NonNull FragmentActivity fragmentActivity, Long placeId) {
+    private final String placeJson;
+    public PlaceInfoTabAdapter(@NonNull FragmentActivity fragmentActivity, String placeJson) {
         super(fragmentActivity);
-        this.placeId = placeId;
+        this.placeJson = placeJson;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
         Bundle bundle = new Bundle();
-        bundle.putLong("place_id", placeId);
+        bundle.putString("place_json", placeJson);
         Fragment fragment = switch (position) {
             case 1 -> new PlaceRatingInfoFragment();
             case 2 -> new PlaceImageInfoFragment();

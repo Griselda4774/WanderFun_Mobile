@@ -49,9 +49,9 @@ public class FeedbackViewModel extends ViewModel {
         return isLoading;
     }
 
-    public void findAllFeedbacksByPlaceId(String bearerToken, Long placeId) {
+    public void findAllFeedbacksByPlaceId(Long placeId) {
         isLoading.setValue(true);
-        feedbackRepository.findAllByPlaceId(bearerToken, placeId).observeForever(result -> {
+        feedbackRepository.findAllByPlaceId(placeId).observeForever(result -> {
             isLoading.setValue(false);
             findAllFeedbacksByPlaceIdLiveData.setValue(result);
         });

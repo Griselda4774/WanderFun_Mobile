@@ -49,11 +49,13 @@ import com.cloudinary.android.MediaManager;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.core.util.GeoJsonUtil;
+import com.example.wanderfunmobile.core.util.NumberUtil;
 import com.example.wanderfunmobile.core.util.ViewPager2HeightAdjuster;
 import com.example.wanderfunmobile.databinding.BottomSheetLocationPinBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPlaceInfoBinding;
 import com.example.wanderfunmobile.databinding.FragmentExploreBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
+import com.example.wanderfunmobile.presentation.ui.activity.place.FeedbackCreateActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.PlaceInfoTabAdapter;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.core.util.BitMapUtil;
@@ -138,8 +140,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private boolean canCheckIn;
     private Long currentCheckInPlaceId;
 
-    private ActivityResultLauncher<Intent> activityResultLauncher;
-
     public ExploreFragment() {
     }
 
@@ -148,8 +148,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         // Init maplibre
         MapLibre.getInstance(requireContext());
-
-        setUpActivityResultLauncher();
 
         setUpRequestPermissionsLauncher();
     }
@@ -363,26 +361,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         viewBinding.mapView.onSaveInstanceState(outState);
-    }
-
-    private void setUpActivityResultLauncher() {
-        activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null ) {
-                            switch (Objects.requireNonNull(data.getStringExtra("status")))
-                            {
-                                case "feedback_created":
-                                    placeViewModel.findPlaceById(data.getLongExtra("place_id", -1L));
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                });
     }
 
     private void setUpRequestPermissionsLauncher() {
@@ -765,7 +743,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
         // Place info tab
         // View pager
-        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(requireActivity(), place.getId());
+        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(requireActivity(), gson.toJson(place));
         ViewPager2 viewPager = placeInfoBottomSheetBinding.viewPager;
         viewPager.setAdapter(placeInfoTabAdapter);
         ViewPager2HeightAdjuster.autoAdjustHeight(viewPager, true);
@@ -854,7 +832,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         placeRating.setText(String.valueOf(place.getRating()));
 
         TextView placeRatingCount = placeInfoBottomSheetBinding.placeRatingCount;
-        placeRatingCount.setText("(" + place.getFeedbackCount() + ")");
+        placeRatingCount.setText("(" + NumberUtil.formatNumberWithCommas(place.getFeedbackCount()) + ")");
 
         ConstraintLayout placeTimeOpening = placeInfoBottomSheetBinding.placeTimeOpening;
         TextView placeTimeOpeningTimeClose = placeInfoBottomSheetBinding.placeTimeOpeningTimeClose;

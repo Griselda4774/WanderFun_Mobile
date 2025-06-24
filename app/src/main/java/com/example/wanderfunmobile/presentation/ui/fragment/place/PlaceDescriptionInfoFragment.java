@@ -19,21 +19,25 @@ import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.model.places.Section;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.SectionItemAdapter;
 import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
+import com.google.gson.Gson;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class PlaceDescriptionInfoFragment extends Fragment {
-
     private FragmentPlaceDescriptionInfoBinding viewBinding;
     private final List<Section> sectionList = new ArrayList<>();
     private PlaceViewModel placeViewModel;
-
+    private Place place;
     private SectionItemAdapter sectionItemAdapter;
+    @Inject
+    Gson gson;
 
     public PlaceDescriptionInfoFragment() {
     }
@@ -41,13 +45,17 @@ public class PlaceDescriptionInfoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            place = gson.fromJson(getArguments().getString("place_json"), Place.class);
+            sectionList.addAll(place.getPlaceDetail().getSectionList());
+        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewBinding = FragmentPlaceDescriptionInfoBinding.inflate(inflater, container, false);
-        placeViewModel = new ViewModelProvider(requireActivity()).get(PlaceViewModel.class);
+
         return viewBinding.getRoot();
     }
 
@@ -56,25 +64,22 @@ public class PlaceDescriptionInfoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = viewBinding.placeDescriptionList;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        sectionItemAdapter = new SectionItemAdapter(sectionList);
-        recyclerView.setAdapter(sectionItemAdapter);
-
-        placeViewModel.getFindPlaceByIdResponseLiveData().observe(getViewLifecycleOwner(), result -> {
-            if (!result.isError() && result.getData() != null) {
-                bindPlaceData(result.getData());
-                sectionList.addAll(result.getData().getPlaceDetail().getSectionList());
-                sectionItemAdapter.notifyDataSetChanged();
-            }
-        });
+        setUpView();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         viewBinding = null;
-        placeViewModel = null;
+    }
+
+    private void setUpView() {
+        RecyclerView recyclerView = viewBinding.sectionList;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        sectionItemAdapter = new SectionItemAdapter(sectionList);
+        recyclerView.setAdapter(sectionItemAdapter);
+
+        bindPlaceData(place);
     }
 
     @SuppressLint("SetTextI18n")

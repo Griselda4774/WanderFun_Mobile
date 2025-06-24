@@ -13,14 +13,17 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.FragmentPlaceImageInfoBinding;
 
 public class PlaceImageInfoFragment extends Fragment {
-
     private FragmentPlaceImageInfoBinding viewBinding;
+    private Long placeId;
 
     public PlaceImageInfoFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            placeId = getArguments().getLong("place_id");
+        }
     }
 
     @Override

@@ -18,8 +18,7 @@ import retrofit2.http.Query;
 
 public interface FeedbackApi {
     @GET("feedback")
-    Call<ResponseDto<List<FeedbackDto>>> findAllByPlaceId(@Header("Authorization") String bearerToken,
-                                                                   @Query("placeId") Long placeId);
+    Call<ResponseDto<List<FeedbackDto>>> findAllByPlaceId(@Query("placeId") Long placeId);
 
     @POST("feedback")
     Call<ResponseDto<FeedbackDto>> create(@Header("Authorization") String bearerToken,

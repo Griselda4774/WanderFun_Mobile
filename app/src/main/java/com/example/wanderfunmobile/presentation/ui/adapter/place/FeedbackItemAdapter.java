@@ -79,7 +79,7 @@ public class FeedbackItemAdapter extends RecyclerView.Adapter<FeedbackItemAdapte
             // Time
             TextView time = binding.feedbackTime;
             if (feedback.getCreateAt() != null) {
-                time.setText(DateTimeUtil.timeAgoLocalDateTime(feedback.getCreateAt()));
+                time.setText(DateTimeUtil.localDateTimeToString(feedback.getCreateAt()));
             }
 
             // Comment
