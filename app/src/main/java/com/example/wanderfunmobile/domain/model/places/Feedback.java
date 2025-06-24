@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Feedback {
     private Long id;
     private User user;
-    private float rating;
+    private int rating;
     private String content;
     private Image image;
     private LocalDateTime createAt;
@@ -35,11 +35,11 @@ public class Feedback {
         this.user = user;
     }
 
-    public float getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 

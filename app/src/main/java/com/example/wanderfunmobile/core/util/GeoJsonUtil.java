@@ -1,21 +1,31 @@
 package com.example.wanderfunmobile.core.util;
 
 import android.content.Context;
+import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public class GeoJsonUtil {
     public static String loadGeoJsonFromAsset(Context context, String filename) {
-        try {
-            InputStream is = context.getAssets().open(filename);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            return new String(buffer, "UTF-8");
+        StringBuilder sb = new StringBuilder();
+
+        try (InputStream is = context.getAssets().open(filename);
+             BufferedReader reader = new BufferedReader(
+                     new InputStreamReader(is, StandardCharsets.UTF_8))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append('\n');
+            }
+
+            return sb.toString();
+
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("GeoJsonUtil", "Error loading GeoJson from asset: " + filename, e);
             return null;
         }
     }

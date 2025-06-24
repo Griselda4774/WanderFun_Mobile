@@ -83,10 +83,10 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/user_ranking"/>
+                        app:layout_constraintEnd_toStartOf="@id/user_leaderboard"/>
 
                     <TextView
-                        android:id="@+id/user_ranking"
+                        android:id="@+id/user_leaderboard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="9.999"
@@ -114,7 +114,7 @@
                     android:id="@+id/personal_banner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cá nhân"
+                    android:text="Thông tin"
                     style="@style/Text.Description"
                     android:background="@color/blue2_30"
                     android:paddingVertical="4dp"
@@ -258,6 +258,51 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/leaderboard_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/section_padding_vertical"
+                    android:paddingHorizontal="@dimen/app_margin_medium"
+                    android:clickable="true"
+                    android:background="@drawable/effect_ripple"
+                    app:layout_constraintTop_toBottomOf="@id/album_section"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/leaderboard_icon"
+                        android:layout_width="@dimen/section_icon_size"
+                        android:layout_height="@dimen/section_icon_size"
+                        android:src="@drawable/ic_place_chart"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                    <TextView
+                        android:id="@+id/leaderboard_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bảng xếp hạng"
+                        style="@style/Text.Title.Section"
+                        android:layout_marginStart="@dimen/section_title_margin"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/leaderboard_icon"/>
+
+                    <ImageView
+                        android:id="@+id/user_leaderboard_nav_button"
+                        android:layout_width="@dimen/section_next_icon_size"
+                        android:layout_height="@dimen/section_next_icon_size"
+                        android:src="@drawable/ic_next"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/section_icon_color" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <TextView
                     android:id="@+id/help_and_info_banner"
                     android:layout_width="match_parent"
@@ -268,7 +313,7 @@
                     android:layout_marginTop="@dimen/section_padding_vertical"
                     android:paddingVertical="4dp"
                     android:paddingHorizontal="@dimen/app_margin_medium"
-                    app:layout_constraintTop_toBottomOf="@id/album_section"
+                    app:layout_constraintTop_toBottomOf="@id/leaderboard_section"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 

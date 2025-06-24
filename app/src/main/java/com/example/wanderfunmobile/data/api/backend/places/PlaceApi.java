@@ -1,11 +1,9 @@
-package com.example.wanderfunmobile.data.api.backend;
+package com.example.wanderfunmobile.data.api.backend.places;
 
 import com.example.wanderfunmobile.data.dto.ResponseDto;
 import com.example.wanderfunmobile.data.dto.place.FeedbackCreateDto;
 import com.example.wanderfunmobile.data.dto.place.FeedbackDto;
 import com.example.wanderfunmobile.data.dto.place.PlaceDto;
-import com.example.wanderfunmobile.data.dto.posts.CommentCreateDto;
-import com.example.wanderfunmobile.data.dto.posts.CommentDto;
 
 import java.util.List;
 
@@ -31,24 +29,6 @@ public interface PlaceApi {
 
     @GET("place/{placeId}")
     Call<ResponseDto<PlaceDto>> findPlaceById(@Path("placeId") Long placeId);
-
-    @GET("place/feedback")
-    Call<ResponseDto<List<FeedbackDto>>> findAllFeedbacksByPlaceId(@Header("Authorization") String bearerToken,
-                                                                 @Query("placeId") Long placeId);
-
-    @POST("place/feedback")
-    Call<ResponseDto<FeedbackDto>> createFeedback(@Header("Authorization") String bearerToken,
-                                                @Query("placeId") Long placeId,
-                                                @Body FeedbackCreateDto feedbackCreateDto);
-
-    @PUT("place/feedback/{feedbackId}")
-    Call<ResponseDto<FeedbackDto>> updateFeedback(@Header("Authorization") String bearerToken,
-                                                @Path("feedbackId") Long feedbackId,
-                                                @Body FeedbackCreateDto feedbackCreateDto);
-
-    @DELETE("place/feedback/{feedbackId}")
-    Call<ResponseDto<FeedbackDto>> deleteFeedback(@Header("Authorization") String bearerToken,
-                                                @Path("feedbackId") Long feedbackId);
 
 //    @GET("place/favourite")
 //    Call<ResponseDto<List<FavouritePlaceDto>>> findAllFavouritePlaces(@Header("Authorization") String bearerToken);

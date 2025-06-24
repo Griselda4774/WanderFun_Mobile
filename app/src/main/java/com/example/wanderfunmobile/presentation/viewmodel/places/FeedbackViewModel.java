@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.places.Feedback;
-import com.example.wanderfunmobile.domain.repository.PlaceRepository;
+import com.example.wanderfunmobile.domain.repository.places.FeedbackRepository;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class FeedbackViewModel extends ViewModel {
-    private final PlaceRepository placeRepository;
+    private final FeedbackRepository feedbackRepository;
 
     @Inject
-    public FeedbackViewModel(PlaceRepository placeRepository) {
-        this.placeRepository = placeRepository;
+    public FeedbackViewModel(FeedbackRepository feedbackRepository) {
+        this.feedbackRepository = feedbackRepository;
     }
 
     private final MutableLiveData<Result<List<Feedback>>> findAllFeedbacksByPlaceIdLiveData = new MutableLiveData<>();
@@ -49,9 +49,9 @@ public class FeedbackViewModel extends ViewModel {
         return isLoading;
     }
 
-    public void findAllFeedbacksByPlaceId(String bearerToken, Long placeId) {
+    public void findAllFeedbacksByPlaceId(Long placeId) {
         isLoading.setValue(true);
-        placeRepository.findAllFeedbacksByPlaceId(bearerToken, placeId).observeForever(result -> {
+        feedbackRepository.findAllByPlaceId(placeId).observeForever(result -> {
             isLoading.setValue(false);
             findAllFeedbacksByPlaceIdLiveData.setValue(result);
         });
@@ -59,7 +59,7 @@ public class FeedbackViewModel extends ViewModel {
 
     public void createFeedback(String bearerToken, Long placeId, Feedback feedback) {
         isLoading.setValue(true);
-        placeRepository.createFeedback(bearerToken, placeId, feedback).observeForever(result -> {
+        feedbackRepository.create(bearerToken, placeId, feedback).observeForever(result -> {
             isLoading.setValue(false);
             createFeedbackLiveData.setValue(result);
         });
@@ -67,7 +67,7 @@ public class FeedbackViewModel extends ViewModel {
 
     public void updateFeedback(String bearerToken, Long feedbackId, Feedback feedback) {
         isLoading.setValue(true);
-        placeRepository.updateFeedback(bearerToken, feedbackId, feedback).observeForever(result -> {
+        feedbackRepository.updateById(bearerToken, feedbackId, feedback).observeForever(result -> {
             isLoading.setValue(false);
             updateFeedbackLiveData.setValue(result);
         });
@@ -75,7 +75,7 @@ public class FeedbackViewModel extends ViewModel {
 
     public void deleteFeedback(String bearerToken, Long feedbackId, String localId) {
         isLoading.setValue(true);
-        placeRepository.deleteFeedback(bearerToken, feedbackId, localId).observeForever(result -> {
+        feedbackRepository.deleteById(bearerToken, feedbackId, localId).observeForever(result -> {
             isLoading.setValue(false);
             deleteFeedbackLiveData.setValue(result);
         });

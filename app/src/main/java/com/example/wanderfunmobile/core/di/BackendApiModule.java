@@ -6,17 +6,16 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.LocalDateDeserializer;
 import com.example.wanderfunmobile.core.util.LocalDateSerializer;
 import com.example.wanderfunmobile.core.util.LocalDateTimeDeserializer;
-import com.example.wanderfunmobile.core.util.typeadapter.LocalDateTimeAdapter;
 import com.example.wanderfunmobile.data.api.backend.AddressApi;
 import com.example.wanderfunmobile.data.api.backend.AlbumApi;
 import com.example.wanderfunmobile.data.api.backend.AuthApi;
 import com.example.wanderfunmobile.data.api.backend.CloudinaryApi;
 import com.example.wanderfunmobile.data.api.backend.LeaderboardApi;
-import com.example.wanderfunmobile.data.api.backend.PlaceApi;
+import com.example.wanderfunmobile.data.api.backend.places.FeedbackApi;
+import com.example.wanderfunmobile.data.api.backend.places.PlaceApi;
 import com.example.wanderfunmobile.data.api.backend.PostApi;
 import com.example.wanderfunmobile.data.api.backend.TripApi;
 import com.example.wanderfunmobile.data.api.backend.UserApi;
-import com.example.wanderfunmobile.core.util.DateDeserializer;
 import com.example.wanderfunmobile.core.util.LocalTimeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,7 +23,6 @@ import com.google.gson.GsonBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -73,11 +71,8 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public AlbumApi provideAlbumApi(@ApplicationContext Context context) {
+    public AlbumApi provideAlbumApi(@ApplicationContext Context context, Gson gson) {
         String baseUrl = context.getString(R.string.base_url);
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -106,11 +101,8 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public PlaceApi providePlaceApi(@ApplicationContext Context context) {
+    public PlaceApi providePlaceApi(@ApplicationContext Context context, Gson gson) {
         String baseUrl = context.getString(R.string.base_url);
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalTime.class, new LocalTimeDeserializer())
-                .create();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -124,12 +116,22 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public TripApi provideTripApi(@ApplicationContext Context context) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-                .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-                .setDateFormat("yyyy-MM-dd")
-                .create();
+    public FeedbackApi provideFeedbackApi(@ApplicationContext Context context, Gson gson) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(FeedbackApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public TripApi provideTripApi(@ApplicationContext Context context, Gson gson) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -144,12 +146,7 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public UserApi provideUserApi(@ApplicationContext Context context) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-                .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-                .setDateFormat("yyyy-MM-dd")
-                .create();
+    public UserApi provideUserApi(@ApplicationContext Context context, Gson gson) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -179,12 +176,8 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public PostApi providePostApi(@ApplicationContext Context context) {
+    public PostApi providePostApi(@ApplicationContext Context context, Gson gson) {
         String baseUrl = context.getString(R.string.base_url);
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-                .create();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))

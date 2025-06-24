@@ -17,6 +17,7 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -54,7 +55,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class AddEditAlbumActivity extends AppCompatActivity {
     private ActivityAddEditAlbumBinding viewBinding;
     private final AlbumCreateDto albumCreateDto = new AlbumCreateDto();
-    private final List<Uri> imageList = new ArrayList<>();
     private Uri coverImageUri;
     private Long albumId;
     private Place selectedPlace;
@@ -103,12 +103,11 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                     selectedPlace = objectMapper.map(albumDto.getPlace(), Place.class);
                     viewBinding.placeName.setText(selectedPlace.getName());
 
-                    imageList.clear();
+                    imageWithDeleteAdapter = new ImageWithDeleteAdapter(new ArrayList<>());
                     for (AlbumImageDto albumImageDto : albumDto.getAlbumImageList()) {
-                        imageList.add(Uri.parse(albumImageDto.getImageUrl()));
+                        imageWithDeleteAdapter.addImage(Uri.parse(albumImageDto.getImageUrl()));
                     }
 
-                    imageWithDeleteAdapter = new ImageWithDeleteAdapter(imageList);
                     recyclerView.setAdapter(imageWithDeleteAdapter);
                     hideLoadingDialog();
                 }
@@ -135,9 +134,9 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         albumViewModel.getAlbumByIdResponseLiveData().observe(this, response -> {
             if (response != null && !response.isError() && response.getData() != null) {
                 List<AlbumImage> albumImages = objectMapper.mapList(response.getData().getAlbumImageList(), AlbumImage.class);
-                imageList.clear();
+
                 for (AlbumImage image : albumImages) {
-                    imageList.add(Uri.parse(image.getImageUrl()));
+                    imageWithDeleteAdapter.addImage(Uri.parse(image.getImageUrl()));
                 }
                 imageWithDeleteAdapter.notifyDataSetChanged();
                 updateRecyclerViewVisibility();
@@ -179,7 +178,10 @@ public class AddEditAlbumActivity extends AppCompatActivity {
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        imageWithDeleteAdapter = new ImageWithDeleteAdapter(imageList); // Initialize with unified list
+        imageWithDeleteAdapter = new ImageWithDeleteAdapter(new ArrayList<>());
+        imageWithDeleteAdapter.setOnImageListChangedListener(newSize -> {
+            viewBinding.albumImageListPlaceholderText.setVisibility(newSize > 0 ? View.GONE : View.VISIBLE);
+        });
         recyclerView.setAdapter(imageWithDeleteAdapter);
     }
 
@@ -223,17 +225,17 @@ public class AddEditAlbumActivity extends AppCompatActivity {
             removeImageButton.setVisibility(View.GONE);
             coverImage.setImageDrawable(null);
             coverImageUri = null;
+            resetCoverImageLayout();
         });
     }
 
-    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
+    @SuppressLint("SetTextI18n")
     private void setupPickMultipleMedia() {
         pickAlbumImages = registerForActivityResult(
                 new ActivityResultContracts.PickMultipleVisualMedia(9),
                 uris -> {
                     if (uris != null) {
-                        imageList.addAll(uris);
-                        imageWithDeleteAdapter.notifyDataSetChanged();
+                        imageWithDeleteAdapter.addImages(uris);
                     } else {
                         Log.d("AddEditAlbumActivity", "No media selected");
                     }
@@ -245,8 +247,11 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                 uri -> {
                     if (uri != null) {
                         coverImageUri = uri;
-                        Glide.with(this).load(uri).into(viewBinding.coverImage);
+                        Glide.with(this)
+                                .load(uri)
+                                .into(viewBinding.coverImage);
                         viewBinding.removeButton.findViewById(R.id.button).setVisibility(View.VISIBLE);
+                        setNonEmptyCoverImageLayout();
                     } else {
                         Log.d("AddEditAlbumActivity", "No cover image selected");
                     }
@@ -291,18 +296,20 @@ public class AddEditAlbumActivity extends AppCompatActivity {
     }
 
     private void uploadImages(String albumName, ImageUploadCallback callback) {
-        if (imageList.isEmpty()) {
+        if (imageWithDeleteAdapter.getImageList().isEmpty()) {
             callback.onComplete(new ArrayList<>());
             return;
         }
 
+        List<Uri> finalList = imageWithDeleteAdapter.getImageList();
+
         String folderName = "/wanderfun/user/" + SessionManager.getInstance(getApplicationContext()).getAccountId() + "/albums/" + albumName.replaceAll("\\s+", "");
         List<AlbumImageDto> albumImageDtoList = new ArrayList<>();
         AtomicInteger completedUploads = new AtomicInteger(0);
-        int totalUploads = imageList.size();
+        int totalUploads = finalList.size();
 
-        for (int i = 0; i < imageList.size(); i++) {
-            Uri uri = imageList.get(i);
+        for (int i = 0; i < finalList.size(); i++) {
+            Uri uri = finalList.get(i);
             String fileName = "album_user_" + SessionManager.getInstance(getApplicationContext()).getAccountId() + "_" + System.currentTimeMillis() + "_" + i;
 
             if (uri.toString().startsWith("http")) {
@@ -367,7 +374,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
     private void updateRecyclerViewVisibility() {
         RecyclerView recyclerView = viewBinding.albumImageList;
-        if (imageList.isEmpty()) {
+        if (imageWithDeleteAdapter.getImageList().isEmpty()) {
             recyclerView.setVisibility(View.GONE); // Hide RecyclerView
         } else {
             recyclerView.setVisibility(View.VISIBLE); // Show RecyclerView
@@ -386,6 +393,19 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
     private void showToast(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private void setNonEmptyCoverImageLayout() {
+        ImageView coverImage = viewBinding.coverImage;
+        coverImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        coverImage.setImageTintList(null);
+    }
+
+    private void resetCoverImageLayout() {
+        ImageView coverImage = viewBinding.coverImage;
+        coverImage.setImageResource(R.drawable.ic_add_image); // Set a default blank image
+        coverImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        coverImage.setImageTintList(ContextCompat.getColorStateList(this, R.color.blue2));
     }
 
     private String extractPublicIdFromUrl(String url) {

@@ -1,4 +1,6 @@
-package com.example.wanderfunmobile.presentation.ui.fragment.leaderboard;
+package com.example.wanderfunmobile.presentation.ui.fragment.ranking;
+
+import static org.maplibre.android.MapLibre.getApplicationContext;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.dto.leaderboard.LeaderboardPlaceDto;
 import com.example.wanderfunmobile.databinding.FragmentLeaderboardPlaceBinding;
 import com.example.wanderfunmobile.domain.model.LeaderboardPlace;
@@ -65,7 +68,7 @@ public class LeaderboardPlaceFragment extends Fragment {
         TextView[] placeScores = {viewBinding.firstPlaceScore, viewBinding.secondPlaceScore, viewBinding.thirdPlaceScore};
         ImageView[] placeAvatars = {viewBinding.firstPlaceAvatar, viewBinding.secondPlaceAvatar, viewBinding.thirdPlaceAvatar};
 
-        leaderboardViewModel.getLeaderboardPlace();
+        leaderboardViewModel.getLeaderboardPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken());
         leaderboardViewModel.getLeaderboardPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
             if (!data.isError()) {
                 List<LeaderboardPlaceDto> leaderboardPlaceDtoList = data.getData();

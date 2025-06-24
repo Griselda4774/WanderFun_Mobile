@@ -6,7 +6,7 @@ public class LeaderboardUserDto {
     private String lastName;
     private String avatarUrl;
     private int point;
-    private int rank;
+    private int ranking;
     private Long userId;
 
     public LeaderboardUserDto() {
@@ -52,12 +52,12 @@ public class LeaderboardUserDto {
         this.point = point;
     }
 
-    public int getRank() {
-        return rank;
+    public int getRanking() {
+        return ranking;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setRanking(int ranking) {
+        this.ranking = ranking;
     }
 
     public Long getUserId() {

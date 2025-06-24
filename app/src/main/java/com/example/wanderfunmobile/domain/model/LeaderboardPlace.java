@@ -5,7 +5,7 @@ public class LeaderboardPlace {
     private String name;
     private String coverImageUrl;
     private int checkInCount;
-    private int rank;
+    private int ranking;
     private Long placeId;
 
     public LeaderboardPlace() {
@@ -44,11 +44,11 @@ public class LeaderboardPlace {
     }
 
     public int getRank() {
-        return rank;
+        return ranking;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setRank(int ranking) {
+        this.ranking = ranking;
     }
 
     public Long getPlaceId() {

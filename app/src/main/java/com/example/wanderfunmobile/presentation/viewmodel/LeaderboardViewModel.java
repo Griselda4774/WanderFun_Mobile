@@ -40,17 +40,17 @@ public class LeaderboardViewModel extends ViewModel {
         return isLoading;
     }
 
-    public void getLeaderboardUser() {
+    public void getLeaderboardUser(String bearerToken) {
         isLoading.setValue(true);
-        leaderboardRepository.getLeaderboardUser().observeForever(response -> {
+        leaderboardRepository.getLeaderboardUser(bearerToken).observeForever(response -> {
             getLeaderboardUserResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
     }
 
-    public void getLeaderboardPlace() {
+    public void getLeaderboardPlace(String bearerToken) {
         isLoading.setValue(true);
-        leaderboardRepository.getLeaderboardPlace().observeForever(response -> {
+        leaderboardRepository.getLeaderboardPlace(bearerToken).observeForever(response -> {
             getLeaderboardPlaceResponseLiveData.setValue(response);
             isLoading.setValue(false);
         });
