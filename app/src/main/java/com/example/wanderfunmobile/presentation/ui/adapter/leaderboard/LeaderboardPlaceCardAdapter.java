@@ -32,7 +32,7 @@ public class LeaderboardPlaceCardAdapter extends RecyclerView.Adapter<Leaderboar
     @Override
     public void onBindViewHolder(@NonNull LeaderboardCardViewHolder holder, int position) {
         LeaderboardPlace place = placeList.get(position);
-        holder.bind(place);
+        holder.bind(place, position);
     }
 
     @Override
@@ -49,8 +49,9 @@ public class LeaderboardPlaceCardAdapter extends RecyclerView.Adapter<Leaderboar
         }
 
         @SuppressLint("SetTextI18n")
-        public void bind(LeaderboardPlace place) {
-            itemLeaderboardCardBinding.textRankNumber.setText(String.valueOf(place.getRank()));
+        public void bind(LeaderboardPlace place, int position) {
+            //itemLeaderboardCardBinding.textRankNumber.setText(String.valueOf("#" + place.getRank()));
+            itemLeaderboardCardBinding.textRankNumber.setText("#" + (position + 4));
             itemLeaderboardCardBinding.textName.setText(place.getName());
             itemLeaderboardCardBinding.textScore.setText(place.getCheckInCount() + " lượt ghé");
 
