@@ -515,11 +515,13 @@ public class PostDetailActivity extends AppCompatActivity {
         viewBinding.likeButton.setOnClickListener(v -> {
             viewBinding.likeButton.setVisibility(View.GONE);
             viewBinding.likeButtonHighlight.setVisibility(View.VISIBLE);
+            viewBinding.likeCount.setText(String.valueOf(post.getLikeCount() + 1));
         });
 
         viewBinding.likeButtonHighlight.setOnClickListener(v -> {
             viewBinding.likeButton.setVisibility(View.VISIBLE);
             viewBinding.likeButtonHighlight.setVisibility(View.GONE);
+            viewBinding.likeCount.setText(String.valueOf(post.getLikeCount()));
         });
 
         // Comment button

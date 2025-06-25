@@ -110,7 +110,7 @@
                 android:background="@drawable/bg_img_rounded"
                 android:scaleType="centerCrop"
                 android:clipToOutline="true"
-                android:src="@drawable/brown" />
+                android:src="@drawable/ic_avatar" />
 
             <com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingOutlineView
                 android:id="@+id/star_rating_outline_view"

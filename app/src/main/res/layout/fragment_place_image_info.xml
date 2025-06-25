@@ -5,10 +5,13 @@
     android:layout_height="wrap_content"
     tools:context=".presentation.ui.fragment.place.PlaceImageInfoFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/no_feedback_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:text="Địa điểm chưa có hình ảnh."
+        style="@style/Text.Content"
+        android:gravity="center"
+        android:paddingVertical="@dimen/section_padding_vertical" />
 
 </FrameLayout>

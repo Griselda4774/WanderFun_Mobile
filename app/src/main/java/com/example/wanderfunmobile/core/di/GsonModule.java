@@ -6,6 +6,7 @@ import com.example.wanderfunmobile.core.util.LocalDateTimeDeserializer;
 import com.example.wanderfunmobile.core.util.LocalTimeDeserializer;
 import com.example.wanderfunmobile.core.util.typeadapter.LocalDateAdapter;
 import com.example.wanderfunmobile.core.util.typeadapter.LocalDateTimeAdapter;
+import com.example.wanderfunmobile.core.util.typeadapter.LocalTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -28,7 +29,7 @@ public class GsonModule {
     public Gson provideGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(LocalTime.class, new LocalTimeDeserializer())
+                .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .setDateFormat("yyyy-MM-dd")
                 .create();

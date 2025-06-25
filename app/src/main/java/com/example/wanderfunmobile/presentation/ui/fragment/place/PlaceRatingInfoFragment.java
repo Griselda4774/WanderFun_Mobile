@@ -182,6 +182,7 @@ public class PlaceRatingInfoFragment extends Fragment {
         recyclerView.setAdapter(ratingBarItemAdapter);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void setUpActivityResultLauncher() {
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -194,8 +195,7 @@ public class PlaceRatingInfoFragment extends Fragment {
                                 case "feedback_created":
                                     Feedback newFeedback = gson.fromJson(Objects.requireNonNull(data.getStringExtra("feedback_json")), Feedback.class);
                                     feedbackList.add(0, newFeedback);
-                                    feedbackItemAdapter.notifyItemInserted(0);
-                                    viewBinding.placeRatingList.scrollToPosition(0);
+                                    feedbackItemAdapter.notifyDataSetChanged();
                                     bindRatingData(feedbackList);
                                     break;
                                 default:
