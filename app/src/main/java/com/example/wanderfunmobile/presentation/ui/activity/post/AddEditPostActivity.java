@@ -192,6 +192,12 @@ public class AddEditPostActivity extends AppCompatActivity {
             viewBinding.image.setImageDrawable(null);
             imageUri = null;
         });
+
+        viewBinding.removeTripButton.getRoot().setVisibility(View.VISIBLE);
+        viewBinding.removeTripButton.getRoot().setOnClickListener(v -> {
+            shareTrip = null;
+            viewBinding.tagTripContainer.setVisibility(GONE);
+        });
     }
 
     private void initBottomSheet() {
@@ -265,14 +271,22 @@ public class AddEditPostActivity extends AppCompatActivity {
             viewBinding.image.setVisibility(GONE);
             viewBinding.removeImageButton.getRoot().setVisibility(GONE);
         }
+
+        if (post.getTrip() != null) {
+            shareTrip = post.getTrip();
+            bindTripData(shareTrip);
+        } else {
+            shareTrip = null;
+            viewBinding.tagTripContainer.setVisibility(GONE);
+        }
     }
 
     private void bindTripData(Trip trip) {
-        if (trip != null) {
-            viewBinding.trip.name.setText(trip.getName());
-            viewBinding.trip.startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
-            viewBinding.trip.endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
-        }
+        viewBinding.tagTripContainer.setVisibility(View.VISIBLE);
+
+        viewBinding.trip.name.setText(trip.getName());
+        viewBinding.trip.startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
+        viewBinding.trip.endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
     }
 
     private void initBottomSheetButtons() {

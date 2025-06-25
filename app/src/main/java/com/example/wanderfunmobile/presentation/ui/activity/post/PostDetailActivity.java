@@ -424,6 +424,7 @@ public class PostDetailActivity extends AppCompatActivity {
         // Place
         TextView placeName = viewBinding.placeName;
         if (post.getPlace() != null) {
+            viewBinding.placeLayout.setVisibility(View.VISIBLE);
             viewBinding.placeName.setVisibility(View.VISIBLE);
             viewBinding.placeCheckInStatus.setVisibility(View.VISIBLE);
             viewBinding.place.getRoot().setVisibility(View.VISIBLE);
@@ -441,8 +442,13 @@ public class PostDetailActivity extends AppCompatActivity {
             viewBinding.placeName.setVisibility(View.GONE);
             viewBinding.placeCheckInStatus.setVisibility(View.GONE);
             viewBinding.place.getRoot().setVisibility(View.GONE);
+            viewBinding.tripLayout.setVisibility(View.VISIBLE);
             viewBinding.tripShareStatus.setVisibility(View.VISIBLE);
             viewBinding.trip.getRoot().setVisibility(View.VISIBLE);
+
+            viewBinding.trip.name.setText(post.getTrip().getName());
+            viewBinding.trip.startTime.setText(DateTimeUtil.localDateToString(post.getTrip().getStartTime()));
+            viewBinding.trip.endTime.setText(DateTimeUtil.localDateToString(post.getTrip().getEndTime()));
         } else {
             viewBinding.tripShareStatus.setVisibility(View.GONE);
             viewBinding.trip.getRoot().setVisibility(View.GONE);
