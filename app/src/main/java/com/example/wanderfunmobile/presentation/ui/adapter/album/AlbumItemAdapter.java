@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ItemAlbumCardBinding;
 import com.example.wanderfunmobile.domain.model.albums.Album;
 import com.example.wanderfunmobile.presentation.ui.activity.album.AlbumDetailsActivity;
@@ -62,6 +64,16 @@ public class AlbumItemAdapter extends RecyclerView.Adapter<AlbumItemAdapter.Albu
                 intent.putExtra("albumId", album.getId());
                 v.getContext().startActivity(intent);
             });
+
+            if (album.getCoverImage() != null) {
+                Glide.with(itemAlbumCardBinding.getRoot().getContext())
+                        .load(album.getCoverImage().getImageUrl())
+                        .placeholder(R.drawable.img_placeholder)
+                        .error(R.drawable.img_placeholder)
+                        .into(itemAlbumCardBinding.placeCoverImage);
+            } else {
+                itemAlbumCardBinding.placeCoverImage.setImageResource(R.drawable.img_placeholder);
+            }
         }
     }
 }

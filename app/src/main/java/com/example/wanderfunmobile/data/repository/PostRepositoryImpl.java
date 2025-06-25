@@ -211,7 +211,9 @@ public class PostRepositoryImpl implements PostRepository {
         MutableLiveData<Result<Post>> createPostResponseLiveData = new MutableLiveData<>();
         try {
             PostCreateDto postCreateDto = objectMapper.map(post, PostCreateDto.class);
-            postCreateDto.setTripId(post.getTrip().getId());
+            if (post.getTrip() != null) {
+                postCreateDto.setTripId(post.getTrip().getId());
+            }
             Call<ResponseDto<PostDto>> call = postApi.createPost(bearerToken, postCreateDto);
             call.enqueue(new Callback<ResponseDto<PostDto>>() {
                 @Override
@@ -246,7 +248,9 @@ public class PostRepositoryImpl implements PostRepository {
 
         try {
             PostCreateDto postCreateDto = objectMapper.map(post, PostCreateDto.class);
-            postCreateDto.setTripId(post.getTrip().getId());
+            if (post.getTrip() != null) {
+                postCreateDto.setTripId(post.getTrip().getId());
+            }
             Call<ResponseDto<PostDto>> call = postApi.updatePost(bearerToken, postId, postCreateDto);
             call.enqueue(new Callback<ResponseDto<PostDto>>() {
                 @Override
@@ -371,7 +375,7 @@ public class PostRepositoryImpl implements PostRepository {
                 }
             });
         } catch (Exception e) {
-            Log.e("PostRepositoryImpl", "Error during createPost", e);
+            Log.e("PostRepositoryImpl", "Error during create comment", e);
         }
         return createCommentResponseLiveData;
     }
@@ -405,7 +409,7 @@ public class PostRepositoryImpl implements PostRepository {
                 }
             });
         } catch (Exception e) {
-            Log.e("CommentRepositoryImpl", "Error during updateComment", e);
+            Log.e("CommentRepositoryImpl", "Error during update comment", e);
         }
 
         return updateCommentResponseLiveData;
@@ -442,7 +446,7 @@ public class PostRepositoryImpl implements PostRepository {
                 }
             });
         } catch (Exception e) {
-            Log.e("CommentRepositoryImpl", "Error during deleteComment", e);
+            Log.e("CommentRepositoryImpl", "Error during delete comment", e);
         }
 
         return deleteCommentResponseLiveData;

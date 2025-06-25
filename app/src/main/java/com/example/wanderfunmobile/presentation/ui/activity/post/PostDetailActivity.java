@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -33,8 +32,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.ImageViewCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
@@ -46,8 +43,8 @@ import com.example.wanderfunmobile.domain.model.posts.Comment;
 import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.adapter.posts.CommentItemAdapter;
-import com.example.wanderfunmobile.presentation.viewmodel.CommentViewModel;
-import com.example.wanderfunmobile.presentation.viewmodel.PostViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.posts.CommentViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.posts.PostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -524,11 +521,13 @@ public class PostDetailActivity extends AppCompatActivity {
         viewBinding.likeButton.setOnClickListener(v -> {
             viewBinding.likeButton.setVisibility(View.GONE);
             viewBinding.likeButtonHighlight.setVisibility(View.VISIBLE);
+            viewBinding.likeCount.setText(String.valueOf(post.getLikeCount() + 1));
         });
 
         viewBinding.likeButtonHighlight.setOnClickListener(v -> {
             viewBinding.likeButton.setVisibility(View.VISIBLE);
             viewBinding.likeButtonHighlight.setVisibility(View.GONE);
+            viewBinding.likeCount.setText(String.valueOf(post.getLikeCount()));
         });
 
         // Comment button

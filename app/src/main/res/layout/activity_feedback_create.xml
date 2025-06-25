@@ -70,7 +70,7 @@
                 android:background="@drawable/bg_img_rounded"
                 android:scaleType="centerCrop"
                 android:clipToOutline="true"
-                android:src="@drawable/brown" />
+                android:src="@drawable/ic_avatar" />
 
             <TextView
                 android:id="@+id/user_name"
@@ -119,7 +119,6 @@
                 android:background="@drawable/bg_radius" />
 
             <LinearLayout
-                android:id="@+id/remove_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-12dp"
@@ -129,7 +128,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <include layout="@layout/button_close_rounded_red" />
+                <include
+                    android:id="@+id/remove_button"
+                    layout="@layout/button_close_rounded_red" />
 
             </LinearLayout>
 

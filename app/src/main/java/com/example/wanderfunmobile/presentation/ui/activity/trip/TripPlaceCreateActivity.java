@@ -1,6 +1,6 @@
 package com.example.wanderfunmobile.presentation.ui.activity.trip;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -18,15 +18,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
-import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceDto;
 import com.example.wanderfunmobile.databinding.ActivityTripPlaceCreateBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.domain.model.trips.TripPlace;
 import com.example.wanderfunmobile.presentation.ui.activity.place.SearchPlaceActivity;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
-import com.example.wanderfunmobile.presentation.viewmodel.PlaceViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -34,7 +32,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import org.parceler.Parcels;
 
 import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -81,12 +78,14 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
         setupButtons();
     }
 
+    @SuppressLint("ResourceAsColor")
     private void initViewModel() {
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
         placeViewModel.getFindPlaceByIdResponseLiveData().observe(this, result -> {
             if (!result.isError()) {
                 selectedPlace = result.getData();
                 binding.placeName.setText(selectedPlace.getName());
+                binding.placeName.setTextColor(R.color.black4);
             }
         });
     }
@@ -111,6 +110,7 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("ResourceAsColor")
     private void receiveIntentData() {
         try {
             TripPlaceDto tripPlace = Parcels.unwrap(getIntent().getParcelableExtra("selected_place"));
@@ -121,20 +121,24 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
             if(tripPlace != null) {
                 selectedPlace = objectMapper.map(tripPlace.getPlace(), Place.class);
                 binding.placeName.setText(tripPlace.getPlace().getName());
+                binding.placeName.setTextColor(R.color.black4);
 
                 noteEditText.setText(tripPlace.getPlaceNotes());
 
                 startTime = DateTimeUtil.stringToDate(DateTimeUtil.localDateToString(tripPlace.getStartTime()));
                 binding.startTime.setText(DateTimeUtil.localDateToString(tripPlace.getStartTime()));
+                binding.startTime.setTextColor(R.color.black4);
 
                 endTime = DateTimeUtil.stringToDate(DateTimeUtil.localDateToString(tripPlace.getEndTime()));
                 binding.endTime.setText(DateTimeUtil.localDateToString(tripPlace.getEndTime()));
+                binding.endTime.setTextColor(R.color.black4);
             }
 
             String limitStart = getIntent().getStringExtra("limit_start_time");
             if (!isNullOrEmpty(limitStart)) {
                 startTime = DateTimeUtil.stringToDate(limitStart);
                 binding.startTime.setText(limitStart);
+                binding.startTime.setTextColor(R.color.black4);
                 binding.startTime.setClickable(false);
             }
 
@@ -143,6 +147,7 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private void setupPickers() {
 
         binding.startTime.setOnClickListener(v -> {
@@ -155,6 +160,7 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
             picker.addOnPositiveButtonClickListener(selection -> {
                 startTime = new Date(selection);
                 binding.startTime.setText(DateTimeUtil.dateToString(startTime));
+                binding.startTime.setTextColor(R.color.black4);
             });
             picker.show(getSupportFragmentManager(), "START_DATE");
         });
@@ -172,6 +178,7 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
             picker.addOnPositiveButtonClickListener(selection -> {
                 endTime = new Date(selection);
                 binding.endTime.setText(DateTimeUtil.dateToString(endTime));
+                binding.endTime.setTextColor(R.color.black4);
             });
 
             picker.show(getSupportFragmentManager(), "END_DATE");

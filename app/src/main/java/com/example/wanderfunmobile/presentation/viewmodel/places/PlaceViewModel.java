@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.presentation.viewmodel;
+package com.example.wanderfunmobile.presentation.viewmodel.places;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -6,10 +6,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.wanderfunmobile.domain.model.CheckIn;
 import com.example.wanderfunmobile.domain.model.FavouritePlace;
-import com.example.wanderfunmobile.domain.model.places.Feedback;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.domain.repository.PlaceRepository;
+import com.example.wanderfunmobile.domain.repository.places.PlaceRepository;
 
 import java.util.List;
 
@@ -31,7 +30,6 @@ public class PlaceViewModel extends ViewModel {
     private final MutableLiveData<Result<List<Place>>> findAllPlacesByProvinceNameResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<List<Place>>> findAllPlacesByNameContainingResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<Place>> findPlaceByIdResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<Feedback>> createFeedbackResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<List<FavouritePlace>>> findAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<FavouritePlace>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<FavouritePlace>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
@@ -54,10 +52,6 @@ public class PlaceViewModel extends ViewModel {
 
     public LiveData<Result<Place>> getFindPlaceByIdResponseLiveData() {
         return findPlaceByIdResponseLiveData;
-    }
-
-    public LiveData<Result<Feedback>> getCreateFeedbackResponseLiveData() {
-        return createFeedbackResponseLiveData;
     }
 
     public LiveData<Result<List<FavouritePlace>>> getFindAllFavouritePlacesResponseLiveData() {
@@ -120,51 +114,43 @@ public class PlaceViewModel extends ViewModel {
         });
     }
 
-    public void createFeedback(String bearerToken, Feedback feedback, Long placeId) {
-        isLoading.setValue(true);
-        placeRepository.createFeedback(bearerToken, feedback, placeId).observeForever(response -> {
-            createFeedbackResponseLiveData.setValue(response);
-            isLoading.setValue(false);
-        });
-    }
-
-    public void findAllFavouritePlaces(String bearerToken) {
-        isLoading.setValue(true);
-        placeRepository.findAllFavouritePlaces(bearerToken).observeForever(response -> {
-            findAllFavouritePlacesResponseLiveData.setValue(response);
-            isLoading.setValue(false);
-        });
-    }
-
-    public void addFavouritePlace(String bearerToken, Long placeId) {
-        isLoading.setValue(true);
-        placeRepository.addFavouritePlace(bearerToken, placeId).observeForever(response -> {
-            addFavouritePlaceResponseLiveData.setValue(response);
-            isLoading.setValue(false);
-        });
-    }
-
-    public void deleteFavouritePlaceByIds(String bearerToken, List<Long> placeIds) {
-        isLoading.setValue(true);
-        placeRepository.deleteFavouritePlaceByIds(bearerToken, placeIds).observeForever(response -> {
-            deleteFavouritePlaceByIdsResponseLiveData.setValue(response);
-            isLoading.setValue(false);
-        });
-    }
-
-    public void findCheckInByPlaceId(String bearerToken, Long placeId) {
-        isLoading.setValue(true);
-        placeRepository.findCheckInByPlaceId(bearerToken, placeId).observeForever(response -> {
-            findCheckInByPlaceIdResponseLiveData.setValue(response);
-            isLoading.setValue(false);
-        });
-    }
-
-    public void checkInPlace(String bearerToken, Long placeId) {
-        isCheckingIn.setValue(true);
-        placeRepository.checkInPlace(bearerToken, placeId).observeForever(response -> {
-            checkInPlaceResponseLiveData.setValue(response);
-            isCheckingIn.setValue(false);
-        });
-    }
+//    public void findAllFavouritePlaces(String bearerToken) {
+//        isLoading.setValue(true);
+//        placeRepository.findAllFavouritePlaces(bearerToken).observeForever(response -> {
+//            findAllFavouritePlacesResponseLiveData.setValue(response);
+//            isLoading.setValue(false);
+//        });
+//    }
+//
+//    public void addFavouritePlace(String bearerToken, Long placeId) {
+//        isLoading.setValue(true);
+//        placeRepository.addFavouritePlace(bearerToken, placeId).observeForever(response -> {
+//            addFavouritePlaceResponseLiveData.setValue(response);
+//            isLoading.setValue(false);
+//        });
+//    }
+//
+//    public void deleteFavouritePlaceByIds(String bearerToken, List<Long> placeIds) {
+//        isLoading.setValue(true);
+//        placeRepository.deleteFavouritePlaceByIds(bearerToken, placeIds).observeForever(response -> {
+//            deleteFavouritePlaceByIdsResponseLiveData.setValue(response);
+//            isLoading.setValue(false);
+//        });
+//    }
+//
+//    public void findCheckInByPlaceId(String bearerToken, Long placeId) {
+//        isLoading.setValue(true);
+//        placeRepository.findCheckInByPlaceId(bearerToken, placeId).observeForever(response -> {
+//            findCheckInByPlaceIdResponseLiveData.setValue(response);
+//            isLoading.setValue(false);
+//        });
+//    }
+//
+//    public void checkInPlace(String bearerToken, Long placeId) {
+//        isCheckingIn.setValue(true);
+//        placeRepository.checkInPlace(bearerToken, placeId).observeForever(response -> {
+//            checkInPlaceResponseLiveData.setValue(response);
+//            isCheckingIn.setValue(false);
+//        });
+//    }
 }

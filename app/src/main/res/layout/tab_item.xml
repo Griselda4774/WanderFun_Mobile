@@ -6,4 +6,6 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:padding="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
     style="@style/Text.TabLabel"/>

@@ -76,13 +76,10 @@ public class StarRatingOutlineView extends ConstraintLayout {
         for (int i = 0; i < stars.length; i++) {
             final int finalI = i;
             stars[i].setOnClickListener(v -> {
-                Intent intent = new Intent(getContext(), FeedbackCreateActivity.class);
-                intent.putExtra("rating", finalI + 1);
-                intent.putExtra("placeId", placeId);
-                intent.putExtra("placeName", placeName);
-                getContext().startActivity(intent);
+                if (onStarClickListener != null) {
+                    onStarClickListener.onStarClicked(finalI + 1, placeId, placeName);
+                }
             });
-
         }
     }
 
@@ -93,5 +90,15 @@ public class StarRatingOutlineView extends ConstraintLayout {
                 setRating(finalI + 1);
             });
         }
+    }
+
+    public interface OnStarClickListener {
+        void onStarClicked(int rating, Long placeId, String placeName);
+    }
+
+    private OnStarClickListener onStarClickListener;
+
+    public void setOnStarClickListener(OnStarClickListener listener) {
+        this.onStarClickListener = listener;
     }
 }

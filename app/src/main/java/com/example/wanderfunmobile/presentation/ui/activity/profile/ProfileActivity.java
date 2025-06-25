@@ -21,23 +21,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
-import com.example.wanderfunmobile.core.util.LocalDateDeserializer;
-import com.example.wanderfunmobile.core.util.LocalDateSerializer;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.databinding.ActivityProfileBinding;
 import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.activity.post.AddEditPostActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.posts.PostItemAdapter;
-import com.example.wanderfunmobile.presentation.viewmodel.PostViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.posts.PostViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.UserViewModel;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -50,6 +48,8 @@ public class ProfileActivity extends AppCompatActivity {
     private PostItemAdapter postItemAdapter;
     private final List<Post> postList = new ArrayList<>();
     private ActivityResultLauncher<Intent> activityResultLauncher;
+    @Inject
+    Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,11 +180,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         viewBinding.editButton.setOnClickListener(v -> {
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-                    .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-                    .setDateFormat("yyyy-MM-dd")
-                    .create();
             String userJson = gson.toJson(user);
             Intent intent = new Intent(this, EditProfileActivity.class);
             intent.putExtra("user", userJson);

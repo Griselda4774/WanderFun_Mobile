@@ -208,11 +208,13 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
             binding.likeButton.setOnClickListener(v -> {
                 binding.likeButton.setVisibility(View.GONE);
                 binding.likeButtonHighlight.setVisibility(View.VISIBLE);
+                binding.likeCount.setText(String.valueOf(post.getLikeCount() + 1));
             });
 
             binding.likeButtonHighlight.setOnClickListener(v -> {
                 binding.likeButton.setVisibility(View.VISIBLE);
                 binding.likeButtonHighlight.setVisibility(View.GONE);
+                binding.likeCount.setText(String.valueOf(post.getLikeCount()));
             });
 
             // Comment button

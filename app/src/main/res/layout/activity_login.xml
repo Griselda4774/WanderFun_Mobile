@@ -57,43 +57,39 @@
 
         </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
+            android:orientation="vertical"
+            android:gravity="end"
             app:layout_constraintTop_toBottomOf="@id/login_header"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/button_group">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/email_input"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/input_margin_vertical"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:layout_marginVertical="@dimen/input_margin_vertical">
 
                 <include
+                    android:id="@+id/email_input"
                     layout="@layout/input_email"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/password_input"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/input_margin_vertical"
-                app:layout_constraintTop_toBottomOf="@id/email_input"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:layout_marginVertical="@dimen/input_margin_vertical">
 
                 <include
+                    android:id="@+id/password_input"
                     layout="@layout/input_password"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -107,7 +103,7 @@
                 android:clickable="true"
                 android:stateListAnimator="@animator/touch_opacity_animator"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/button_group"

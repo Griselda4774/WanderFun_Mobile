@@ -45,6 +45,8 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -58,6 +60,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 
     private Uri imageUri;
+    @Inject
+    Gson gson;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,11 +189,6 @@ public class EditProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String userJson = intent.getStringExtra("user");
         if (userJson != null && !userJson.isEmpty()) {
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-                    .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-                    .setDateFormat("yyyy-MM-dd")
-                    .create();
             user = gson.fromJson(userJson, User.class);
             bindUserData(user);
         }

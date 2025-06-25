@@ -76,7 +76,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/place_info_section_medium_margin"
             android:text="Xem tất cả bài đánh giá"
-            style="@style/Text.Content.Highlight" />
+            style="@style/Text.Content.Highlight"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -109,7 +110,7 @@
                 android:background="@drawable/bg_img_rounded"
                 android:scaleType="centerCrop"
                 android:clipToOutline="true"
-                android:src="@drawable/brown" />
+                android:src="@drawable/ic_avatar" />
 
             <com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingOutlineView
                 android:id="@+id/star_rating_outline_view"
@@ -135,6 +136,15 @@
             android:text="Bài đánh giá"
             android:textSize="@dimen/place_info_title_text_size"
             style="@style/Text.Title" />
+
+        <TextView
+            android:id="@+id/no_feedback_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chưa có đánh giá nào gần đây."
+            style="@style/Text.Content"
+            android:gravity="center"
+            android:paddingVertical="@dimen/section_padding_vertical" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/place_rating_list"

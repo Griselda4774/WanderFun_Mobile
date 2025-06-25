@@ -5,12 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,15 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.core.util.SessionManager;
-import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.FragmentHomeBinding;
 import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.presentation.ui.activity.post.AddEditPostActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.posts.PostItemAdapter;
-import com.example.wanderfunmobile.presentation.viewmodel.PostViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.posts.PostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

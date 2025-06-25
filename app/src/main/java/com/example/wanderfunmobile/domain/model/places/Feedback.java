@@ -1,17 +1,20 @@
 package com.example.wanderfunmobile.domain.model.places;
 
-import java.util.Date;
+import com.example.wanderfunmobile.domain.model.images.Image;
+import com.example.wanderfunmobile.domain.model.users.User;
+
+import java.time.LocalDateTime;
 
 public class Feedback {
     private Long id;
-    private String userName;
-    private String userAvatar;
+    private User user;
     private int rating;
-    private String comment;
-    private String imageUrl;
-    private String imagePublicId;
-    private Date time;
+    private String content;
+    private Image image;
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
     private Long placeId;
+    private String localId;
 
     public Feedback() {
     }
@@ -24,20 +27,12 @@ public class Feedback {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserAvatar() {
-        return userAvatar;
-    }
-
-    public void setUserAvatar(String userAvatar) {
-        this.userAvatar = userAvatar;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getRating() {
@@ -48,36 +43,36 @@ public class Feedback {
         this.rating = rating;
     }
 
-    public String getComment() {
-        return comment;
+    public String getContent() {
+        return content;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public Image getImage() {
+        return image;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
-    public String getImagePublicId() {
-        return imagePublicId;
+    public LocalDateTime getCreateAt() {
+        return createAt;
     }
 
-    public void setImagePublicId(String imagePublicId) {
-        this.imagePublicId = imagePublicId;
+    public void setCreateAt(LocalDateTime createAt) {
+        this.createAt = createAt;
     }
 
-    public Date getTime() {
-        return time;
+    public LocalDateTime getUpdateAt() {
+        return updateAt;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setUpdateAt(LocalDateTime updateAt) {
+        this.updateAt = updateAt;
     }
 
     public Long getPlaceId() {
@@ -86,5 +81,13 @@ public class Feedback {
 
     public void setPlaceId(Long placeId) {
         this.placeId = placeId;
+    }
+
+    public String getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(String localId) {
+        this.localId = localId;
     }
 }

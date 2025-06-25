@@ -1,5 +1,6 @@
 package com.example.wanderfunmobile.presentation.ui.adapter.place;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,20 +52,22 @@ public class FeedbackItemAdapter extends RecyclerView.Adapter<FeedbackItemAdapte
             this.binding = binding;
         }
 
+        @SuppressLint("SetTextI18n")
         public void bind(Feedback feedback) {
             // User avatar
             ImageView userAvatar = binding.feedbackUserAvatar;
-            if (feedback.getUserAvatar() != null) {
+            if (feedback.getUser() != null && feedback.getUser().getAvatarImage() != null) {
                 Glide.with(binding.getRoot())
-                        .load(feedback.getUserAvatar())
-                        .error(R.drawable.brown)
+                        .load(feedback.getUser().getAvatarImage().getImageUrl())
+                        .placeholder(R.drawable.img_placeholder)
+                        .error(R.drawable.img_placeholder)
                         .into(userAvatar);
             }
 
             // User name
             TextView userName = binding.feedbackUserName;
-            if (feedback.getUserName() != null && !feedback.getUserName().isEmpty()) {
-                userName.setText(feedback.getUserName());
+            if (feedback.getUser() != null) {
+                userName.setText(feedback.getUser().getLastName() + " " + feedback.getUser().getFirstName());
             }
 
 
@@ -75,25 +78,26 @@ public class FeedbackItemAdapter extends RecyclerView.Adapter<FeedbackItemAdapte
 
             // Time
             TextView time = binding.feedbackTime;
-            if (feedback.getTime() != null) {
-                time.setText(DateTimeUtil.dateToString(feedback.getTime()));
+            if (feedback.getCreateAt() != null) {
+                time.setText(DateTimeUtil.localDateTimeToString(feedback.getCreateAt()));
             }
 
             // Comment
             TextView comment = binding.feedbackComment;
-            if (feedback.getComment() != null && !feedback.getComment().isEmpty()) {
+            if (feedback.getContent() != null && !feedback.getContent().isEmpty()) {
                 comment.setVisibility(View.VISIBLE);
-                comment.setText(feedback.getComment());
+                comment.setText(feedback.getContent());
             } else {
                 comment.setVisibility(View.GONE);
             }
 
             // Image
             ImageView image = binding.feedbackImage;
-            if (feedback.getImageUrl() != null && !feedback.getImageUrl().isEmpty()) {
+            if (feedback.getImage() != null) {
                 Glide.with(binding.getRoot())
-                        .load(feedback.getImageUrl())
-                        .error(R.drawable.brown)
+                        .load(feedback.getImage().getImageUrl())
+                        .placeholder(R.drawable.img_placeholder)
+                        .error(R.drawable.img_placeholder)
                         .into(image);
                 image.setVisibility(ImageView.VISIBLE);
             }
