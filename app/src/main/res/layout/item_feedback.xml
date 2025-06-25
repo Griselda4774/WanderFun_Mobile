@@ -22,7 +22,7 @@
             android:background="@drawable/bg_img_rounded"
             android:scaleType="centerCrop"
             android:clipToOutline="true"
-            android:src="@drawable/brown" />
+            android:src="@drawable/ic_avatar" />
 
         <LinearLayout
             android:layout_width="wrap_content"

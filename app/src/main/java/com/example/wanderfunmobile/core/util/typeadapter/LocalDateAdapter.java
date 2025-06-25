@@ -1,8 +1,11 @@
 package com.example.wanderfunmobile.core.util.typeadapter;
 
+import android.util.Log;
+
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
@@ -23,12 +26,19 @@ public class LocalDateAdapter extends TypeAdapter<LocalDate> {
 
     @Override
     public LocalDate read(JsonReader in) throws IOException {
+        if (in.peek() == JsonToken.NULL) {
+            in.nextNull();
+            return null;
+        }
+
         String dateStr = in.nextString();
         try {
             return LocalDate.parse(dateStr, FORMATTER);
         } catch (Exception e) {
-            throw new JsonParseException("Failed to parse LocalDate: " + dateStr, e);
+            Log.e("LocalDateAdapter", "Error parsing date: " + dateStr, e);
+            return null;
         }
     }
+
 }
 
