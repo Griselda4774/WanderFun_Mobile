@@ -1,6 +1,7 @@
 package com.example.wanderfunmobile.presentation.ui.fragment.trip;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.databinding.FragmentAllTripBinding;
 import com.example.wanderfunmobile.domain.model.trips.Trip;
+import com.example.wanderfunmobile.presentation.ui.activity.trip.TripDetailActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.trip.TripItemAdapter;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
@@ -63,7 +65,11 @@ public class AllTripFragment extends Fragment {
 
         recyclerView = viewBinding.tripList;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        tripItemAdapter = new TripItemAdapter(tripList);
+        tripItemAdapter = new TripItemAdapter(tripList, trip -> {
+            Intent intent = new Intent(requireContext(), TripDetailActivity.class);
+            intent.putExtra("tripId", trip.getId());
+            startActivity(intent);
+        });
         recyclerView.setAdapter(tripItemAdapter);
 
         tripViewModel.getAllTrips("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken());
