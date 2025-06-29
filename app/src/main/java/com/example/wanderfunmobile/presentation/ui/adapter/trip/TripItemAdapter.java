@@ -21,10 +21,16 @@ import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import java.util.List;
 
 public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripItemViewHolder> {
-    private final List<Trip> tripList;
+    public interface OnTripClickListener {
+        void onTripClick(Trip trip);
+    }
 
-    public TripItemAdapter(List<Trip> tripList) {
+    private final List<Trip> tripList;
+    private final OnTripClickListener listener;
+
+    public TripItemAdapter(List<Trip> tripList, OnTripClickListener listener) {
         this.tripList = tripList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,7 +51,7 @@ public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripIt
         return tripList.size();
     }
 
-    public static class TripItemViewHolder extends RecyclerView.ViewHolder {
+    public class TripItemViewHolder extends RecyclerView.ViewHolder {
         final ItemTripBinding binding;
 
         public TripItemViewHolder(@NonNull ItemTripBinding binding) {
@@ -54,14 +60,6 @@ public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripIt
         }
 
         public void bind(Trip trip) {
-            // Image
-//            ImageView image = binding.image;
-//            if (trip.getImageUrl() != null && !trip.getImageUrl().isEmpty()) {
-//                Glide.with(binding.getRoot())
-//                        .load(trip.getImageUrl())
-//                        .error(R.drawable.brown)
-//                        .into(image);
-//            }
 
             // Name
             TextView name = binding.name;
@@ -81,12 +79,10 @@ public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripIt
                 endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
             }
 
-            // Intent
-            LinearLayout tripItem = binding.getRoot();
-            tripItem.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), TripDetailActivity.class);
-                intent.putExtra("tripId", trip.getId());
-                v.getContext().startActivity(intent);
+            binding.getRoot().setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onTripClick(trip);
+                }
             });
         }
     }

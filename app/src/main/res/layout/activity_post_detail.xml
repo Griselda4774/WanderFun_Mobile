@@ -213,6 +213,7 @@
                         android:stateListAnimator="@animator/touch_opacity_animator"/>
 
                     <LinearLayout
+                        android:id="@+id/place_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone">
@@ -224,6 +225,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/trip_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone">
