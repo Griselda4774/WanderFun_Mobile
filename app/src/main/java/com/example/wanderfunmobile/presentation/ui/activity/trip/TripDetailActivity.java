@@ -142,17 +142,49 @@ public class TripDetailActivity extends AppCompatActivity {
     }
 
     private void setupUIEvents() {
+
+        // Selection dialog
+        selectionDialog = binding.selectionDialog;
+        selectionDialog.hide();
+        selectionDialog.setVisibility(View.GONE);
+        selectionDialog.setOnAcceptListener(() -> {
+            tripViewModel.deleteTripById("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), trip.getId());
+            selectionDialog.hide();
+            Log.d("SelectionDialog", "Accept");
+        });
+
+        selectionDialog.setOnRejectListener(() -> {
+            selectionDialog.hide();
+            Log.d("SelectionDialog", "Reject");
+        });
+
+        // Loading dialog
+        loadingDialog = binding.loadingDialog;
+        tripViewModel.getIsLoading().observe(this, isLoading -> {
+            if (isLoading) {
+                loadingDialog.show();
+                loadingDialog.setVisibility(View.VISIBLE);
+            } else {
+                loadingDialog.hide();
+                loadingDialog.setVisibility(View.GONE);
+            }
+        });
+
         binding.backButton.findViewById(R.id.button).setOnClickListener(v -> finish());
 
         binding.mapViewButton.findViewById(R.id.button).setOnClickListener(v ->
                 Toast.makeText(this, "Tạm thời cứ thế thôi hẹ hẹ hẹ", Toast.LENGTH_SHORT).show());
 
         binding.deleteButton.findViewById(R.id.button).setOnClickListener(v ->
+            {
+                selectionDialog.setVisibility(View.VISIBLE);
                 selectionDialog.show("Xóa chuyến đi",
                         "Bạn có chắc chắn muốn xóa chuyến đi này?",
                         "Thao tác này không thể hoàn tác",
                         "Xóa",
-                        "Hủy"));
+                        "Hủy");
+            }
+        );
 
         binding.editButton.findViewById(R.id.button).setOnClickListener(v -> {
             Intent intent = new Intent(this, AddEditTripActivity.class);
@@ -174,10 +206,6 @@ public class TripDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-
-    //endregion
-
-    //region Business Logic
 
     private void fetchTripById(Long tripId) {
         String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
@@ -217,5 +245,4 @@ public class TripDetailActivity extends AppCompatActivity {
         binding.cloneButton.setVisibility(isOwner ? View.GONE : View.VISIBLE);
     }
 
-    //endregion
 }

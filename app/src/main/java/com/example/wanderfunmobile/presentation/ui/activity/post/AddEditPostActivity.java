@@ -38,6 +38,7 @@ import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.TripSelectionDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.posts.PostViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.UserViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -61,7 +62,7 @@ public class AddEditPostActivity extends AppCompatActivity {
     private BottomSheetBehavior<ConstraintLayout> postOptionVerticalBottomSheetBehavior;
 
     private Long postId;
-    private Trip shareTrip;
+    private Trip sharedTrip;
     private UserViewModel userViewModel;
     private PostViewModel postViewModel;
 
@@ -168,10 +169,10 @@ public class AddEditPostActivity extends AppCompatActivity {
 
         // Get shared trip data from intent
         if (getIntent().hasExtra("shared_trip") && getIntent().getParcelableExtra("shared_trip") != null) {
-            shareTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("shared_trip")), Trip.class);
-            bindTripData(shareTrip);
+            sharedTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("shared_trip")), Trip.class);
+            bindTripData(sharedTrip);
         } else {
-            shareTrip = null;
+            sharedTrip = null;
             viewBinding.tagTripContainer.setVisibility(GONE);
         }
 
@@ -181,7 +182,6 @@ public class AddEditPostActivity extends AppCompatActivity {
         // Initialize bottom sheet
         initBottomSheet();
         initBottomSheetButtons();
-
         initActivityButtons();
 
         viewBinding.removeImageButton.getRoot().setVisibility(GONE);
@@ -190,6 +190,12 @@ public class AddEditPostActivity extends AppCompatActivity {
             viewBinding.image.setVisibility(GONE);
             viewBinding.image.setImageDrawable(null);
             imageUri = null;
+        });
+
+        viewBinding.removeTripButton.getRoot().setVisibility(View.VISIBLE);
+        viewBinding.removeTripButton.getRoot().setOnClickListener(v -> {
+            sharedTrip = null;
+            viewBinding.tagTripContainer.setVisibility(GONE);
         });
     }
 
@@ -264,14 +270,22 @@ public class AddEditPostActivity extends AppCompatActivity {
             viewBinding.image.setVisibility(GONE);
             viewBinding.removeImageButton.getRoot().setVisibility(GONE);
         }
+
+        if (post.getTrip() != null) {
+            sharedTrip = post.getTrip();
+            bindTripData(sharedTrip);
+        } else {
+            sharedTrip = null;
+            viewBinding.tagTripContainer.setVisibility(GONE);
+        }
     }
 
     private void bindTripData(Trip trip) {
-        if (trip != null) {
-            viewBinding.trip.name.setText(trip.getName());
-            viewBinding.trip.startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
-            viewBinding.trip.endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
-        }
+        viewBinding.tagTripContainer.setVisibility(View.VISIBLE);
+
+        viewBinding.trip.name.setText(trip.getName());
+        viewBinding.trip.startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
+        viewBinding.trip.endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
     }
 
     private void initBottomSheetButtons() {
@@ -282,6 +296,30 @@ public class AddEditPostActivity extends AppCompatActivity {
         viewBinding.postOptionHorizontal.addImageButton.setOnClickListener(v -> pickMedia.launch(new PickVisualMediaRequest.Builder()
                 .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                 .build()));
+
+        viewBinding.postOptionHorizontal.addTripButton.setOnClickListener(v -> {
+            TripSelectionDialog dialog = new TripSelectionDialog(
+                    AddEditPostActivity.this,
+                    trip -> {
+                        sharedTrip = trip;
+                        bindTripData(trip);
+                    },
+                    objectMapper
+            );
+            dialog.show();
+        });
+
+        viewBinding.postOptionVertical.addTripButton.setOnClickListener(v -> {
+            TripSelectionDialog dialog = new TripSelectionDialog(
+                    AddEditPostActivity.this,
+                    trip -> {
+                        sharedTrip = trip;
+                        bindTripData(trip);
+                    },
+                    objectMapper
+            );
+            dialog.show();
+        });
     }
 
     private void initActivityButtons() {
@@ -292,7 +330,7 @@ public class AddEditPostActivity extends AppCompatActivity {
         viewBinding.postButton.setOnClickListener(v -> {
             showLoadingDialog();
             Post postCreate = new Post();
-            postCreate.setTrip(shareTrip);
+            postCreate.setTrip(sharedTrip);
             if (viewBinding.textEdittext.getText() != null && !viewBinding.textEdittext.getText().toString().isEmpty()) {
                 postCreate.setContent(viewBinding.textEdittext.getText().toString());
             } else {

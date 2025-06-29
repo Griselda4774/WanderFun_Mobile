@@ -134,7 +134,7 @@
                     android:layout_marginTop="16dp"
                     android:paddingBottom="160dp">
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/tag_place_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -144,9 +144,26 @@
                             android:id="@+id/place"
                             layout="@layout/item_place" />
 
-                    </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="@id/place"
+                            app:layout_constraintTop_toTopOf="@id/place">
 
-                    <LinearLayout
+                            <include
+                                android:id="@+id/remove_place_button"
+                                android:visibility="gone"
+                                layout="@layout/button_close_square" />
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/tag_trip_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -157,7 +174,24 @@
                             android:id="@+id/trip"
                             layout="@layout/item_trip" />
 
-                    </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="@id/trip"
+                            app:layout_constraintTop_toTopOf="@id/trip">
+
+                            <include
+                                android:id="@+id/remove_trip_button"
+                                android:visibility="gone"
+                                layout="@layout/button_close_square" />
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <ImageView
                         android:id="@+id/image"
