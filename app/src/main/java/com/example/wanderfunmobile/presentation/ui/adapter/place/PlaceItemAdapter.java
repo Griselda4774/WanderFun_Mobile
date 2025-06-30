@@ -1,26 +1,27 @@
 package com.example.wanderfunmobile.presentation.ui.adapter.place;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.StringUtil;
 import com.example.wanderfunmobile.databinding.ItemPlaceBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnPlaceSelectedListener;
 
 import java.util.List;
 
 public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.PlaceItemViewHolder> {
     private final List<Place> placeList;
-    private final Activity activity;
+    private OnPlaceSelectedListener onPlaceSelectedListener;
 
-    public PlaceItemAdapter(List<Place> placeList, Activity activity) {
+    public PlaceItemAdapter(List<Place> placeList) {
         this.placeList = placeList;
-        this.activity = activity;
     }
 
     @NonNull
@@ -41,6 +42,10 @@ public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.Plac
         return placeList.size();
     }
 
+    public void setOnPlaceSelectedListener(OnPlaceSelectedListener listener) {
+        this.onPlaceSelectedListener = listener;
+    }
+
     public class PlaceItemViewHolder extends RecyclerView.ViewHolder {
         final ItemPlaceBinding itemPlaceBinding;
 
@@ -51,20 +56,31 @@ public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.Plac
 
         public void bind(Place place) {
             itemPlaceBinding.placeName.setText(place.getName());
-//            itemPlaceBinding.placeRating.setText(String.valueOf(place.getAverageRating()));
 
-            String imageUrl = place.getCoverImage().getImageUrl();
-            if (imageUrl != null && !imageUrl.isEmpty()) {
+            itemPlaceBinding.placeRating.setText(String.valueOf(place.getRating()));
+
+            if (place.getCoverImage() != null) {
                 Glide.with(itemPlaceBinding.placeCoverImage.getContext())
                         .load(place.getCoverImage().getImageUrl())
+                        .placeholder(R.drawable.img_placeholder)
+                        .error(R.drawable.img_placeholder)
                         .into(itemPlaceBinding.placeCoverImage);
+            } else {
+                itemPlaceBinding.placeCoverImage.setImageResource(R.drawable.img_placeholder);
+            }
+
+            itemPlaceBinding.placeVisitedCount.setText(String.valueOf(place.getCheckInCount()));
+
+            if (place.getAddress() != null) {
+                itemPlaceBinding.address.setText(StringUtil.formatAddressToStringNoStreet(place.getAddress()));
+            } else {
+                itemPlaceBinding.address.setVisibility(View.GONE);
             }
 
             itemPlaceBinding.getRoot().setOnClickListener(v -> {
-                Intent intent = new Intent();
-                intent.putExtra("selected_place", place.getId());
-                activity.setResult(Activity.RESULT_OK, intent);
-                activity.finish();
+                if (onPlaceSelectedListener != null) {
+                    onPlaceSelectedListener.onPlaceSelected(place);
+                }
             });
         }
     }

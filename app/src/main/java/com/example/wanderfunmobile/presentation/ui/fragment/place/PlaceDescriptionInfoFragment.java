@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
+import com.example.wanderfunmobile.core.util.StringUtil;
 import com.example.wanderfunmobile.databinding.FragmentPlaceDescriptionInfoBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.model.places.Section;
@@ -87,30 +88,7 @@ public class PlaceDescriptionInfoFragment extends Fragment {
         if (place != null) {
             // Address
             if (place.getAddress() != null) {
-                StringBuilder addressBuilder = new StringBuilder();
-
-                if (place.getAddress().getStreet() != null && !place.getAddress().getStreet().isEmpty()) {
-                    addressBuilder.append(place.getAddress().getStreet());
-                }
-
-                if (place.getAddress().getWard() != null && place.getAddress().getWard().getFullName() != null && !place.getAddress().getWard().getFullName().isEmpty()) {
-                    if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                    addressBuilder.append(place.getAddress().getWard().getFullName());
-                }
-
-                if (place.getAddress().getDistrict() != null && place.getAddress().getDistrict().getFullName() != null && !place.getAddress().getDistrict().getFullName().isEmpty()) {
-                    if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                    addressBuilder.append(place.getAddress().getDistrict().getFullName());
-                }
-
-                if (place.getAddress().getProvince() != null && place.getAddress().getProvince().getFullName() != null && !place.getAddress().getProvince().getFullName().isEmpty()) {
-                    if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                    addressBuilder.append(place.getAddress().getProvince().getFullName());
-                }
-
-                String address = addressBuilder.toString();
-
-                viewBinding.address.setText(address);
+                viewBinding.address.setText(StringUtil.formatAddressToString(place.getAddress()));
             } else {
                 viewBinding.address.setText("Không có dữ liệu");
             }

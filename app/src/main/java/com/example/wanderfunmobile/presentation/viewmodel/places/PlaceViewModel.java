@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.domain.model.CheckIn;
+import com.example.wanderfunmobile.domain.model.checkins.CheckIn;
 import com.example.wanderfunmobile.domain.model.FavouritePlace;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.places.Place;
@@ -33,8 +33,6 @@ public class PlaceViewModel extends ViewModel {
     private final MutableLiveData<Result<List<FavouritePlace>>> findAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<FavouritePlace>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<FavouritePlace>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<CheckIn>> checkInPlaceResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<CheckIn>> findCheckInByPlaceIdResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCheckingIn = new MutableLiveData<>();
 
@@ -64,14 +62,6 @@ public class PlaceViewModel extends ViewModel {
 
     public LiveData<Result<FavouritePlace>> getDeleteFavouritePlaceByIdsResponseLiveData() {
         return deleteFavouritePlaceByIdsResponseLiveData;
-    }
-
-    public LiveData<Result<CheckIn>> getCheckInPlaceResponseLiveData() {
-        return checkInPlaceResponseLiveData;
-    }
-
-    public LiveData<Result<CheckIn>> getFindCheckInByPlaceIdResponseLiveData() {
-        return findCheckInByPlaceIdResponseLiveData;
     }
 
     public LiveData<Boolean> getIsLoading() {
@@ -135,22 +125,6 @@ public class PlaceViewModel extends ViewModel {
 //        placeRepository.deleteFavouritePlaceByIds(bearerToken, placeIds).observeForever(response -> {
 //            deleteFavouritePlaceByIdsResponseLiveData.setValue(response);
 //            isLoading.setValue(false);
-//        });
-//    }
-//
-//    public void findCheckInByPlaceId(String bearerToken, Long placeId) {
-//        isLoading.setValue(true);
-//        placeRepository.findCheckInByPlaceId(bearerToken, placeId).observeForever(response -> {
-//            findCheckInByPlaceIdResponseLiveData.setValue(response);
-//            isLoading.setValue(false);
-//        });
-//    }
-//
-//    public void checkInPlace(String bearerToken, Long placeId) {
-//        isCheckingIn.setValue(true);
-//        placeRepository.checkInPlace(bearerToken, placeId).observeForever(response -> {
-//            checkInPlaceResponseLiveData.setValue(response);
-//            isCheckingIn.setValue(false);
 //        });
 //    }
 }

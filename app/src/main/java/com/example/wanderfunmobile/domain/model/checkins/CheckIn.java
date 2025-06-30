@@ -1,17 +1,16 @@
-package com.example.wanderfunmobile.data.dto.checkin;
+package com.example.wanderfunmobile.domain.model.checkins;
 
-import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
+import com.example.wanderfunmobile.domain.model.places.Place;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
-public class CheckInDto {
+public class CheckIn {
     private Long id;
     private Long userId;
-    private MiniPlaceDto place;
+    private Place place;
     private LocalDateTime createdAt;
 
-    public CheckInDto() {
+    public CheckIn() {
     }
 
     public Long getId() {
@@ -30,11 +29,11 @@ public class CheckInDto {
         this.userId = userId;
     }
 
-    public MiniPlaceDto getPlace() {
+    public Place getPlace() {
         return place;
     }
 
-    public void setPlace(MiniPlaceDto place) {
+    public void setPlace(Place place) {
         this.place = place;
     }
 

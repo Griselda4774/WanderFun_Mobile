@@ -9,11 +9,8 @@ import com.example.wanderfunmobile.data.dto.auth.RegisterDto;
 import com.example.wanderfunmobile.data.dto.auth.TokenResponseDto;
 
 public interface AuthRepository {
-    public LiveData<ResponseDto<LoginResponseDto>> login(LoginDto loginDto);
-
-    public LiveData<ResponseDto<LoginResponseDto>> register(RegisterDto registerDto);
-
-    public LiveData<ResponseDto<LoginResponseDto>> logout(String bearerToken);
-
-    public LiveData<ResponseDto<TokenResponseDto>> refreshToken(String bearerToken);
+    LiveData<ResponseDto<LoginResponseDto>> login(LoginDto loginDto);
+    LiveData<ResponseDto<LoginResponseDto>> register(RegisterDto registerDto);
+    LiveData<ResponseDto<LoginResponseDto>> logout(String bearerToken);
+    LiveData<ResponseDto<TokenResponseDto>> refreshToken(String bearerToken);
 }
