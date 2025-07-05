@@ -109,6 +109,7 @@ public class AddEditPostActivity extends AppCompatActivity {
             if (!result.isError() && result.getData() != null) {
                 Post post = result.getData();
                 bindPostData(post);
+
             } else {
                 Toast.makeText(getApplicationContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
                 finish();
@@ -361,6 +362,8 @@ public class AddEditPostActivity extends AppCompatActivity {
             }
         });
     }
+
+    
 
     private void showLoadingDialog() {
         loadingDialog.setVisibility(View.VISIBLE);
