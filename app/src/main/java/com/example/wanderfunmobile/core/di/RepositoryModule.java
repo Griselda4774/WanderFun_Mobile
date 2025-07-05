@@ -1,16 +1,19 @@
 package com.example.wanderfunmobile.core.di;
 
 import com.example.wanderfunmobile.data.api.backend.AddressApi;
+import com.example.wanderfunmobile.data.api.backend.CheckInApi;
 import com.example.wanderfunmobile.data.api.backend.PostApi;
 import com.example.wanderfunmobile.data.api.backend.places.FeedbackApi;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.data.repository.AddressRepositoryImpl;
+import com.example.wanderfunmobile.data.repository.CheckInRepositoryImpl;
 import com.example.wanderfunmobile.data.repository.LeaderboardRepositoryImpl;
 import com.example.wanderfunmobile.data.repository.PostRepositoryImpl;
 import com.example.wanderfunmobile.data.repository.places.FeedbackRepositoryImpl;
 import com.example.wanderfunmobile.domain.repository.AddressRepository;
 import com.example.wanderfunmobile.domain.repository.AlbumRepository;
 import com.example.wanderfunmobile.domain.repository.AuthRepository;
+import com.example.wanderfunmobile.domain.repository.CheckInRepository;
 import com.example.wanderfunmobile.domain.repository.LeaderboardRepository;
 import com.example.wanderfunmobile.domain.repository.places.FeedbackRepository;
 import com.example.wanderfunmobile.domain.repository.places.PlaceRepository;
@@ -91,5 +94,11 @@ public class RepositoryModule {
     @Singleton
     public FeedbackRepository provideFeedbackRepository(FeedbackApi feedbackApi, ObjectMapper objectMapper) {
         return new FeedbackRepositoryImpl(feedbackApi, objectMapper);
+    }
+
+    @Provides
+    @Singleton
+    public CheckInRepository provideCheckInRepository(CheckInApi checkInApi, ObjectMapper objectMapper) {
+        return new CheckInRepositoryImpl(checkInApi, objectMapper);
     }
 }

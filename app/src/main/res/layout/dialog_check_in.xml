@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:paddingHorizontal="@dimen/item_padding_horizontal_small"
+    android:background="@drawable/bg_dialog">
+
+    <LinearLayout
+        android:id="@+id/inner_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="20dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/bg_popup_menu">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check in"
+            style="@style/Text.Header"
+            android:textColor="@color/blue2" />
+
+        <TextView
+            android:id="@+id/select_place_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Hãy chọn một địa điểm để check in."
+            style="@style/Text.Content"
+            android:layout_marginTop="4dp" />
+
+        <LinearLayout
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/blue2"
+                android:background="@android:color/transparent"
+                android:indeterminateTintMode="src_in" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Đang tìm địa điểm..."
+                style="@style/Text.Content"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/no_place_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Không tìm thấy địa điểm phù hợp."
+            style="@style/Text.Content"
+            android:layout_marginTop="16dp" />
+
+        <com.example.wanderfunmobile.presentation.ui.custom.recyclerviews.MaxHeightRecyclerView
+            android:id="@+id/place_list"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scrollbars="vertical"
+            android:layout_marginTop="16dp"
+            app:maxHeight="300dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

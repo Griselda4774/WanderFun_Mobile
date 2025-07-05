@@ -50,6 +50,7 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.core.util.GeoJsonUtil;
 import com.example.wanderfunmobile.core.util.NumberUtil;
+import com.example.wanderfunmobile.core.util.StringUtil;
 import com.example.wanderfunmobile.core.util.ViewPager2HeightAdjuster;
 import com.example.wanderfunmobile.databinding.BottomSheetLocationPinBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPlaceInfoBinding;
@@ -57,12 +58,14 @@ import com.example.wanderfunmobile.databinding.FragmentExploreBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.activity.place.FeedbackCreateActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.PlaceInfoTabAdapter;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.CheckInDialog;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.core.util.BitMapUtil;
 import com.example.wanderfunmobile.core.util.ColorHexUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingView;
+import com.example.wanderfunmobile.presentation.viewmodel.CheckInViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
@@ -112,6 +115,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private String selectedProvinceName = null;
     private PlaceViewModel placeViewModel;
+    private CheckInViewModel checkInViewModel;
     private MapLibreMap mapLibreMap;
     private Style mapStyle;
     private SymbolManager symbolManager;
@@ -157,8 +161,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         viewBinding = FragmentExploreBinding.inflate(inflater, container, false);
 
-        placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
-
+        initViewModel();
 
         return viewBinding.getRoot();
     }
@@ -376,6 +379,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         );
     }
 
+    private void initViewModel() {
+        placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
+        checkInViewModel = new ViewModelProvider(this).get(CheckInViewModel.class);
+    }
+
     private void setUpFragment(Bundle savedInstanceState) {
         setUpBottomSheet();
         setUpDialog();
@@ -406,34 +414,22 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-//        placeViewModel.getCheckInByPlaceIdAndUserIdResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-//            if (data != null && !data.isError()) {
-//                CheckIn checkIn = objectMapper.map(data.getData(), CheckIn.class);
-//                if (System.currentTimeMillis() - checkIn.getLastCheckInTime().getTime() > 50000) {
-//                    canCheckIn = true;
-//                    placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
-//                } else {
-//                    canCheckIn = false;
-//                    Toast.makeText(requireContext(), "Bạn đã check-in tại đây trước đó", Toast.LENGTH_SHORT).show();
-//                }
-//            } else {
-//                canCheckIn = true;
-//                placeViewModel.checkInPlace("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
-//            }
-//        });
-
-//        placeViewModel.checkInPlaceResponseLiveData().observe(getViewLifecycleOwner(), data -> {
-//            if (data != null && !data.isError()) {
-//                Toast.makeText(requireContext(), "Check-in thành công", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(requireContext(), "Check-in thất bại", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        checkInViewModel.getCreateCheckInLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (result != null) {
+                if (!result.isError()) {
+                    Toast.makeText(requireContext(), "Check-in thành công!", Toast.LENGTH_SHORT).show();
+                    currentCheckInPlaceId = null;
+                } else {
+                    Toast.makeText(requireContext(), "Check-in thất bại: " + result.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(requireContext(), "Check-in thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setUpBottomSheet() {
         // Place info bottom sheet
-
         placeInfoBottomSheetBinding = viewBinding.placeInfoBottomSheetContainer;
         placeInfoBottomSheetBehavior = BottomSheetBehavior.from(placeInfoBottomSheetBinding.getRoot());
         placeInfoBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -513,6 +509,28 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 checkPermissions();
             }
         });
+
+        viewBinding.checkInButton.setOnClickListener(v -> {
+            if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
+                if (currentMarker != null) {
+                    symbolManager.delete(currentMarker);
+                    currentMarker = null;
+                }
+
+                initializeLocationComponent(mapStyle, mapLibreMap);
+
+                CheckInDialog checkInDialog = new CheckInDialog(requireContext(), getViewLifecycleOwner(),
+                        checkInViewModel, currentLocation.getLongitude(), currentLocation.getLatitude());
+                checkInDialog.setOnPlaceSelectedListener(place -> {
+                    currentCheckInPlaceId = place.getId();
+                    checkInViewModel.createCheckIn("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext()).getAccessToken(), currentCheckInPlaceId);
+                });
+                checkInDialog.show();
+
+            } else {
+                checkPermissions();
+            }
+        });
     }
 
     private void checkPermissions() {
@@ -574,26 +592,26 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
             }
             lastUpdateTime = currentTime;
             currentLocation = result.getLastLocation();
-            if (currentLocation != null && !placeList.isEmpty()) {
-                for (Place place : placeList) {
-                    float[] results = new float[1];
-                    Location.distanceBetween(
-                            currentLocation.getLatitude(), currentLocation.getLongitude(),
-                            place.getLatitude(), place.getLongitude(),
-                            results
-                    );
-                    float distanceInMeters = results[0];
-                    if (distanceInMeters <= 20) {
-                        Log.d("UserLocation", "Place can check-in: " + place.getName());
-                        currentCheckInPlaceId = place.getId();
-                        viewBinding.selectionDialog.show("Có thể check-in tại đây",
-                                "Địa điểm được tìm thấy là: " + place.getName(),
-                                "Bạn có muốn check-in tại đây?", "Có", "Không");
-                    }
-                }
-
-                Log.d("UserLocation", "Lat: " + currentLocation.getLatitude() + ", Lng: " + currentLocation.getLongitude());
-            }
+            Log.d("UserLocation", "Lat: " + currentLocation.getLatitude() + ", Lng: " + currentLocation.getLongitude());
+//            if (currentLocation != null && !placeList.isEmpty()) {
+//                for (Place place : placeList) {
+//                    float[] results = new float[1];
+//                    Location.distanceBetween(
+//                            currentLocation.getLatitude(), currentLocation.getLongitude(),
+//                            place.getLatitude(), place.getLongitude(),
+//                            results
+//                    );
+//                    float distanceInMeters = results[0];
+//                    if (distanceInMeters <= 20) {
+//                        Log.d("UserLocation", "Place can check-in: " + place.getName());
+//                        currentCheckInPlaceId = place.getId();
+//                        viewBinding.selectionDialog.show("Có thể check-in tại đây",
+//                                "Địa điểm được tìm thấy là: " + place.getName(),
+//                                "Bạn có muốn check-in tại đây?", "Có", "Không");
+//                    }
+//                }
+//
+//            }
         }
 
         @Override
@@ -796,30 +814,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
         // Address
         if (place.getAddress() != null) {
-            StringBuilder addressBuilder = new StringBuilder();
-
-            if (place.getAddress().getStreet() != null && !place.getAddress().getStreet().isEmpty()) {
-                addressBuilder.append(place.getAddress().getStreet());
-            }
-
-            if (place.getAddress().getWard() != null && place.getAddress().getWard().getFullName() != null && !place.getAddress().getWard().getFullName().isEmpty()) {
-                if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                addressBuilder.append(place.getAddress().getWard().getFullName());
-            }
-
-            if (place.getAddress().getDistrict() != null && place.getAddress().getDistrict().getFullName() != null && !place.getAddress().getDistrict().getFullName().isEmpty()) {
-                if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                addressBuilder.append(place.getAddress().getDistrict().getFullName());
-            }
-
-            if (place.getAddress().getProvince() != null && place.getAddress().getProvince().getFullName() != null && !place.getAddress().getProvince().getFullName().isEmpty()) {
-                if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                addressBuilder.append(place.getAddress().getProvince().getFullName());
-            }
-
-            String address = addressBuilder.toString();
-
-            placeInfoBottomSheetBinding.placeAddressContent.setText(address);
+            placeInfoBottomSheetBinding.placeAddressContent.setText(StringUtil.formatAddressToString(place.getAddress()));
         } else {
             placeInfoBottomSheetBinding.placeAddressContent.setText("Chưa có địa chỉ");
         }

@@ -1,6 +1,8 @@
 package com.example.wanderfunmobile.presentation.ui.activity.place;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -56,7 +58,13 @@ public class SearchPlaceActivity extends AppCompatActivity {
         });
 
 
-        placeItemAdapter = new PlaceItemAdapter(placeList, this);
+        placeItemAdapter = new PlaceItemAdapter(placeList);
+        placeItemAdapter.setOnPlaceSelectedListener(place -> {
+            Intent intent = new Intent();
+            intent.putExtra("selected_place", place.getId());
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+        });
 
         RecyclerView recyclerView = viewBinding.searchPlaceList;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
