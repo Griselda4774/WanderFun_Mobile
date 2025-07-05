@@ -17,20 +17,18 @@ import com.example.wanderfunmobile.databinding.ItemTripBinding;
 import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.presentation.ui.activity.trip.TripDetailActivity;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnPlaceSelectedListener;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnTripSelectedListener;
 
 import java.util.List;
 
 public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripItemViewHolder> {
-    public interface OnTripClickListener {
-        void onTripClick(Trip trip);
-    }
 
     private final List<Trip> tripList;
-    private final OnTripClickListener listener;
+    private OnTripSelectedListener onTripSelectedListener;
 
-    public TripItemAdapter(List<Trip> tripList, OnTripClickListener listener) {
+    public TripItemAdapter(List<Trip> tripList) {
         this.tripList = tripList;
-        this.listener = listener;
     }
 
     @NonNull
@@ -49,6 +47,10 @@ public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripIt
     @Override
     public int getItemCount() {
         return tripList.size();
+    }
+
+    public void setOnTripSelectedListener(OnTripSelectedListener listener) {
+        this.onTripSelectedListener = listener;
     }
 
     public class TripItemViewHolder extends RecyclerView.ViewHolder {
@@ -80,8 +82,8 @@ public class TripItemAdapter extends RecyclerView.Adapter<TripItemAdapter.TripIt
             }
 
             binding.getRoot().setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onTripClick(trip);
+                if (onTripSelectedListener != null) {
+                    onTripSelectedListener.onTripSelected(trip);
                 }
             });
         }

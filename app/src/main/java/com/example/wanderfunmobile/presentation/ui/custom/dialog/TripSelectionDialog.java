@@ -26,16 +26,13 @@ import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.DialogTripSelectionBinding;
 import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.presentation.ui.adapter.trip.TripItemAdapter;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnTripSelectedListener;
 import com.example.wanderfunmobile.presentation.viewmodel.TripViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TripSelectionDialog extends Dialog {
-
-    public interface OnTripSelectedListener {
-        void onTripSelected(Trip trip);
-    }
 
     private DialogTripSelectionBinding binding;
     private TripItemAdapter adapter;
@@ -46,8 +43,8 @@ public class TripSelectionDialog extends Dialog {
 
     public TripSelectionDialog(@NonNull Context context, OnTripSelectedListener listener, ObjectMapper objectMapper) {
         super(context);
-        this.listener = listener;
         this.objectMapper = objectMapper;
+        this.listener = listener;
         init(context);
     }
 
@@ -95,8 +92,11 @@ public class TripSelectionDialog extends Dialog {
     }
 
     private void setupRecyclerView(Context context) {
-        adapter = new TripItemAdapter(filteredTripList, trip -> {
-            listener.onTripSelected(trip);
+        adapter = new TripItemAdapter(filteredTripList);
+        adapter.setOnTripSelectedListener(trip -> {
+            if (listener != null) {
+                listener.onTripSelected(trip);
+            }
             dismiss();
         });
         binding.tripSelectionList.setLayoutManager(new LinearLayoutManager(context));

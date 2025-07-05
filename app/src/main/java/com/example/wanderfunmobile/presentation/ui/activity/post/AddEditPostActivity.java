@@ -28,16 +28,19 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
+import com.example.wanderfunmobile.core.util.StringUtil;
 import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.ActivityAddEditPostBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPostOptionHorizontalBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPostOptionVerticalBinding;
 import com.example.wanderfunmobile.domain.model.images.Image;
+import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.model.trips.Trip;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.PlaceSelectionDialog;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.TripSelectionDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.posts.PostViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.UserViewModel;
@@ -62,7 +65,8 @@ public class AddEditPostActivity extends AppCompatActivity {
     private BottomSheetBehavior<ConstraintLayout> postOptionVerticalBottomSheetBehavior;
 
     private Long postId;
-    private Trip sharedTrip;
+    private Trip taggedTrip;
+    private Place taggedPlace;
     private UserViewModel userViewModel;
     private PostViewModel postViewModel;
 
@@ -170,10 +174,10 @@ public class AddEditPostActivity extends AppCompatActivity {
 
         // Get shared trip data from intent
         if (getIntent().hasExtra("shared_trip") && getIntent().getParcelableExtra("shared_trip") != null) {
-            sharedTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("shared_trip")), Trip.class);
-            bindTripData(sharedTrip);
+            taggedTrip = objectMapper.map(Parcels.unwrap(getIntent().getParcelableExtra("shared_trip")), Trip.class);
+            bindTripData(taggedTrip);
         } else {
-            sharedTrip = null;
+            taggedTrip = null;
             viewBinding.tagTripContainer.setVisibility(GONE);
         }
 
@@ -195,8 +199,14 @@ public class AddEditPostActivity extends AppCompatActivity {
 
         viewBinding.removeTripButton.getRoot().setVisibility(View.VISIBLE);
         viewBinding.removeTripButton.getRoot().setOnClickListener(v -> {
-            sharedTrip = null;
+            taggedTrip = null;
             viewBinding.tagTripContainer.setVisibility(GONE);
+        });
+
+        viewBinding.removePlaceButton.getRoot().setVisibility(View.VISIBLE);
+        viewBinding.removePlaceButton.getRoot().setOnClickListener(v -> {
+            taggedPlace = null;
+            viewBinding.tagPlaceContainer.setVisibility(GONE);
         });
     }
 
@@ -273,20 +283,51 @@ public class AddEditPostActivity extends AppCompatActivity {
         }
 
         if (post.getTrip() != null) {
-            sharedTrip = post.getTrip();
-            bindTripData(sharedTrip);
+            taggedTrip = post.getTrip();
+            bindTripData(taggedTrip);
         } else {
-            sharedTrip = null;
+            taggedTrip = null;
             viewBinding.tagTripContainer.setVisibility(GONE);
+        }
+
+        if (post.getPlace() != null) {
+            taggedPlace = post.getPlace();
+            bindPlaceData(taggedPlace);
+        } else {
+            taggedPlace = null;
+            viewBinding.tagPlaceContainer.setVisibility(GONE);
         }
     }
 
     private void bindTripData(Trip trip) {
         viewBinding.tagTripContainer.setVisibility(View.VISIBLE);
+        viewBinding.tagPlaceContainer.setVisibility(View.GONE);
+        taggedPlace = null;
 
         viewBinding.trip.name.setText(trip.getName());
         viewBinding.trip.startTime.setText(DateTimeUtil.localDateToString(trip.getStartTime()));
         viewBinding.trip.endTime.setText(DateTimeUtil.localDateToString(trip.getEndTime()));
+
+        taggedTrip = trip;
+    }
+
+    private void bindPlaceData(Place place) {
+        viewBinding.tagPlaceContainer.setVisibility(View.VISIBLE);
+        viewBinding.tagTripContainer.setVisibility(View.GONE);
+        taggedTrip = null;
+
+        viewBinding.place.placeName.setText(place.getName());
+        viewBinding.place.placeRating.setText(String.valueOf(place.getRating()));
+        viewBinding.place.address.setText(StringUtil.formatAddressToStringNoStreet(place.getAddress()));
+        if (place.getCoverImage() != null) {
+            Glide.with(this)
+                    .load(place.getCoverImage().getImageUrl())
+                    .error(R.drawable.chill_image)
+                    .into(viewBinding.place.placeCoverImage);
+        } else {
+            viewBinding.place.placeCoverImage.setImageResource(R.drawable.chill_image);
+        }
+        taggedPlace = place;
     }
 
     private void initBottomSheetButtons() {
@@ -299,27 +340,51 @@ public class AddEditPostActivity extends AppCompatActivity {
                 .build()));
 
         viewBinding.postOptionHorizontal.addTripButton.setOnClickListener(v -> {
-            TripSelectionDialog dialog = new TripSelectionDialog(
+            TripSelectionDialog tripSelectionDialog = new TripSelectionDialog(
                     AddEditPostActivity.this,
                     trip -> {
-                        sharedTrip = trip;
+//                        taggedTrip = trip;
                         bindTripData(trip);
                     },
                     objectMapper
             );
-            dialog.show();
+            tripSelectionDialog.show();
         });
 
         viewBinding.postOptionVertical.addTripButton.setOnClickListener(v -> {
-            TripSelectionDialog dialog = new TripSelectionDialog(
+            TripSelectionDialog tripSelectionDialog = new TripSelectionDialog(
                     AddEditPostActivity.this,
                     trip -> {
-                        sharedTrip = trip;
+//                        taggedTrip = trip;
                         bindTripData(trip);
                     },
                     objectMapper
             );
-            dialog.show();
+            tripSelectionDialog.show();
+        });
+
+        viewBinding.postOptionHorizontal.addPlaceButton.setOnClickListener(v -> {
+            PlaceSelectionDialog placeSelectionDialog = new PlaceSelectionDialog(
+                    AddEditPostActivity.this,
+                    place -> {
+                        taggedPlace = place;
+                        bindPlaceData(place);
+                    },
+                    objectMapper
+            );
+            placeSelectionDialog.show();
+        });
+
+        viewBinding.postOptionVertical.addPlaceButton.setOnClickListener(v -> {
+            PlaceSelectionDialog placeSelectionDialog = new PlaceSelectionDialog(
+                    AddEditPostActivity.this,
+                    place -> {
+                        place = objectMapper.map(place, Place.class);
+                        bindPlaceData(place);
+                    },
+                    objectMapper
+            );
+            placeSelectionDialog.show();
         });
     }
 
@@ -331,7 +396,8 @@ public class AddEditPostActivity extends AppCompatActivity {
         viewBinding.postButton.setOnClickListener(v -> {
             showLoadingDialog();
             Post postCreate = new Post();
-            postCreate.setTrip(sharedTrip);
+            postCreate.setTrip(taggedTrip);
+            postCreate.setPlace(taggedPlace);
             if (viewBinding.textEdittext.getText() != null && !viewBinding.textEdittext.getText().toString().isEmpty()) {
                 postCreate.setContent(viewBinding.textEdittext.getText().toString());
             } else {

@@ -22,18 +22,16 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.DialogPlaceSelectionBinding;
+import com.example.wanderfunmobile.domain.model.checkins.CheckIn;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.PlaceItemAdapter;
-import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnPlaceSelectedListener;
+import com.example.wanderfunmobile.presentation.viewmodel.CheckInViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlaceSelectionDialog extends Dialog {
-
-    public interface OnPlaceSelectedListener {
-        void onPlaceSelected(Place place);
-    }
 
     private DialogPlaceSelectionBinding binding;
     private PlaceItemAdapter adapter;
@@ -68,12 +66,19 @@ public class PlaceSelectionDialog extends Dialog {
         setupRecyclerView(context);
         setupSearchBar();
 
-        PlaceViewModel placeViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(PlaceViewModel.class);
-        placeViewModel.findAllPlaces();
-        placeViewModel.getFindAllPlacesResponseLiveData().observe((LifecycleOwner) context, result -> {
+        CheckInViewModel checkInViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(CheckInViewModel.class);
+        checkInViewModel.findAllByUser("Bearer " + SessionManager.getInstance(context.getApplicationContext()).getAccessToken());
+        checkInViewModel.getFindAllByUserLiveData().observe((LifecycleOwner) context, result -> {
             if (!result.isError() && result.getData() != null) {
+
+                List<CheckIn> checkIns = objectMapper.mapList(result.getData(), CheckIn.class);
                 fullPlaceList.clear();
-                fullPlaceList.addAll(objectMapper.mapList(result.getData(), Place.class));
+                List<Place> list = new ArrayList<>();
+                for (CheckIn checkIn : checkIns) {
+                    Place place = checkIn.getPlace();
+                    list.add(place);
+                }
+                fullPlaceList.addAll(list);
 
                 filteredPlaceList.clear();
                 filteredPlaceList.addAll(fullPlaceList);
@@ -93,8 +98,11 @@ public class PlaceSelectionDialog extends Dialog {
     }
 
     private void setupRecyclerView(Context context) {
-        adapter = new PlaceItemAdapter(filteredPlaceList, place -> {
-            listener.onPlaceSelected(place);
+        adapter = new PlaceItemAdapter(filteredPlaceList);
+        adapter.setOnPlaceSelectedListener(place -> {
+            if (listener != null) {
+                listener.onPlaceSelected(place);
+            }
             dismiss();
         });
         binding.placeSelectionList.setLayoutManager(new LinearLayoutManager(context));

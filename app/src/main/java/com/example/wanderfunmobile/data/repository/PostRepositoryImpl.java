@@ -251,6 +251,9 @@ public class PostRepositoryImpl implements PostRepository {
             if (post.getTrip() != null) {
                 postCreateDto.setTripId(post.getTrip().getId());
             }
+            if (post.getPlace() != null) {
+                postCreateDto.setPlaceId(post.getPlace().getId());
+            }
             Call<ResponseDto<PostDto>> call = postApi.updatePost(bearerToken, postId, postCreateDto);
             call.enqueue(new Callback<ResponseDto<PostDto>>() {
                 @Override

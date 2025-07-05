@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
+import com.example.wanderfunmobile.core.util.StringUtil;
 import com.example.wanderfunmobile.databinding.ItemPostBinding;
 import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.presentation.ui.activity.post.PostDetailActivity;
@@ -98,6 +99,18 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.PostIt
                 binding.placeCheckInStatus.setVisibility(View.VISIBLE);
                 binding.place.getRoot().setVisibility(View.VISIBLE);
                 placeName.setText(post.getPlace().getName());
+
+                binding.place.placeName.setText(post.getPlace().getName());
+                binding.place.placeRating.setText(String.valueOf(post.getPlace().getRating()));
+                binding.place.address.setText(StringUtil.formatAddressToStringNoStreet(post.getPlace().getAddress()));
+                if (post.getPlace().getCoverImage() != null) {
+                    Glide.with(binding.getRoot())
+                            .load(post.getPlace().getCoverImage().getImageUrl())
+                            .error(R.drawable.img_placeholder)
+                            .into(binding.place.placeCoverImage);
+                }
+
+
                 binding.tripShareStatus.setVisibility(View.GONE);
                 binding.trip.getRoot().setVisibility(View.GONE);
             } else {
