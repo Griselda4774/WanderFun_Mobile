@@ -161,7 +161,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/favourite_place_section"
+                    android:id="@+id/favorite_place_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"

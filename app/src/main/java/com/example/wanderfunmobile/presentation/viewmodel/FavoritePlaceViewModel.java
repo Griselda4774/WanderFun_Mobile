@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.favoriteplaces.FavoritePlace;
+import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.repository.FavoritePlaceRepository;
 
 import java.util.List;
@@ -22,12 +23,12 @@ public class FavoritePlaceViewModel extends ViewModel {
         this.favoritePlaceRepository = favoritePlaceRepository;
     }
 
-    private final MutableLiveData<Result<List<FavoritePlace>>> findAllByUserLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<Place>>> findAllByUserLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<FavoritePlace>> createFavoritePlaceLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<FavoritePlace>> deleteByIdLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<FavoritePlace>> deleteByUserAndPlaceIdLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
-    public MutableLiveData<Result<List<FavoritePlace>>> getFindAllByUserLiveData() {
+    public MutableLiveData<Result<List<Place>>> getFindAllByUserLiveData() {
         return findAllByUserLiveData;
     }
 
@@ -35,8 +36,8 @@ public class FavoritePlaceViewModel extends ViewModel {
         return createFavoritePlaceLiveData;
     }
 
-    public MutableLiveData<Result<FavoritePlace>> getDeleteByIdLiveData() {
-        return deleteByIdLiveData;
+    public MutableLiveData<Result<FavoritePlace>> getDeleteByUserAndPlaceIdLiveData() {
+        return deleteByUserAndPlaceIdLiveData;
     }
 
     public MutableLiveData<Boolean> getIsLoading() {
@@ -59,11 +60,11 @@ public class FavoritePlaceViewModel extends ViewModel {
         });
     }
 
-    public void deleteById(String bearerToken, Long id) {
+    public void deleteByUserAndPlaceId(String bearerToken, Long placeId) {
         isLoading.setValue(true);
-        favoritePlaceRepository.deleteById(bearerToken, id).observeForever(result -> {
+        favoritePlaceRepository.deleteByUserAndPlaceId(bearerToken, placeId).observeForever(result -> {
             isLoading.setValue(false);
-            deleteByIdLiveData.setValue(result);
+            deleteByUserAndPlaceIdLiveData.setValue(result);
         });
     }
 }

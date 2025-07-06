@@ -22,6 +22,7 @@ import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.activity.LoginActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.album.MyAlbumActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.checkin.CheckInHistoryActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.favoriteplace.FavoritePlaceActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.leaderboard.LeaderboardActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.profile.ProfileActivity;
 import com.example.wanderfunmobile.core.util.SessionManager;
@@ -103,6 +104,12 @@ public class ProfileFragment extends Fragment {
         // Profile
         viewBinding.profileSection.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            startActivity(intent);
+        });
+
+        // Favorite Places
+        viewBinding.favoritePlaceSection.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), FavoritePlaceActivity.class);
             startActivity(intent);
         });
 
