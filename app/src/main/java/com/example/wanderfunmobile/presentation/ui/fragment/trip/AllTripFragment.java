@@ -65,8 +65,9 @@ public class AllTripFragment extends Fragment {
 
         recyclerView = viewBinding.tripList;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        tripItemAdapter = new TripItemAdapter(tripList, trip -> {
-            Intent intent = new Intent(requireContext(), TripDetailActivity.class);
+        tripItemAdapter = new TripItemAdapter(tripList);
+        tripItemAdapter.setOnTripSelectedListener(trip -> {
+            Intent intent = new Intent(getActivity(), TripDetailActivity.class);
             intent.putExtra("tripId", trip.getId());
             startActivity(intent);
         });

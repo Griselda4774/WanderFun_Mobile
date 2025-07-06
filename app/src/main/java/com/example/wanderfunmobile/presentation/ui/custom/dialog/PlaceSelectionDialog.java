@@ -1,7 +1,5 @@
 package com.example.wanderfunmobile.presentation.ui.custom.dialog;
 
-import static androidx.databinding.DataBindingUtil.setContentView;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -23,28 +21,29 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
-import com.example.wanderfunmobile.databinding.DialogTripSelectionBinding;
-import com.example.wanderfunmobile.domain.model.trips.Trip;
-import com.example.wanderfunmobile.presentation.ui.adapter.trip.TripItemAdapter;
-import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnTripSelectedListener;
-import com.example.wanderfunmobile.presentation.viewmodel.TripViewModel;
+import com.example.wanderfunmobile.databinding.DialogPlaceSelectionBinding;
+import com.example.wanderfunmobile.domain.model.checkins.CheckIn;
+import com.example.wanderfunmobile.domain.model.places.Place;
+import com.example.wanderfunmobile.presentation.ui.adapter.place.PlaceItemAdapter;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnPlaceSelectedListener;
+import com.example.wanderfunmobile.presentation.viewmodel.CheckInViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TripSelectionDialog extends Dialog {
+public class PlaceSelectionDialog extends Dialog {
 
-    private DialogTripSelectionBinding binding;
-    private TripItemAdapter adapter;
-    private final List<Trip> fullTripList = new ArrayList<>();
-    private final List<Trip> filteredTripList = new ArrayList<>();
-    private final OnTripSelectedListener listener;
+    private DialogPlaceSelectionBinding binding;
+    private PlaceItemAdapter adapter;
+    private final List<Place> fullPlaceList = new ArrayList<>();
+    private final List<Place> filteredPlaceList = new ArrayList<>();
+    private final OnPlaceSelectedListener listener;
     private final ObjectMapper objectMapper;
 
-    public TripSelectionDialog(@NonNull Context context, OnTripSelectedListener listener, ObjectMapper objectMapper) {
+    public PlaceSelectionDialog(@NonNull Context context, OnPlaceSelectedListener listener, ObjectMapper objectMapper) {
         super(context);
-        this.objectMapper = objectMapper;
         this.listener = listener;
+        this.objectMapper = objectMapper;
         init(context);
     }
 
@@ -52,7 +51,7 @@ public class TripSelectionDialog extends Dialog {
     private void init(Context context) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        binding = DialogTripSelectionBinding.inflate(LayoutInflater.from(context));
+        binding = DialogPlaceSelectionBinding.inflate(LayoutInflater.from(context));
         setContentView(binding.getRoot());
 
         // Dialog setup
@@ -67,15 +66,22 @@ public class TripSelectionDialog extends Dialog {
         setupRecyclerView(context);
         setupSearchBar();
 
-        TripViewModel tripViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(TripViewModel.class);
-        tripViewModel.getAllTrips("Bearer " + SessionManager.getInstance(context.getApplicationContext()).getAccessToken());
-        tripViewModel.getAllTripsResponseLiveData().observe((LifecycleOwner) context, result -> {
+        CheckInViewModel checkInViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(CheckInViewModel.class);
+        checkInViewModel.findAllByUser("Bearer " + SessionManager.getInstance(context.getApplicationContext()).getAccessToken());
+        checkInViewModel.getFindAllByUserLiveData().observe((LifecycleOwner) context, result -> {
             if (!result.isError() && result.getData() != null) {
-                fullTripList.clear();
-                fullTripList.addAll(objectMapper.mapList(result.getData(), Trip.class));
 
-                filteredTripList.clear();
-                filteredTripList.addAll(fullTripList);
+                List<CheckIn> checkIns = objectMapper.mapList(result.getData(), CheckIn.class);
+                fullPlaceList.clear();
+                List<Place> list = new ArrayList<>();
+                for (CheckIn checkIn : checkIns) {
+                    Place place = checkIn.getPlace();
+                    list.add(place);
+                }
+                fullPlaceList.addAll(list);
+
+                filteredPlaceList.clear();
+                filteredPlaceList.addAll(fullPlaceList);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -92,15 +98,15 @@ public class TripSelectionDialog extends Dialog {
     }
 
     private void setupRecyclerView(Context context) {
-        adapter = new TripItemAdapter(filteredTripList);
-        adapter.setOnTripSelectedListener(trip -> {
+        adapter = new PlaceItemAdapter(filteredPlaceList);
+        adapter.setOnPlaceSelectedListener(place -> {
             if (listener != null) {
-                listener.onTripSelected(trip);
+                listener.onPlaceSelected(place);
             }
             dismiss();
         });
-        binding.tripSelectionList.setLayoutManager(new LinearLayoutManager(context));
-        binding.tripSelectionList.setAdapter(adapter);
+        binding.placeSelectionList.setLayoutManager(new LinearLayoutManager(context));
+        binding.placeSelectionList.setAdapter(adapter);
     }
 
     private void setupSearchBar() {
@@ -109,21 +115,21 @@ public class TripSelectionDialog extends Dialog {
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterTrips(s.toString().trim());
+                filterPlaces(s.toString().trim());
             }
             @Override public void afterTextChanged(Editable s) {}
         });
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void filterTrips(String keyword) {
-        filteredTripList.clear();
+    private void filterPlaces(String keyword) {
+        filteredPlaceList.clear();
         if (keyword.isEmpty()) {
-            filteredTripList.addAll(fullTripList);
+            filteredPlaceList.addAll(fullPlaceList);
         } else {
-            for (Trip trip : fullTripList) {
-                if (trip.getName() != null && trip.getName().toLowerCase().contains(keyword.toLowerCase())) {
-                    filteredTripList.add(trip);
+            for (Place place : fullPlaceList) {
+                if (place.getName() != null && place.getName().toLowerCase().contains(keyword.toLowerCase())) {
+                    filteredPlaceList.add(place);
                 }
             }
         }

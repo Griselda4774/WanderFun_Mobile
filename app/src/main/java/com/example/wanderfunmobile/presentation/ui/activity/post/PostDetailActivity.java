@@ -37,6 +37,7 @@ import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
+import com.example.wanderfunmobile.core.util.StringUtil;
 import com.example.wanderfunmobile.databinding.ActivityPostDetailBinding;
 import com.example.wanderfunmobile.databinding.PopupCommentMenuBinding;
 import com.example.wanderfunmobile.domain.model.posts.Comment;
@@ -425,6 +426,17 @@ public class PostDetailActivity extends AppCompatActivity {
             viewBinding.placeName.setVisibility(View.VISIBLE);
             viewBinding.placeCheckInStatus.setVisibility(View.VISIBLE);
             viewBinding.place.getRoot().setVisibility(View.VISIBLE);
+
+            viewBinding.place.placeName.setText(post.getPlace().getName());
+            viewBinding.place.placeRating.setText(String.valueOf(post.getPlace().getRating()));
+            viewBinding.place.address.setText(StringUtil.formatAddressToStringNoStreet(post.getPlace().getAddress()));
+            if (post.getPlace().getCoverImage() != null) {
+                Glide.with(viewBinding.getRoot())
+                        .load(post.getPlace().getCoverImage().getImageUrl())
+                        .error(R.drawable.img_placeholder)
+                        .into(viewBinding.place.placeCoverImage);
+            }
+
             placeName.setText(post.getPlace().getName());
             viewBinding.tripShareStatus.setVisibility(View.GONE);
             viewBinding.trip.getRoot().setVisibility(View.GONE);
