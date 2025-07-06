@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.domain.model.checkins.CheckIn;
-import com.example.wanderfunmobile.domain.model.FavouritePlace;
+import com.example.wanderfunmobile.domain.model.favoriteplaces.FavoritePlace;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.repository.places.PlaceRepository;
@@ -30,9 +29,9 @@ public class PlaceViewModel extends ViewModel {
     private final MutableLiveData<Result<List<Place>>> findAllPlacesByProvinceNameResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<List<Place>>> findAllPlacesByNameContainingResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<Place>> findPlaceByIdResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<List<FavouritePlace>>> findAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<FavouritePlace>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<FavouritePlace>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<FavoritePlace>>> findAllFavouritePlacesResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<FavoritePlace>> addFavouritePlaceResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<FavoritePlace>> deleteFavouritePlaceByIdsResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCheckingIn = new MutableLiveData<>();
 
@@ -52,15 +51,15 @@ public class PlaceViewModel extends ViewModel {
         return findPlaceByIdResponseLiveData;
     }
 
-    public LiveData<Result<List<FavouritePlace>>> getFindAllFavouritePlacesResponseLiveData() {
+    public LiveData<Result<List<FavoritePlace>>> getFindAllFavouritePlacesResponseLiveData() {
         return findAllFavouritePlacesResponseLiveData;
     }
 
-    public LiveData<Result<FavouritePlace>> getAddFavouritePlaceResponseLiveData() {
+    public LiveData<Result<FavoritePlace>> getAddFavouritePlaceResponseLiveData() {
         return addFavouritePlaceResponseLiveData;
     }
 
-    public LiveData<Result<FavouritePlace>> getDeleteFavouritePlaceByIdsResponseLiveData() {
+    public LiveData<Result<FavoritePlace>> getDeleteFavouritePlaceByIdsResponseLiveData() {
         return deleteFavouritePlaceByIdsResponseLiveData;
     }
 

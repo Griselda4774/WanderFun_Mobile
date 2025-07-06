@@ -1,5 +1,8 @@
 package com.example.wanderfunmobile.data.dto.addresses;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class WardDto {
     private String code;
     private String name;
