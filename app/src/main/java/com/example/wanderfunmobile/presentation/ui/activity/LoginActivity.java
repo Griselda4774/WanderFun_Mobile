@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.FavoritePlaceManager;
 import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.data.dto.auth.LoginDto;
 import com.example.wanderfunmobile.data.dto.auth.LoginResponseDto;
@@ -25,6 +26,7 @@ import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.FavoritePlaceViewModel;
 
 import javax.inject.Inject;
 
@@ -33,6 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
     private AuthViewModel authViewModel;
+    private FavoritePlaceViewModel favoritePlaceViewModel;
     @Inject
     ObjectMapper objectMapper;
 
@@ -49,8 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-
+        setUpViewModel();
 
         TextView registerButton = viewBinding.registerButton;
         registerButton.setOnClickListener(v -> {
@@ -76,6 +78,26 @@ public class LoginActivity extends AppCompatActivity {
             authViewModel.login(loginDto);
         });
 
+        TextView guestButton = viewBinding.guestButton;
+        guestButton.setOnClickListener(v -> {
+            SessionManager.getInstance(getApplicationContext()).logout();
+            PostViewManager.getInstance(getApplicationContext()).reset();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    private void setUpViewModel() {
+        favoritePlaceViewModel = new ViewModelProvider(this).get(FavoritePlaceViewModel.class);
+        favoritePlaceViewModel.getFindAllByUserLiveData().observe(this, result -> {
+            if (!result.isError() && result.getData() != null) {
+                FavoritePlaceManager.getInstance(getApplicationContext()).init(result.getData());
+            }
+            toMainActivity();
+        });
+
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         authViewModel.getLoginResponseLiveData().observe(this, loginResponse -> {
             if (!loginResponse.isError()) {
                 LoginResponseDto loginResponseDto = objectMapper.map(loginResponse.getData(), LoginResponseDto.class);
@@ -87,22 +109,12 @@ public class LoginActivity extends AppCompatActivity {
                         loginResponseDto.getAccessToken(),
                         loginResponseDto.getRefreshToken());
                 PostViewManager.getInstance(getApplicationContext()).reset();
+                FavoritePlaceManager.getInstance(getApplicationContext()).clear();
+                favoritePlaceViewModel.findAllByUser("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
                 Toast.makeText(getApplicationContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                finish();
             } else {
                 Toast.makeText(this, "Lỗi: " + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
-
-        TextView guestButton = viewBinding.guestButton;
-        guestButton.setOnClickListener(v -> {
-            SessionManager.getInstance(getApplicationContext()).logout();
-            PostViewManager.getInstance(getApplicationContext()).reset();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
         });
     }
 
@@ -126,5 +138,11 @@ public class LoginActivity extends AppCompatActivity {
             hideIcon.setVisibility(View.INVISIBLE);
             hideIcon.setClickable(false);
         });
+    }
+
+    private void toMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

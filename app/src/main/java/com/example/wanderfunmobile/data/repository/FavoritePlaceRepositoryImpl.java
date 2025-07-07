@@ -68,27 +68,27 @@ public class FavoritePlaceRepositoryImpl implements FavoritePlaceRepository {
     }
 
     @Override
-    public LiveData<Result<FavoritePlace>> createFavoritePlace(String bearerToken, Long placeId) {
-        MutableLiveData<Result<FavoritePlace>> createFavoritePlaceResponseLiveData = new MutableLiveData<>();
+    public LiveData<Result<Place>> createFavoritePlace(String bearerToken, Long placeId) {
+        MutableLiveData<Result<Place>> createFavoritePlaceResponseLiveData = new MutableLiveData<>();
         try {
-            Call<ResponseDto<FavoritePlaceDto>> call = favoritePlaceApi.createFavoritePlace(bearerToken, placeId);
-            call.enqueue(new Callback<ResponseDto<FavoritePlaceDto>>() {
+            Call<ResponseDto<PlaceDto>> call = favoritePlaceApi.createFavoritePlace(bearerToken, placeId);
+            call.enqueue(new Callback<ResponseDto<PlaceDto>>() {
                 @Override
-                public void onResponse(@NonNull Call<ResponseDto<FavoritePlaceDto>> call,
-                                       @NonNull Response<ResponseDto<FavoritePlaceDto>> response) {
+                public void onResponse(@NonNull Call<ResponseDto<PlaceDto>> call,
+                                       @NonNull Response<ResponseDto<PlaceDto>> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Result<FavoritePlace> result = new Result<>();
+                        Result<Place> result = new Result<>();
                         result.setError(response.body().isError());
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
-                            result.setData(objectMapper.map(response.body().getData(), FavoritePlace.class));
+                            result.setData(objectMapper.map(response.body().getData(), Place.class));
                         }
                         createFavoritePlaceResponseLiveData.postValue(result);
                     }
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<ResponseDto<FavoritePlaceDto>> call,
+                public void onFailure(@NonNull Call<ResponseDto<PlaceDto>> call,
                                       @NonNull Throwable throwable) {
                     Log.e("FavoritePlaceRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
                 }
@@ -100,27 +100,27 @@ public class FavoritePlaceRepositoryImpl implements FavoritePlaceRepository {
     }
 
     @Override
-    public LiveData<Result<FavoritePlace>> deleteByUserAndPlaceId(String bearerToken, Long placeId) {
-        MutableLiveData<Result<FavoritePlace>> deleteByUserAndPlaceIdResponseLiveData = new MutableLiveData<>();
+    public LiveData<Result<Place>> deleteByUserAndPlaceId(String bearerToken, Long placeId) {
+        MutableLiveData<Result<Place>> deleteByUserAndPlaceIdResponseLiveData = new MutableLiveData<>();
         try {
-            Call<ResponseDto<FavoritePlaceDto>> call = favoritePlaceApi.deleteByUserAndPlaceId(bearerToken, placeId);
-            call.enqueue(new Callback<ResponseDto<FavoritePlaceDto>>() {
+            Call<ResponseDto<PlaceDto>> call = favoritePlaceApi.deleteByUserAndPlaceId(bearerToken, placeId);
+            call.enqueue(new Callback<ResponseDto<PlaceDto>>() {
                 @Override
-                public void onResponse(@NonNull Call<ResponseDto<FavoritePlaceDto>> call,
-                                       @NonNull Response<ResponseDto<FavoritePlaceDto>> response) {
+                public void onResponse(@NonNull Call<ResponseDto<PlaceDto>> call,
+                                       @NonNull Response<ResponseDto<PlaceDto>> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Result<FavoritePlace> result = new Result<>();
+                        Result<Place> result = new Result<>();
                         result.setError(response.body().isError());
                         result.setMessage(response.body().getMessage());
                         if (response.body().getData() != null) {
-                            result.setData(objectMapper.map(response.body().getData(), FavoritePlace.class));
+                            result.setData(objectMapper.map(response.body().getData(), Place.class));
                         }
                         deleteByUserAndPlaceIdResponseLiveData.postValue(result);
                     }
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<ResponseDto<FavoritePlaceDto>> call,
+                public void onFailure(@NonNull Call<ResponseDto<PlaceDto>> call,
                                       @NonNull Throwable throwable) {
                     Log.e("FavoritePlaceRepositoryImpl", "Error during onFailure: " + throwable.getMessage());
                 }

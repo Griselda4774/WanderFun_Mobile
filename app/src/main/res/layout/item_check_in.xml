@@ -38,15 +38,7 @@
             android:gravity="start"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/place_name"
-                style="@style/Text.Title.Section"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Tp. Hồ Chí Minh"
-                android:textSize="16sp" />
+
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -81,15 +73,25 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/address"
-                    android:layout_marginStart="12dp"
-                    style="@style/Text.Description"
+                    android:id="@+id/place_name"
+                    style="@style/Text.Title.Section"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Địa chỉ"
-                    android:textColor="@color/black1" />
+                    android:layout_marginStart="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Tp. Hồ Chí Minh"
+                    android:textSize="16sp" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/address"
+                style="@style/Text.Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Địa chỉ"
+                android:textColor="@color/black1" />
 
             <TextView
                 android:id="@+id/date_created"

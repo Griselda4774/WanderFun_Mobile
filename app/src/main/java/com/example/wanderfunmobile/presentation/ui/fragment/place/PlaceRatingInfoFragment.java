@@ -25,6 +25,7 @@ import com.example.wanderfunmobile.presentation.ui.activity.place.FeedbackCreate
 import com.example.wanderfunmobile.presentation.ui.adapter.place.FeedbackItemAdapter;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.RatingBarItemAdapter;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnContentChangeListener;
 import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingOutlineView;
 import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingView;
 import com.example.wanderfunmobile.presentation.viewmodel.places.FeedbackViewModel;
@@ -43,7 +44,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class PlaceRatingInfoFragment extends Fragment {
-
     private FragmentPlaceRatingInfoBinding viewBinding;
     private FeedbackItemAdapter feedbackItemAdapter;
     private Place place;
@@ -54,8 +54,8 @@ public class PlaceRatingInfoFragment extends Fragment {
     ObjectMapper objectMapper;
     @Inject
     Gson gson;
+    private OnContentChangeListener contentChangeListener;
     private ActivityResultLauncher<Intent> activityResultLauncher;
-
 
     public PlaceRatingInfoFragment() {
     }
@@ -94,6 +94,16 @@ public class PlaceRatingInfoFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         viewBinding = null;
+    }
+
+    public void setOnContentChangeListener(OnContentChangeListener listener) {
+        this.contentChangeListener = listener;
+    }
+
+    private void notifyContentChanged() {
+        if (contentChangeListener != null) {
+            contentChangeListener.onContentChanged();
+        }
     }
 
     private void setUpView() {
@@ -195,11 +205,8 @@ public class PlaceRatingInfoFragment extends Fragment {
                                     Feedback newFeedback = gson.fromJson(Objects.requireNonNull(data.getStringExtra("feedback_json")), Feedback.class);
                                     feedbackList.add(0, newFeedback);
                                     feedbackItemAdapter.notifyItemInserted(0);
-                                    viewBinding.placeRatingList.post(() -> {
-                                        viewBinding.placeRatingList.invalidate();
-                                        viewBinding.placeRatingList.requestLayout();
-                                    });
                                     viewBinding.noFeedbackText.setVisibility(View.GONE);
+                                    notifyContentChanged();
                                     bindRatingData(feedbackList);
                                     break;
                                 default:

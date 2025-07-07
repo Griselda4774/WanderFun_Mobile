@@ -79,4 +79,8 @@ public class ViewPager2HeightAdjuster {
             }
         });
     }
+
+    public static void requestHeightUpdate(ViewPager2 viewPager2) {
+        updateHeight(viewPager2, viewPager2.getCurrentItem());
+    }
 }

@@ -18,10 +18,10 @@ public interface FavoritePlaceApi {
     Call<ResponseDto<List<PlaceDto>>> findAllByUser(@Header("Authorization") String bearerToken);
 
     @POST("favorite-place")
-    Call<ResponseDto<FavoritePlaceDto>> createFavoritePlace(@Header("Authorization") String bearerToken,
+    Call<ResponseDto<PlaceDto>> createFavoritePlace(@Header("Authorization") String bearerToken,
                                                             @Query("placeId") Long placeId);
 
     @DELETE("favorite-place")
-    Call<ResponseDto<FavoritePlaceDto>> deleteByUserAndPlaceId(@Header("Authorization") String bearerToken,
+    Call<ResponseDto<PlaceDto>> deleteByUserAndPlaceId(@Header("Authorization") String bearerToken,
                                                                @Query("placeId") Long id);
 }

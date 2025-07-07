@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.FavoritePlaceManager;
 import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.databinding.FragmentProfileBinding;
 import com.example.wanderfunmobile.domain.model.users.User;
@@ -83,6 +84,7 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(requireActivity().getApplicationContext(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
                 SessionManager.getInstance(requireActivity().getApplicationContext()).logout();
                 PostViewManager.getInstance(requireActivity().getApplicationContext()).reset();
+                FavoritePlaceManager.getInstance(requireActivity().getApplicationContext()).clear();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 requireActivity().finish();
