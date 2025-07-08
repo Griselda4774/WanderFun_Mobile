@@ -84,6 +84,14 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         fetchUserData();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
+    }
+
     private void setUpMediaLauncher() {
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
             if (uri != null) {
@@ -102,7 +110,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         feedbackViewModel = new ViewModelProvider(this).get(FeedbackViewModel.class);
         feedbackViewModel.getCreateFeedbackLiveData().observe(this, data -> {
             if (data != null && !data.isError()) {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(getApplicationContext(), "Tạo đánh giá thành công", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("status", "feedback_created");
@@ -110,7 +118,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
                 setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(this, "Tạo đánh giá thất bại", Toast.LENGTH_SHORT).show();
             }
         });
@@ -147,8 +155,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
 
     private void setUpView() {
         // Loading dialog
-        loadingDialog = viewBinding.loadingDialog;
-        hideLoadingDialog();
+        loadingDialog = new LoadingDialog(this);
 
         // Feedback image
         ImageView feedbackImage = viewBinding.feedbackImage;
@@ -191,7 +198,7 @@ public class FeedbackCreateActivity extends AppCompatActivity {
         TextView submitButton = viewBinding.submitButton.findViewById(R.id.button);
         submitButton.setText("Đăng");
         submitButton.setOnClickListener(v -> {
-            showLoadingDialog();
+            loadingDialog.show();
             Feedback feedback = new Feedback();
             feedback.setRating(viewBinding.starRatingOutlineView.getRating());
             if (comment.getText() != null)
@@ -241,15 +248,5 @@ public class FeedbackCreateActivity extends AppCompatActivity {
                     .error(R.drawable.img_placeholder)
                     .into(userAvatar);
         }
-    }
-
-    private void showLoadingDialog() {
-        loadingDialog.setVisibility(View.VISIBLE);
-        loadingDialog.show();
-    }
-
-    private void hideLoadingDialog() {
-        loadingDialog.setVisibility(View.GONE);
-        loadingDialog.hide();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.wanderfunmobile.data.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 
@@ -8,7 +9,7 @@ public class ResponseDto<T> {
     private boolean error;
     private String errorType;
     private Map<String, String> errorData;
-    private Date timestamp;
+    private LocalDateTime timestamp;
     private String message;
     private T data;
 
@@ -46,11 +47,11 @@ public class ResponseDto<T> {
         this.errorData = errorData;
     }
 
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 

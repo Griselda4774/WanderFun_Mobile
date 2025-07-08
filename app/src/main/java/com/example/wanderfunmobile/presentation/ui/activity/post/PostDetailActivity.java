@@ -44,6 +44,7 @@ import com.example.wanderfunmobile.domain.model.posts.Comment;
 import com.example.wanderfunmobile.domain.model.posts.Post;
 import com.example.wanderfunmobile.domain.model.users.User;
 import com.example.wanderfunmobile.presentation.ui.adapter.posts.CommentItemAdapter;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.posts.CommentViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.posts.PostViewModel;
 
@@ -68,6 +69,7 @@ public class PostDetailActivity extends AppCompatActivity {
     private int clickedCommentPosition = -1;
     private View dimBackground;
     private PopupWindow popupWindow;
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +121,14 @@ public class PostDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
+    }
+
     private void setupActivity() {
         // Dim background
         dimBackground = viewBinding.dimBackground;
@@ -132,6 +142,9 @@ public class PostDetailActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        // Loading dialog
+        loadingDialog = new LoadingDialog(this);
 
         // Back button
         viewBinding.backButton.button.setOnClickListener(v -> {
@@ -182,7 +195,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         viewBinding.selectionDialog.setOnRejectListener(() -> {
             if (postId > 0) {
-                showLoadingDialog();
+                loadingDialog.show();
                 postViewModel.deletePost("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), postId);
             }
             viewBinding.selectionDialog.hide();
@@ -256,9 +269,9 @@ public class PostDetailActivity extends AppCompatActivity {
             if (!result.isError() && result.getData() != null) {
                 post = result.getData();
                 bindPostData();
-                hideLoadingDialog();
+                loadingDialog.hide();
             } else {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(getApplicationContext(), "Bài viết đã bị xóa!", Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -267,14 +280,14 @@ public class PostDetailActivity extends AppCompatActivity {
         // Observe delete post by id
         postViewModel.getDeletePostLiveData().observe(this, result -> {
             if (!result.isError()) {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(getApplicationContext(), "Xóa bài viết thành công", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("status", "post_deleted");
                 setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
             }
         });
@@ -374,7 +387,7 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void getPost() {
-        showLoadingDialog();
+        loadingDialog.show();
         Intent intent = getIntent();
         if (intent != null) {
             postId = intent.getLongExtra("postId", -1);
@@ -560,16 +573,6 @@ public class PostDetailActivity extends AppCompatActivity {
         } else {
             viewBinding.modifyButtonGroup.setVisibility(View.GONE);
         }
-    }
-
-    private void showLoadingDialog() {
-        viewBinding.loadingDialog.setVisibility(View.VISIBLE);
-        viewBinding.loadingDialog.show();
-    }
-
-    private void hideLoadingDialog() {
-        viewBinding.loadingDialog.setVisibility(View.GONE);
-        viewBinding.loadingDialog.hide();
     }
 
     private void showPopupMenu(View anchorView, int position) {

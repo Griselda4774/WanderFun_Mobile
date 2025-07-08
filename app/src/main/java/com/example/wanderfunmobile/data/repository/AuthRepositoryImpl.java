@@ -9,9 +9,11 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.wanderfunmobile.data.dto.ResponseDto;
 import com.example.wanderfunmobile.data.dto.auth.LoginDto;
 import com.example.wanderfunmobile.data.dto.auth.LoginResponseDto;
+import com.example.wanderfunmobile.data.dto.auth.MailOtpDto;
 import com.example.wanderfunmobile.data.dto.auth.RegisterDto;
 import com.example.wanderfunmobile.data.dto.auth.TokenResponseDto;
 import com.example.wanderfunmobile.data.api.backend.AuthApi;
+import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.repository.AuthRepository;
 
 import javax.inject.Inject;
@@ -129,5 +131,67 @@ public class AuthRepositoryImpl implements AuthRepository {
         }
 
         return refreshTokenResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<Void>> sendOtp(String email) {
+        MutableLiveData<Result<Void>> sendOtpResponseLiveData = new MutableLiveData<>();
+        String errorType = "AuthRepositoryImpl Send OTP Error";
+        try {
+            Call<ResponseDto<Void>> call = authApi.sendOtp(email);
+            call.enqueue(new Callback<ResponseDto<Void>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<Void>> call,
+                                       @NonNull Response<ResponseDto<Void>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<Void> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        sendOtpResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<Void>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e(errorType, "Error during send OTP onFailure");
+                }
+            });
+        } catch (Exception e) {
+            Log.e(errorType, "Error during send OTP catch");
+        }
+
+        return sendOtpResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<Void>> verifyOtp(MailOtpDto mailOtpDto) {
+        MutableLiveData<Result<Void>> verifyOtpResponseLiveData = new MutableLiveData<>();
+        String errorType = "AuthRepositoryImpl Verify OTP Error";
+        try {
+            Call<ResponseDto<Void>> call = authApi.verifyOtp(mailOtpDto);
+            call.enqueue(new Callback<ResponseDto<Void>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<Void>> call,
+                                       @NonNull Response<ResponseDto<Void>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<Void> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        verifyOtpResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<Void>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e(errorType, "Error during verify OTP onFailure");
+                }
+            });
+        } catch (Exception e) {
+            Log.e(errorType, "Error during verify OTP catch");
+        }
+
+        return verifyOtpResponseLiveData;
     }
 }

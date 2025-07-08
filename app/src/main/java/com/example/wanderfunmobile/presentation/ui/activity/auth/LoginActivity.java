@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Forgot Password
         viewBinding.forgotPassword.setOnClickListener(v-> {
-            Intent intent = new Intent(LoginActivity.this, VerifyOtpActivity.class);
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
             startActivity(intent);
             finish();
         });
@@ -108,17 +108,21 @@ public class LoginActivity extends AppCompatActivity {
         authViewModel.getLoginResponseLiveData().observe(this, loginResponse -> {
             if (!loginResponse.isError()) {
                 LoginResponseDto loginResponseDto = objectMapper.map(loginResponse.getData(), LoginResponseDto.class);
-                SessionManager.getInstance(getApplicationContext()).login(
-                        loginResponseDto.getId(),
-                        loginResponseDto.getUserId(),
-                        loginResponseDto.getRole().name(),
-                        loginResponseDto.getTokenType(),
-                        loginResponseDto.getAccessToken(),
-                        loginResponseDto.getRefreshToken());
-                PostViewManager.getInstance(getApplicationContext()).reset();
-                FavoritePlaceManager.getInstance(getApplicationContext()).clear();
-                favoritePlaceViewModel.findAllByUser("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
-                Toast.makeText(getApplicationContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                if (!loginResponseDto.isVerified()) {
+                    Toast.makeText(this, "Tài khoản chưa được xác thực. Vui lòng xác thực tài khoản của bạn!", Toast.LENGTH_SHORT).show();
+                } else {
+                    SessionManager.getInstance(getApplicationContext()).login(
+                            loginResponseDto.getId(),
+                            loginResponseDto.getUserId(),
+                            loginResponseDto.getRole().name(),
+                            loginResponseDto.getTokenType(),
+                            loginResponseDto.getAccessToken(),
+                            loginResponseDto.getRefreshToken());
+                    PostViewManager.getInstance(getApplicationContext()).reset();
+                    FavoritePlaceManager.getInstance(getApplicationContext()).clear();
+                    favoritePlaceViewModel.findAllByUser("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken());
+                    Toast.makeText(getApplicationContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(this, "Lỗi: " + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -149,6 +153,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void toMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void toVerifyOtpActivity() {
+        Intent intent = new Intent(this, VerifyOtpActivity.class);
         startActivity(intent);
         finish();
     }

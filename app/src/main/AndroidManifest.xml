@@ -17,9 +17,17 @@
         android:theme="@style/Theme.WanderFunMobile"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".presentation.ui.activity.auth.ResetPasswordActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".presentation.ui.activity.auth.ForgotPasswordActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
             android:name=".presentation.ui.activity.auth.VerifyOtpActivity"
             android:exported="false"
-            android:theme="@style/ActivityTheme"/>
+            android:theme="@style/ActivityTheme" />
         <activity
             android:name=".presentation.ui.activity.favoriteplace.FavoritePlaceActivity"
             android:exported="false"

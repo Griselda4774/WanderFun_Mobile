@@ -192,10 +192,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog
-        android:id="@+id/loading_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

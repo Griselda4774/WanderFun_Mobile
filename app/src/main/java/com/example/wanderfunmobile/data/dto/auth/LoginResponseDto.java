@@ -9,6 +9,7 @@ public class LoginResponseDto {
     private final String tokenType;
     private String accessToken;
     private String refreshToken;
+    private boolean verified;
 
     public LoginResponseDto() {
         tokenType = "Bearer";
@@ -56,5 +57,13 @@ public class LoginResponseDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }

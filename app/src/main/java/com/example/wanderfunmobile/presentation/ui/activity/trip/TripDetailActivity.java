@@ -105,14 +105,17 @@ public class TripDetailActivity extends AppCompatActivity {
         });
 
         tripViewModel.getIsLoading().observe(this, isLoading -> {
-            loadingDialog.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-            if (isLoading) loadingDialog.show();
-            else loadingDialog.hide();
+            if (isLoading) {
+                loadingDialog.show();
+            }
+            else {
+                loadingDialog.hide();
+            }
         });
     }
 
     private void setupDialogs() {
-        loadingDialog = binding.loadingDialog;
+        loadingDialog = new LoadingDialog(this);
 
         selectionDialog = binding.selectionDialog;
         selectionDialog.hide();
@@ -156,18 +159,6 @@ public class TripDetailActivity extends AppCompatActivity {
         selectionDialog.setOnRejectListener(() -> {
             selectionDialog.hide();
             Log.d("SelectionDialog", "Reject");
-        });
-
-        // Loading dialog
-        loadingDialog = binding.loadingDialog;
-        tripViewModel.getIsLoading().observe(this, isLoading -> {
-            if (isLoading) {
-                loadingDialog.show();
-                loadingDialog.setVisibility(View.VISIBLE);
-            } else {
-                loadingDialog.hide();
-                loadingDialog.setVisibility(View.GONE);
-            }
         });
 
         binding.backButton.findViewById(R.id.button).setOnClickListener(v -> finish());
