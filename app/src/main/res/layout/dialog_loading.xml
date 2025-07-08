@@ -10,8 +10,8 @@
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:indeterminateTint="@color/blue2"
         android:background="@android:color/transparent"
         android:indeterminateTintMode="src_in" />
@@ -20,8 +20,8 @@
         android:id="@+id/loading_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Đang tải"
-        style="@style/Text.Content"/>
+        android:layout_marginTop="8dp"
+        android:text="Đang tải..."
+        style="@style/Text.Content.Highlight.White"/>
 
 </LinearLayout>

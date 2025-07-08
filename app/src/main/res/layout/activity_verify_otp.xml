@@ -103,11 +103,34 @@
             android:text="Có vấn đề với mã?"
             style="@style/Text.Content"/>
 
+        <LinearLayout
+            android:id="@+id/countdown_text_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Bạn có thể yêu cầu mã mới sau "
+                style="@style/Text.Content"/>
+
+            <com.example.wanderfunmobile.presentation.ui.custom.textviews.CountdownTextView
+                android:id="@+id/countdown_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
         <TextView
+            android:id="@+id/resend_code_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="GỬI MÃ MỚI"
+            android:textStyle="bold"
             style="@style/Text.Content.Highlight"
             android:clickable="true"
             android:stateListAnimator="@animator/touch_opacity_animator"/>

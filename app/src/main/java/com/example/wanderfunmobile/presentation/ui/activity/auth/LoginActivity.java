@@ -25,6 +25,7 @@ import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.ui.activity.MainActivity;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.FavoritePlaceViewModel;
 
@@ -34,17 +35,19 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
+    private ActivityLoginBinding viewBinding;
     private AuthViewModel authViewModel;
     private FavoritePlaceViewModel favoritePlaceViewModel;
     @Inject
     ObjectMapper objectMapper;
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         // Binding
-        ActivityLoginBinding viewBinding = ActivityLoginBinding.inflate(getLayoutInflater());
+        viewBinding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(viewBinding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -53,6 +56,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         setUpViewModel();
+
+        loadingDialog = new LoadingDialog(this);
 
         TextView registerButton = viewBinding.registerButton;
         registerButton.setOnClickListener(v -> {
@@ -70,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
         TextView loginButton = viewBinding.loginButton.button;
         loginButton.setText("Đăng nhập");
         loginButton.setOnClickListener(v -> {
+            loadingDialog.setLoadingText("Đang đăng nhập...");
+            loadingDialog.show();
             String username = emailEditText.getText().toString();
             String password = passwordEditText.getText().toString();
             LoginDto loginDto = new LoginDto();
@@ -106,10 +113,12 @@ public class LoginActivity extends AppCompatActivity {
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         authViewModel.getLoginResponseLiveData().observe(this, loginResponse -> {
+            loadingDialog.hide();
             if (!loginResponse.isError()) {
                 LoginResponseDto loginResponseDto = objectMapper.map(loginResponse.getData(), LoginResponseDto.class);
                 if (!loginResponseDto.isVerified()) {
-                    Toast.makeText(this, "Tài khoản chưa được xác thực. Vui lòng xác thực tài khoản của bạn!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Vui lòng xác thực tài khoản của bạn!", Toast.LENGTH_SHORT).show();
+                    authViewModel.sendOtp(viewBinding.emailInput.input.textEdittext.getText().toString());
                 } else {
                     SessionManager.getInstance(getApplicationContext()).login(
                             loginResponseDto.getId(),
@@ -124,7 +133,16 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(this, "Lỗi: " + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đăng nhập không thành công!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        authViewModel.getSendOtpResponseLiveData().observe(this, result -> {
+            if (!result.isError()) {
+                Toast.makeText(getApplicationContext(), "Đã gửi mã xác thực!", Toast.LENGTH_SHORT).show();
+                toVerifyOtpActivity();
+            } else {
+                Toast.makeText(this, "Gửi mã xác thực không thành công!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -159,7 +177,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void toVerifyOtpActivity() {
         Intent intent = new Intent(this, VerifyOtpActivity.class);
+        intent.putExtra("action", "login");
+        intent.putExtra("email", viewBinding.emailInput.input.textEdittext.getText().toString());
+        intent.putExtra("password", viewBinding.passwordInput.input.passwordEdittext.getText().toString());
         startActivity(intent);
-        finish();
     }
 }

@@ -35,11 +35,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BackendApiModule {
     @Provides
     @Singleton
-    public AuthApi provideAuthApi(@ApplicationContext Context context) {
+    public AuthApi provideAuthApi(@ApplicationContext Context context, Gson gson) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
@@ -50,11 +50,11 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public AddressApi provideAddressApi(@ApplicationContext Context context) {
+    public AddressApi provideAddressApi(@ApplicationContext Context context, Gson gson) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
@@ -80,11 +80,11 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public CloudinaryApi provideCloudinaryApi(@ApplicationContext Context context) {
+    public CloudinaryApi provideCloudinaryApi(@ApplicationContext Context context, Gson gson) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
@@ -155,11 +155,11 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public LeaderboardApi provideLeaderboardApi(@ApplicationContext Context context) {
+    public LeaderboardApi provideLeaderboardApi(@ApplicationContext Context context, Gson gson) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)

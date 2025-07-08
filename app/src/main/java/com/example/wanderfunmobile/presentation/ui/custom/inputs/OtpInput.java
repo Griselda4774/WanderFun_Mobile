@@ -14,11 +14,13 @@ import androidx.annotation.Nullable;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.InputOtpBinding;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OtpInputListener;
 
 public class OtpInput extends LinearLayout {
 
     private InputOtpBinding binding;
     private EditText[] otpFields;
+    private OtpInputListener otpInputListener;
 
     public OtpInput(Context context) {
         super(context);
@@ -95,12 +97,27 @@ public class OtpInput extends LinearLayout {
                     }
 
                     editing = false;
+                    boolean isComplete = true;
+                    for (EditText field : otpFields) {
+                        if (field.getText().toString().trim().isEmpty()) {
+                            isComplete = false;
+                            break;
+                        }
+                    }
+
+                    if (isComplete) {
+                        if (otpInputListener != null) otpInputListener.onComplete(getOtp());
+                    } else {
+                        if (otpInputListener != null) otpInputListener.onIncomplete();
+                    }
                 }
             });
         }
     }
 
-
+    public void setOtpInputListener(OtpInputListener listener) {
+        this.otpInputListener = listener;
+    }
 
     public String getOtp() {
         StringBuilder sb = new StringBuilder();
@@ -144,6 +161,4 @@ public class OtpInput extends LinearLayout {
             edit.setBackgroundResource(R.drawable.bg_otp_border_red);
         }
     }
-
-
 }
