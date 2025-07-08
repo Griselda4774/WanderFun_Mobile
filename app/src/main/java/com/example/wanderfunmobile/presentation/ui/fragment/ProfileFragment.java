@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -20,7 +19,7 @@ import com.example.wanderfunmobile.core.util.FavoritePlaceManager;
 import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.databinding.FragmentProfileBinding;
 import com.example.wanderfunmobile.domain.model.users.User;
-import com.example.wanderfunmobile.presentation.ui.activity.LoginActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.auth.LoginActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.album.MyAlbumActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.checkin.CheckInHistoryActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.favoriteplace.FavoritePlaceActivity;

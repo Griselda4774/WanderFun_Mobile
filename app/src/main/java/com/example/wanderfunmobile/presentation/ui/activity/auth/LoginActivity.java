@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.presentation.ui.activity;
+package com.example.wanderfunmobile.presentation.ui.activity.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -25,6 +24,7 @@ import com.example.wanderfunmobile.data.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.databinding.ActivityLoginBinding;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
+import com.example.wanderfunmobile.presentation.ui.activity.MainActivity;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.FavoritePlaceViewModel;
 
@@ -83,6 +83,13 @@ public class LoginActivity extends AppCompatActivity {
             SessionManager.getInstance(getApplicationContext()).logout();
             PostViewManager.getInstance(getApplicationContext()).reset();
             Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        // Forgot Password
+        viewBinding.forgotPassword.setOnClickListener(v-> {
+            Intent intent = new Intent(LoginActivity.this, VerifyOtpActivity.class);
             startActivity(intent);
             finish();
         });

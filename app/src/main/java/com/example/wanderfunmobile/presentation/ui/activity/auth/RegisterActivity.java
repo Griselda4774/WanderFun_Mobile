@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.presentation.ui.activity;
+package com.example.wanderfunmobile.presentation.ui.activity.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
