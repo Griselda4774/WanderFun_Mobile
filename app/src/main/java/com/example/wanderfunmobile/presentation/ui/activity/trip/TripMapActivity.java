@@ -15,6 +15,7 @@ import static org.maplibre.android.style.layers.PropertyFactory.lineWidth;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ import org.maplibre.android.MapLibre;
 import org.maplibre.android.camera.CameraPosition;
 import org.maplibre.android.camera.CameraUpdateFactory;
 import org.maplibre.android.geometry.LatLng;
+import org.maplibre.android.geometry.LatLngBounds;
 import org.maplibre.android.location.LocationComponent;
 import org.maplibre.android.location.LocationComponentActivationOptions;
 import org.maplibre.android.location.LocationComponentOptions;
@@ -158,6 +160,13 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
                     GoongTripRequestDto goongTripRequestDto = new GoongTripRequestDto();
                     goongTripRequestDto.setOrigin(tripPlaceList.get(0).getPlace().getLatitude() + "," + tripPlaceList.get(0).getPlace().getLongitude());
                     goongTripRequestDto.setDestination(tripPlaceList.get(tripPlaceList.size() - 1).getPlace().getLatitude() + "," + tripPlaceList.get(tripPlaceList.size() - 1).getPlace().getLongitude());
+                    if (tripPlaceList.size() > 2) {
+                        List<String> waypoints = new ArrayList<>();
+                        for (int i = 1; i < tripPlaceList.size() - 1; i++) {
+                            waypoints.add(tripPlaceList.get(i).getPlace().getLatitude() + "," + tripPlaceList.get(i).getPlace().getLongitude());
+                        }
+                        goongTripRequestDto.setWaypoints(waypoints);
+                    }
 
                     goongViewModel.getGoongTrip(
                             "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(),
@@ -174,6 +183,8 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
                 latLngs = PolylineUtils.decode(response.getData().getTrips().get(0).getGeometry());
 
                 drawRouteOnMap(latLngs);
+                drawPlaceMarker(symbolManager, tripPlaceList);
+                focusMapOnRoute(latLngs);
             } else {
                 Toast.makeText(this, "Không thể lấy dữ liệu tuyến đường!", Toast.LENGTH_SHORT).show();
             }
@@ -183,63 +194,18 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onMapReady(@NonNull MapLibreMap map) {
         map.setStyle(mapStyleUrl, style -> {
-            // Load GeoJSON from file
-            String geoJson = GeoJsonUtil.loadGeoJsonFromAsset(this, "Provinces.geojson");
-
-            // Create Source form GeoJSON
-            GeoJsonSource source = new GeoJsonSource("province-source", geoJson);
-            style.addSource(source);
-
-            // Create Layer to show province boundaries
-            FillLayer layer = new FillLayer("province-layer", "province-source");
-            layer.setProperties(
-                    fillColor(Color.parseColor("#3bb2d0")),
-                    fillOpacity(0.0f)
-            );
-
-            // Add the layer to the map
-            style.addLayer(layer);
-
-            LineLayer borderLayer = new LineLayer("province-borders", "province-source");
-            borderLayer.setProperties(
-                    lineColor(Color.BLACK),
-                    lineWidth(2.0f),
-                    lineJoin(LINE_JOIN_ROUND),
-                    lineCap(LINE_CAP_ROUND)
-            );
-
-            // Thêm layer sau khi đã thêm layer tô nền
-            style.addLayerAbove(borderLayer, "province-layer");
-
-            FillLayer provinceSelectedLayer = new FillLayer("province-selected", "province-source");
-            provinceSelectedLayer.setProperties(
-                    fillColor(Color.parseColor("#ff9800")),
-                    fillOpacity(0.2f)
-            );
-            provinceSelectedLayer.setFilter(eq(get("Name"), ""));
-
-            style.addLayerAbove(provinceSelectedLayer, "province-layer");
-
 
             symbolManager = new SymbolManager(binding.mapView, map, style);
             symbolManager.setIconAllowOverlap(true);
             symbolManager.setIconIgnorePlacement(true);
 
-            if (!tripPlaceList.isEmpty()) {
-                addTripPlaceImageToMap(this, style, tripPlaceList);
-                drawPlaceMarker(symbolManager, tripPlaceList);
-            }
-
             if (PermissionsManager.areLocationPermissionsGranted(this)) {
                 initializeLocationComponent(style, map);
-            } else {
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(
-                        new CameraPosition.Builder()
-                                .target(new LatLng(10.775658, 106.695094))
-                                .zoom(8)
-                                .build()), 1000
-                );
             }
+
+            Bitmap markerBitmap = BitMapUtil.convertVectorToBitmap(this,
+                    R.drawable.ic_location_pin, 100, 100);
+            style.addImage("marker-icon", markerBitmap);
 
             symbolManager.addClickListener(symbol -> {
                 String title;
@@ -327,6 +293,21 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
     };
 
+    private void focusMapOnRoute(List<LatLng> routePoints) {
+        if (routePoints == null || routePoints.isEmpty()) return;
+
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+        for (LatLng point : routePoints) {
+            boundsBuilder.include(point);
+        }
+
+        LatLngBounds bounds = boundsBuilder.build();
+
+        binding.mapView.getMapAsync(mapboxMap -> {
+            mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100), 1000);
+        });
+    }
+
     private void addTripPlaceImageToMap(Context context, Style style, List<TripPlace> tripPlaceList) {
         for (TripPlace tripPlace : tripPlaceList) {
             String transformUrl = MediaManager.get().url()
@@ -358,7 +339,7 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
 
         symbolManager.create(new SymbolOptions()
                 .withLatLng(new LatLng(tripPlace.getPlace().getLatitude(), tripPlace.getPlace().getLongitude()))
-                .withIconImage(tripPlace.getPlace().getCoverImage().getImagePublicId())
+                .withIconImage("marker-icon")
                 .withData(data)
                 .withTextField(tripPlace.getPlace().getName())
                 .withTextFont(new String[]{"Roboto Medium"})
@@ -367,8 +348,8 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
                 .withTextHaloColor(ColorHexUtil.getColorHexString(ContextCompat.getColor(this, R.color.white1)))
                 .withTextHaloWidth(5.0f)
                 .withTextHaloBlur(0.0f)
-                .withTextAnchor(Property.TEXT_ANCHOR_TOP_LEFT)
-                .withTextOffset(new Float[]{0f, 2f})
+                .withTextAnchor(Property.TEXT_ANCHOR_CENTER)
+                .withTextOffset(new Float[]{0f, 3f})
         );
     }
 
@@ -392,8 +373,9 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
                 if (style.getLayer("route-layer") == null) {
                     LineLayer routeLayer = new LineLayer("route-layer", "route-source");
                     routeLayer.setProperties(
-                            PropertyFactory.lineColor(Color.parseColor("#1DB954")),
-                            PropertyFactory.lineWidth(6f),
+                            PropertyFactory.lineColor(ContextCompat.getColor(this, R.color.blue2)),
+                            PropertyFactory.lineWidth(4f),
+                            PropertyFactory.lineOpacity(0.5f),
                             PropertyFactory.lineCap(LINE_CAP_ROUND),
                             PropertyFactory.lineJoin(LINE_JOIN_ROUND)
                     );
