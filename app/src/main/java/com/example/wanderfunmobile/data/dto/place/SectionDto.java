@@ -2,6 +2,9 @@ package com.example.wanderfunmobile.data.dto.place;
 
 import com.example.wanderfunmobile.data.dto.images.ImageDto;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class SectionDto {
     private Long id;
     private String title;

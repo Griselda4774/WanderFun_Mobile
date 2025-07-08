@@ -4,7 +4,7 @@ import java.util.List;
 
 public class GoongTripRespondDto {
     private String code;
-    private GoongTripDto trip;
+    private List<GoongTripDto> trips;
     private List<GoongWayPointDto> waypoints;
 
     public GoongTripRespondDto() {}
@@ -17,12 +17,12 @@ public class GoongTripRespondDto {
         this.code = code;
     }
 
-    public GoongTripDto getTrip() {
-        return trip;
+    public List<GoongTripDto> getTrips() {
+        return trips;
     }
 
-    public void setTrip(GoongTripDto trip) {
-        this.trip = trip;
+    public void setTrips(List<GoongTripDto> trips) {
+        this.trips = trips;
     }
 
     public List<GoongWayPointDto> getWaypoints() {

@@ -1,8 +1,11 @@
 package com.example.wanderfunmobile.data.dto.place;
 
+import org.parceler.Parcel;
+
 import java.time.LocalTime;
 import java.util.List;
 
+@Parcel
 public class PlaceDetailDto {
     private Long id;
     private String description;

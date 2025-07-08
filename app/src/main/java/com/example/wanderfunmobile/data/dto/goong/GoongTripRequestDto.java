@@ -1,10 +1,11 @@
 package com.example.wanderfunmobile.data.dto.goong;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GoongTripRequestDto {
     private String origin;
-    private List<String> waypoints;
+    private List<String> waypoints = new ArrayList<>();;
     private String destination;
     private String vehicle = "car";
 

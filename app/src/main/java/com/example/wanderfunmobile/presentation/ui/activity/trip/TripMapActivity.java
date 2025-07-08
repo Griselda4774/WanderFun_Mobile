@@ -39,11 +39,15 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.BitMapUtil;
 import com.example.wanderfunmobile.core.util.ColorHexUtil;
 import com.example.wanderfunmobile.core.util.GeoJsonUtil;
+import com.example.wanderfunmobile.core.util.PolylineUtils;
 import com.example.wanderfunmobile.core.util.SessionManager;
+import com.example.wanderfunmobile.data.dto.goong.GoongTripDto;
+import com.example.wanderfunmobile.data.dto.goong.GoongTripRequestDto;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.databinding.ActivityTripMapBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.model.trips.TripPlace;
+import com.example.wanderfunmobile.presentation.viewmodel.GoongViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.TripViewModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -68,7 +72,10 @@ import org.maplibre.android.plugins.annotation.SymbolOptions;
 import org.maplibre.android.style.layers.FillLayer;
 import org.maplibre.android.style.layers.LineLayer;
 import org.maplibre.android.style.layers.Property;
+import org.maplibre.android.style.layers.PropertyFactory;
 import org.maplibre.android.style.sources.GeoJsonSource;
+import org.maplibre.geojson.LineString;
+import org.maplibre.geojson.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +89,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class TripMapActivity extends AppCompatActivity implements OnMapReadyCallback {
     private ActivityTripMapBinding binding;
     private TripViewModel tripViewModel;
+    private GoongViewModel goongViewModel;
     private MapLibreMap mapLibreMap;
     private Style mapStyle;
     private String mapStyleUrl;
@@ -89,7 +97,7 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
     private Location currentLocation;
     private SymbolManager symbolManager;
     private ActivityResultLauncher<String[]> requestPermissionsLauncher;
-    private final List<TripPlace> tripPlaceList = new ArrayList<>();
+    private List<TripPlace> tripPlaceList = new ArrayList<>();
     @Inject
     Gson gson;
     @Inject
@@ -140,10 +148,34 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     private void initViewModels() {
         tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
+        goongViewModel = new ViewModelProvider(this).get(GoongViewModel.class);
 
         tripViewModel.getTripByIdResponseLiveData().observe(this, response -> {
             if (response != null && !response.isError() && response.getData() != null) {
-                List<TripPlace> tripPlaces = objectMapper.mapList(response.getData().getTripPlaceList(), TripPlace.class);
+                tripPlaceList = objectMapper.mapList(response.getData().getTripPlaceList(), TripPlace.class);
+
+                if (tripPlaceList.size() > 1) {
+                    GoongTripRequestDto goongTripRequestDto = new GoongTripRequestDto();
+                    goongTripRequestDto.setOrigin(tripPlaceList.get(0).getPlace().getLatitude() + "," + tripPlaceList.get(0).getPlace().getLongitude());
+                    goongTripRequestDto.setDestination(tripPlaceList.get(tripPlaceList.size() - 1).getPlace().getLatitude() + "," + tripPlaceList.get(tripPlaceList.size() - 1).getPlace().getLongitude());
+
+                    goongViewModel.getGoongTrip(
+                            "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(),
+                            goongTripRequestDto,
+                            getString(R.string.goong_api_key)
+                    );
+                }
+            }
+        });
+
+        goongViewModel.getGetGoongTripResponseLiveData().observe(this, response -> {
+            if (response != null && !response.isError() && response.getData() != null) {
+                List<LatLng> latLngs;
+                latLngs = PolylineUtils.decode(response.getData().getTrips().get(0).getGeometry());
+
+                drawRouteOnMap(latLngs);
+            } else {
+                Toast.makeText(this, "Không thể lấy dữ liệu tuyến đường!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -321,7 +353,7 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
     private void addTripPlaceMarker(SymbolManager symbolManager, TripPlace tripPlace) {
         JsonObject tripPlaceJson = gson.toJsonTree(tripPlace).getAsJsonObject();
         JsonObject data = new JsonObject();
-        data.addProperty("title", "Place Marker");
+        data.addProperty("title", "Trip Place Marker");
         data.add("tripPlace", tripPlaceJson);
 
         symbolManager.create(new SymbolOptions()
@@ -338,5 +370,36 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
                 .withTextAnchor(Property.TEXT_ANCHOR_TOP_LEFT)
                 .withTextOffset(new Float[]{0f, 2f})
         );
+    }
+
+    private void drawRouteOnMap(List<LatLng> latLngs) {
+        List<Point> points = new ArrayList<>();
+        for (LatLng latLng : latLngs) {
+            points.add(Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude()));
+        }
+
+        LineString lineString = LineString.fromLngLats(points);
+        GeoJsonSource routeSource = new GeoJsonSource("route-source", lineString);
+
+        binding.mapView.getMapAsync(mapboxMap -> {
+            mapboxMap.getStyle(style -> {
+                if (style.getSource("route-source") == null) {
+                    style.addSource(routeSource);
+                } else {
+                    ((GeoJsonSource) Objects.requireNonNull(style.getSource("route-source"))).setGeoJson(lineString);
+                }
+
+                if (style.getLayer("route-layer") == null) {
+                    LineLayer routeLayer = new LineLayer("route-layer", "route-source");
+                    routeLayer.setProperties(
+                            PropertyFactory.lineColor(Color.parseColor("#1DB954")),
+                            PropertyFactory.lineWidth(6f),
+                            PropertyFactory.lineCap(LINE_CAP_ROUND),
+                            PropertyFactory.lineJoin(LINE_JOIN_ROUND)
+                    );
+                    style.addLayer(routeLayer);
+                }
+            });
+        });
     }
 }
