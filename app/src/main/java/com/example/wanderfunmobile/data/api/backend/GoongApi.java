@@ -1,7 +1,7 @@
 package com.example.wanderfunmobile.data.api.backend;
 
-import com.example.wanderfunmobile.data.dto.ResponseDto;
-import com.example.wanderfunmobile.data.dto.goong.GoongTripRespondDto;
+import com.example.wanderfunmobile.data.dto.goong.direction.GoongDirectionRespondDto;
+import com.example.wanderfunmobile.data.dto.goong.trip.GoongTripRespondDto;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -16,6 +16,15 @@ public interface GoongApi {
             @Query("origin") String origin,
             @Query("destination") String destination,
             @Query("waypoints") String waypoints,
+            @Query("vehicle") String vehicle
+    );
+
+    @GET("direction")
+    Call<GoongDirectionRespondDto> getGoongDirection(
+            @Header("Authorization") String bearerToken,
+            @Query("api_key") String apiKey,
+            @Query("origin") String origin,
+            @Query("destination") String destination,
             @Query("vehicle") String vehicle
     );
 }

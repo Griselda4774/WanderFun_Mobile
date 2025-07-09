@@ -1,22 +1,19 @@
 package com.example.wanderfunmobile.data.repository;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.api.backend.GoongApi;
-import com.example.wanderfunmobile.data.dto.ResponseDto;
-import com.example.wanderfunmobile.data.dto.goong.GoongTripRequestDto;
-import com.example.wanderfunmobile.data.dto.goong.GoongTripRespondDto;
+import com.example.wanderfunmobile.data.dto.goong.direction.GoongDirectionRequestDto;
+import com.example.wanderfunmobile.data.dto.goong.direction.GoongDirectionRespondDto;
+import com.example.wanderfunmobile.data.dto.goong.trip.GoongTripRequestDto;
+import com.example.wanderfunmobile.data.dto.goong.trip.GoongTripRespondDto;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.repository.GoongRepository;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,7 +47,7 @@ public class GoongRepositoryImpl implements GoongRepository {
                             : null),
                     goongTripRequestDto.getVehicle()
             );
-            call.enqueue(new Callback<GoongTripRespondDto>() {
+            call.enqueue(new Callback<>() {
                 @Override
                 public void onResponse(@NonNull Call<GoongTripRespondDto> call,
                                        @NonNull Response<GoongTripRespondDto> response) {
@@ -74,5 +71,45 @@ public class GoongRepositoryImpl implements GoongRepository {
         }
 
         return getGoongTripLiveData;
+    }
+
+    @Override
+    public LiveData<Result<GoongDirectionRespondDto>> getGoongDirection(String bearerToken, GoongDirectionRequestDto goongDirectionRequestDto, String apiKey) {
+        MutableLiveData<Result<GoongDirectionRespondDto>> getGoongDirectionLiveData = new MutableLiveData<>();
+        String errorType = "GoongRepositoryImpl GetGoongDirection Error";
+        try {
+            Call<GoongDirectionRespondDto> call = goongApi.getGoongDirection(
+                    bearerToken,
+                    apiKey,
+                    goongDirectionRequestDto.getOrigin(),
+                    (goongDirectionRequestDto.getDestination() != null && !goongDirectionRequestDto.getDestination().isEmpty()
+                            ? String.join(";", goongDirectionRequestDto.getDestination())
+                            : null),
+                    goongDirectionRequestDto.getVehicle()
+            );
+            call.enqueue(new Callback<>() {
+                @Override
+                public void onResponse(@NonNull Call<GoongDirectionRespondDto> call,
+                                       @NonNull Response<GoongDirectionRespondDto> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<GoongDirectionRespondDto> result = new Result<>();
+                        result.setData(objectMapper.map(response.body(), GoongDirectionRespondDto.class));
+                        result.setError(false);
+
+                        getGoongDirectionLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<GoongDirectionRespondDto> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e(errorType, "Error during onFailure");
+                }
+            });
+        } catch (Exception e) {
+            Log.e(errorType, "Error during catch: " + e);
+        }
+
+        return getGoongDirectionLiveData;
     }
 }

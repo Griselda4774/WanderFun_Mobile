@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.wanderfunmobile.data.dto.goong.GoongTripRequestDto;
-import com.example.wanderfunmobile.data.dto.goong.GoongTripRespondDto;
+import com.example.wanderfunmobile.data.dto.goong.direction.GoongDirectionRequestDto;
+import com.example.wanderfunmobile.data.dto.goong.direction.GoongDirectionRespondDto;
+import com.example.wanderfunmobile.data.dto.goong.trip.GoongTripRequestDto;
+import com.example.wanderfunmobile.data.dto.goong.trip.GoongTripRespondDto;
 import com.example.wanderfunmobile.domain.model.Result;
 import com.example.wanderfunmobile.domain.repository.GoongRepository;
 
@@ -23,10 +25,15 @@ public class GoongViewModel extends ViewModel {
     }
 
     private final MutableLiveData<Result<GoongTripRespondDto>> getGoongTripResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<GoongDirectionRespondDto>> getGoongDirectionResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
-    public MutableLiveData<Result<GoongTripRespondDto>> getGetGoongTripResponseLiveData() {
+    public MutableLiveData<Result<GoongTripRespondDto>> getGoongTripResponseLiveData() {
         return getGoongTripResponseLiveData;
+    }
+
+    public MutableLiveData<Result<GoongDirectionRespondDto>> getGoongDirectionResponseLiveData() {
+        return getGoongDirectionResponseLiveData;
     }
 
     public LiveData<Boolean> getIsLoading() {
@@ -37,6 +44,14 @@ public class GoongViewModel extends ViewModel {
         isLoading.setValue(true);
         goongRepository.getGoongTrip(bearerToken, goongTripRequestDto, apiKey).observeForever(response -> {
             getGoongTripResponseLiveData.postValue(response);
+            isLoading.setValue(false);
+        });
+    }
+
+    public void getGoongDirection(String bearerToken, GoongDirectionRequestDto goongDirectionRequestDto, String apiKey) {
+        isLoading.setValue(true);
+        goongRepository.getGoongDirection(bearerToken, goongDirectionRequestDto, apiKey).observeForever(response -> {
+            getGoongDirectionResponseLiveData.postValue(response);
             isLoading.setValue(false);
         });
     }
