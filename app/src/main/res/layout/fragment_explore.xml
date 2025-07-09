@@ -123,12 +123,6 @@
         layout="@layout/bottom_sheet_location_pin"
         android:id="@+id/location_pin_bottom_sheet_container" />
 
-    <com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog
-        android:id="@+id/loading_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
     <com.example.wanderfunmobile.presentation.ui.custom.dialog.SelectionDialog
         android:id="@+id/selection_dialog"
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.presentation.ui.activity;
+package com.example.wanderfunmobile.presentation.ui.activity.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.ActivityRegisterBinding;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 import com.example.wanderfunmobile.data.dto.auth.RegisterDto;
 
@@ -30,21 +31,26 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class RegisterActivity extends AppCompatActivity {
     private AuthViewModel authViewModel;
     private ModelMapper modelMapper;
+    private ActivityRegisterBinding viewBinding;
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         // Binding
-        ActivityRegisterBinding viewBinding = ActivityRegisterBinding.inflate(getLayoutInflater());
+        viewBinding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
+
         ViewCompat.setOnApplyWindowInsetsListener(viewBinding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        setUpViewModel();
+
+        loadingDialog = new LoadingDialog(this);
 
         TextView loginButton = viewBinding.loginButton;
         loginButton.setOnClickListener(v -> {
@@ -147,6 +153,8 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
+            loadingDialog.setLoadingText("Đang đăng ký...");
+            loadingDialog.show();
             RegisterDto registerDto = new RegisterDto();
             registerDto.setFirstName(firstname);
             registerDto.setLastName(lastname);
@@ -155,14 +163,36 @@ public class RegisterActivity extends AppCompatActivity {
             authViewModel.register(registerDto);
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
+    }
+
+    private void setUpViewModel() {
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+
         authViewModel.getRegisterResponseLiveData().observe(this, registerResponse -> {
+            loadingDialog.hide();
             if (!registerResponse.isError()) {
-                Toast.makeText(getApplicationContext(), "Đăng ký tài khoản thành công", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                Toast.makeText(this, "Vui lòng xác thực tài khoản của bạn!", Toast.LENGTH_SHORT).show();
+                authViewModel.sendOtp(viewBinding.emailInput.input.textEdittext.getText().toString());
             } else {
                 Toast.makeText(this, "Đăng ký tài khoản thất bại", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        authViewModel.getSendOtpResponseLiveData().observe(this, result -> {
+            loadingDialog.hide();
+            if (!result.isError()) {
+                Toast.makeText(getApplicationContext(), "Đã gửi mã xác thực!", Toast.LENGTH_SHORT).show();
+                toVerifyOtpActivity();
+            } else {
+                Toast.makeText(this, "Gửi mã xác thực không thành công!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -187,5 +217,13 @@ public class RegisterActivity extends AppCompatActivity {
             hideIcon.setVisibility(View.INVISIBLE);
             hideIcon.setClickable(false);
         });
+    }
+
+    private void toVerifyOtpActivity() {
+        Intent intent = new Intent(this, VerifyOtpActivity.class);
+        intent.putExtra("action", "register");
+        intent.putExtra("email", viewBinding.emailInput.input.textEdittext.getText().toString());
+        intent.putExtra("password", viewBinding.passwordInput.input.passwordEdittext.getText().toString());
+        startActivity(intent);
     }
 }

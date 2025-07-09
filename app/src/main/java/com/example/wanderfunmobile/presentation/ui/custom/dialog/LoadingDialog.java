@@ -1,15 +1,17 @@
 package com.example.wanderfunmobile.presentation.ui.custom.dialog;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.util.AttributeSet;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
-import android.widget.LinearLayout;
-
-import androidx.annotation.Nullable;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 
 import com.example.wanderfunmobile.databinding.DialogLoadingBinding;
 
-public class LoadingDialog extends LinearLayout {
+public class LoadingDialog extends Dialog {
 
     private DialogLoadingBinding binding;
 
@@ -18,25 +20,30 @@ public class LoadingDialog extends LinearLayout {
         init(context);
     }
 
-    public LoadingDialog(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
-    public LoadingDialog(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
     private void init(Context context) {
-        binding = DialogLoadingBinding.inflate(LayoutInflater.from(context), this, true);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        binding = DialogLoadingBinding.inflate(LayoutInflater.from(context));
+        setContentView(binding.getRoot());
+
+        setUpDialog();
     }
 
-    public void show() {
-        binding.getRoot().setVisibility(VISIBLE);
+    private void setUpDialog() {
+        setCancelable(true);
+        setCanceledOnTouchOutside(true);
+        if (getWindow() != null) {
+            getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 
-    public void hide() {
-        binding.getRoot().setVisibility(GONE);
+    public void setLoadingText(String message) {
+        binding.loadingText.setVisibility(View.VISIBLE);
+        binding.loadingText.setText(message);
+    }
+
+    public void hideLoadingText() {
+        binding.loadingText.setVisibility(View.GONE);
     }
 }

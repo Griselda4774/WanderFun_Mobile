@@ -48,6 +48,7 @@ public class AlbumDetailsActivity extends AppCompatActivity {
     private LoadingDialog loadingDialog;
     private SelectionDialog selectionDialog;
 
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,14 +113,12 @@ public class AlbumDetailsActivity extends AppCompatActivity {
         });
 
         // Loading dialog
-        loadingDialog = viewBinding.loadingDialog;
+        loadingDialog = new LoadingDialog(this);
         albumViewModel.getIsLoading().observe(this, isLoading -> {
             if (isLoading) {
                 loadingDialog.show();
-                loadingDialog.setVisibility(View.VISIBLE);
             } else {
                 loadingDialog.hide();
-                loadingDialog.setVisibility(View.GONE);
             }
         });
 
@@ -147,5 +146,13 @@ public class AlbumDetailsActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> {
             finish();
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
     }
 }

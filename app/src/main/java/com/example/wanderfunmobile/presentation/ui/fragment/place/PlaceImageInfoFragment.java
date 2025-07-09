@@ -9,12 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.FragmentPlaceImageInfoBinding;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnContentChangeListener;
 
 public class PlaceImageInfoFragment extends Fragment {
     private FragmentPlaceImageInfoBinding viewBinding;
     private Long placeId;
+    private OnContentChangeListener contentChangeListener;
 
     public PlaceImageInfoFragment() {}
 
@@ -37,5 +38,15 @@ public class PlaceImageInfoFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         viewBinding = null;
+    }
+
+    public void setOnContentChangeListener(OnContentChangeListener listener) {
+        this.contentChangeListener = listener;
+    }
+
+    private void notifyContentChanged() {
+        if (contentChangeListener != null) {
+            contentChangeListener.onContentChanged();
+        }
     }
 }

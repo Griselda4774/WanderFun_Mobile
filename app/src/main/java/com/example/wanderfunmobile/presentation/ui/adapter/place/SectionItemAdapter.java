@@ -48,21 +48,21 @@ public class SectionItemAdapter extends RecyclerView.Adapter<SectionItemAdapter.
             this.binding = binding;
         }
 
-        public void bind(Section description) {
+        public void bind(Section section) {
             TextView title = binding.title;
-            if (description.getTitle() != null) {
-                title.setText(description.getTitle());
+            if (section.getTitle() != null) {
+                title.setText(section.getTitle());
             }
 
             TextView content = binding.content;
-            if (description.getContent() != null) {
-                content.setText(description.getContent());
+            if (section.getContent() != null) {
+                content.setText(section.getContent());
             }
 
             ImageView image = binding.image;
-            if (description.getImage().getImageUrl() != null) {
+            if (section.getImage() != null && section.getImage().getImageUrl() != null) {
                 Glide.with(binding.getRoot())
-                        .load(description.getImage().getImageUrl())
+                        .load(section.getImage().getImageUrl())
                         .error(R.drawable.brown)
                         .into(image);
                 image.setVisibility(ImageView.VISIBLE);

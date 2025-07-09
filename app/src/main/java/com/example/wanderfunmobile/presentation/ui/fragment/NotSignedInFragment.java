@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.databinding.FragmentNotSignedInBinding;
-import com.example.wanderfunmobile.presentation.ui.activity.LoginActivity;
-import com.example.wanderfunmobile.presentation.ui.activity.RegisterActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.auth.LoginActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.auth.RegisterActivity;
 
 public class NotSignedInFragment extends Fragment {
 

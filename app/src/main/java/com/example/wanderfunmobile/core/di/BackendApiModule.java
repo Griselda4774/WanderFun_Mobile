@@ -8,6 +8,7 @@ import com.example.wanderfunmobile.data.api.backend.AlbumApi;
 import com.example.wanderfunmobile.data.api.backend.AuthApi;
 import com.example.wanderfunmobile.data.api.backend.CheckInApi;
 import com.example.wanderfunmobile.data.api.backend.CloudinaryApi;
+import com.example.wanderfunmobile.data.api.backend.FavoritePlaceApi;
 import com.example.wanderfunmobile.data.api.backend.GoongApi;
 import com.example.wanderfunmobile.data.api.backend.LeaderboardApi;
 import com.example.wanderfunmobile.data.api.backend.places.FeedbackApi;
@@ -211,5 +212,20 @@ public class BackendApiModule {
                         .build())
                 .build()
                 .create(GoongApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public FavoritePlaceApi provideFavoritePlaceApi(@ApplicationContext Context context, Gson gson) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(FavoritePlaceApi.class);
     }
 }

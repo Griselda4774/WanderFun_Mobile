@@ -10,17 +10,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.FavoritePlaceManager;
 import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.databinding.FragmentProfileBinding;
 import com.example.wanderfunmobile.domain.model.users.User;
-import com.example.wanderfunmobile.presentation.ui.activity.LoginActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.auth.ChangePasswordActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.auth.LoginActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.album.MyAlbumActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.checkin.CheckInHistoryActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.favoriteplace.FavoritePlaceActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.leaderboard.LeaderboardActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.profile.ProfileActivity;
 import com.example.wanderfunmobile.core.util.SessionManager;
@@ -81,6 +84,7 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(requireActivity().getApplicationContext(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
                 SessionManager.getInstance(requireActivity().getApplicationContext()).logout();
                 PostViewManager.getInstance(requireActivity().getApplicationContext()).reset();
+                FavoritePlaceManager.getInstance(requireActivity().getApplicationContext()).clear();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 requireActivity().finish();
@@ -100,29 +104,43 @@ public class ProfileFragment extends Fragment {
 
     private void setUpView() {
         // Profile
-        ConstraintLayout profileSection = viewBinding.profileSection;
-        profileSection.setOnClickListener(v -> {
+        viewBinding.profileSection.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ProfileActivity.class);
             startActivity(intent);
         });
 
+        // Favorite Places
+        viewBinding.favoritePlaceSection.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), FavoritePlaceActivity.class);
+            startActivity(intent);
+        });
+
         // My Albums
-        ConstraintLayout myAlbumsSection = viewBinding.albumSection;
-        myAlbumsSection.setOnClickListener(v -> {
+        viewBinding.albumSection.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MyAlbumActivity.class);
             startActivity(intent);
         });
 
+        // Check-in history
+        viewBinding.checkInHistorySection.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), CheckInHistoryActivity.class);
+            startActivity(intent);
+        });
+
         // Leaderboard
-        ConstraintLayout leaderboardSection = viewBinding.leaderboardSection;
-        leaderboardSection.setOnClickListener(v -> {
+        viewBinding.leaderboardSection.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), LeaderboardActivity.class);
             startActivity(intent);
         });
 
+        // Change Password
+        viewBinding.changePasswordSection.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+            startActivity(intent);
+        });
+
         // Logout
-        ConstraintLayout logoutSection = viewBinding.logOutSection;
-        logoutSection.setOnClickListener(v -> {
+        viewBinding.logOutSection.setOnClickListener(v -> {
             authViewModel.logout("Bearer " + SessionManager.getInstance(requireActivity().getApplicationContext().getApplicationContext()).getAccessToken());
         });
     }

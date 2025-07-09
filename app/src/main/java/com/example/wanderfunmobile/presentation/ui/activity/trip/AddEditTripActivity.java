@@ -85,8 +85,7 @@ public class AddEditTripActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void initViewModels() {
-        loadingDialog = binding.loadingDialog;
-        hideLoadingDialog();
+        loadingDialog = new LoadingDialog(this);
 
         tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
 
@@ -102,13 +101,13 @@ public class AddEditTripActivity extends AppCompatActivity {
         });
 
         tripViewModel.createTripResponseLiveData().observe(this, response -> {
-            hideLoadingDialog();
+            loadingDialog.hide();
             showToast(response.isError() ? "Tạo chuyến đi thất bại" : "Tạo chuyến đi thành công");
             if (!response.isError()) finish();
         });
 
         tripViewModel.updateTripByIdResponseLiveData().observe(this, response -> {
-            hideLoadingDialog();
+            loadingDialog.hide();
             showToast(response.isError() ? "Cập nhật chuyến đi thất bại" : "Cập nhật chuyến đi thành công");
             if (!response.isError()) finish();
         });
@@ -204,7 +203,7 @@ public class AddEditTripActivity extends AppCompatActivity {
         TextView confirmButton = binding.confirmButton.findViewById(R.id.button);
         confirmButton.setText(tripId == 0 ? "Tạo" : "Lưu");
         confirmButton.setOnClickListener(v -> {
-            showLoadingDialog();
+            loadingDialog.show();
             TripCreateDto dto = new TripCreateDto();
             dto.setName(tripNameInput.getText().toString());
             List<TripPlaceCreateDto> places = new ArrayList<>(objectMapper.mapList(tripPlaceList, TripPlaceCreateDto.class));
@@ -229,16 +228,6 @@ public class AddEditTripActivity extends AppCompatActivity {
             }
         }
 
-    }
-
-    private void showLoadingDialog() {
-        loadingDialog.setVisibility(View.VISIBLE);
-        loadingDialog.show();
-    }
-
-    private void hideLoadingDialog() {
-        loadingDialog.setVisibility(View.GONE);
-        loadingDialog.hide();
     }
 
     private void showToast(String msg) {

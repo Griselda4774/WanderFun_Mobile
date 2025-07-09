@@ -16,7 +16,32 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WanderFunMobile"
         android:usesCleartextTraffic="true">
-        <activity android:name=".presentation.ui.activity.leaderboard.LeaderboardActivity"
+        <activity
+            android:name=".presentation.ui.activity.auth.ChangePasswordActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".presentation.ui.activity.auth.ResetPasswordActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".presentation.ui.activity.auth.ForgotPasswordActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".presentation.ui.activity.auth.VerifyOtpActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".presentation.ui.activity.favoriteplace.FavoritePlaceActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".presentation.ui.activity.checkin.CheckInHistoryActivity"
+            android:exported="false"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".presentation.ui.activity.leaderboard.LeaderboardActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
@@ -68,11 +93,11 @@
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".presentation.ui.activity.RegisterActivity"
+            android:name=".presentation.ui.activity.auth.RegisterActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".presentation.ui.activity.LoginActivity"
+            android:name=".presentation.ui.activity.auth.LoginActivity"
             android:exported="false"
             android:theme="@style/ActivityTheme" />
         <activity

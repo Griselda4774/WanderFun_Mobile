@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +18,7 @@ import com.example.wanderfunmobile.databinding.FragmentPlaceDescriptionInfoBindi
 import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.model.places.Section;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.SectionItemAdapter;
+import com.example.wanderfunmobile.presentation.ui.custom.listeners.OnContentChangeListener;
 import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 import com.google.gson.Gson;
 
@@ -39,6 +39,7 @@ public class PlaceDescriptionInfoFragment extends Fragment {
     private SectionItemAdapter sectionItemAdapter;
     @Inject
     Gson gson;
+    private OnContentChangeListener contentChangeListener;
 
     public PlaceDescriptionInfoFragment() {
     }
@@ -74,11 +75,33 @@ public class PlaceDescriptionInfoFragment extends Fragment {
         viewBinding = null;
     }
 
+    public void setOnContentChangeListener(OnContentChangeListener listener) {
+        this.contentChangeListener = listener;
+    }
+
+    private void notifyContentChanged() {
+        if (contentChangeListener != null) {
+            contentChangeListener.onContentChanged();
+        }
+    }
+
     private void setUpView() {
         RecyclerView recyclerView = viewBinding.sectionList;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         sectionItemAdapter = new SectionItemAdapter(sectionList);
         recyclerView.setAdapter(sectionItemAdapter);
+
+        // See more
+        viewBinding.seeMore.setOnClickListener(v -> {
+            seeMoreInfo();
+        });
+
+        // See less
+        viewBinding.seeLess.setOnClickListener(v -> {
+            seeLessInfo();
+        });
+
+        seeLessInfo();
 
         bindPlaceData(place);
     }
@@ -130,6 +153,20 @@ public class PlaceDescriptionInfoFragment extends Fragment {
                 }
             }
 
+            // Price range
+            if (place.getPlaceDetail().getPriceRangeTop() > 0) {
+                if (place.getPlaceDetail().getPriceRangeBottom() > 0) {
+                    viewBinding.priceRange.setText("Từ " +
+                            place.getPlaceDetail().getPriceRangeBottom() + " đến " +
+                            place.getPlaceDetail().getPriceRangeTop() + " VNĐ");
+                } else {
+                    viewBinding.priceRange.setText("Từ " +
+                            place.getPlaceDetail().getPriceRangeTop() + " VNĐ");
+                }
+            } else {
+                viewBinding.priceRange.setText("Miễn phí");
+            }
+
             // Category
             if (place.getCategory() != null) {
                 viewBinding.category.setText(place.getCategory().getName());
@@ -161,6 +198,35 @@ public class PlaceDescriptionInfoFragment extends Fragment {
             } else {
                 viewBinding.link.setText("Không có dữ liệu");
             }
+
+            // Description
+            if (place.getPlaceDetail().getDescription() != null && !place.getPlaceDetail().getDescription().isEmpty()) {
+                viewBinding.descriptionContent.setText(place.getPlaceDetail().getDescription());
+            } else {
+                viewBinding.descriptionContent.setText("Không có dữ liệu");
+            }
         }
+    }
+
+    private void seeMoreInfo() {
+        viewBinding.seeMore.setVisibility(View.GONE);
+        viewBinding.seeLess.setVisibility(View.VISIBLE);
+        viewBinding.categorySection.setVisibility(View.VISIBLE);
+        viewBinding.checkInPointSection.setVisibility(View.VISIBLE);
+        viewBinding.alternativeNameSection.setVisibility(View.VISIBLE);
+        viewBinding.operatorSection.setVisibility(View.VISIBLE);
+        viewBinding.linkSection.setVisibility(View.VISIBLE);
+        notifyContentChanged();
+    }
+
+    private void seeLessInfo() {
+        viewBinding.seeMore.setVisibility(View.VISIBLE);
+        viewBinding.seeLess.setVisibility(View.GONE);
+        viewBinding.categorySection.setVisibility(View.GONE);
+        viewBinding.checkInPointSection.setVisibility(View.GONE);
+        viewBinding.alternativeNameSection.setVisibility(View.GONE);
+        viewBinding.operatorSection.setVisibility(View.GONE);
+        viewBinding.linkSection.setVisibility(View.GONE);
+        notifyContentChanged();
     }
 }
