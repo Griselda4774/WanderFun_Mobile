@@ -48,6 +48,7 @@ import com.cloudinary.Transformation;
 import com.cloudinary.android.MediaManager;
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
+import com.example.wanderfunmobile.core.util.FavoritePlaceManager;
 import com.example.wanderfunmobile.core.util.GeoJsonUtil;
 import com.example.wanderfunmobile.core.util.NumberUtil;
 import com.example.wanderfunmobile.core.util.StringUtil;
@@ -66,11 +67,13 @@ import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingView;
 import com.example.wanderfunmobile.presentation.viewmodel.CheckInViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.FavoritePlaceViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.maplibre.android.MapLibre;
@@ -143,6 +146,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private LoadingDialog loadingDialog;
     private boolean canCheckIn;
     private Long currentCheckInPlaceId;
+    private FavoritePlaceViewModel favoritePlaceViewModel;
 
     public ExploreFragment() {
     }
@@ -247,7 +251,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                     currentMarker = null;
                 }
 
-                focusOnLocation(symbol.getLatLng(), map, 17, -200);
+                focusOnLocation(symbol.getLatLng(), map, 12, -200);
 
                 String title;
                 Place place = null;
@@ -382,6 +386,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private void initViewModel() {
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
         checkInViewModel = new ViewModelProvider(this).get(CheckInViewModel.class);
+        favoritePlaceViewModel = new ViewModelProvider(this).get(FavoritePlaceViewModel.class);
     }
 
     private void setUpFragment(Bundle savedInstanceState) {
@@ -424,6 +429,38 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 }
             } else {
                 Toast.makeText(requireContext(), "Check-in thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        favoritePlaceViewModel.getCreateFavoritePlaceLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (!result.isError() && result.getData() != null) {
+                Place place = result.getData();
+                FavoritePlaceManager.getInstance(requireActivity().getApplicationContext()).add(place);
+                boolean isFavorite = FavoritePlaceManager.getInstance(requireActivity().getApplicationContext()).isFavorite(place);
+                updatePlaceMarkerIcon(symbolManager, place, isFavorite);
+                placeInfoBottomSheetBinding.favoriteEnabled.setVisibility(View.VISIBLE);
+                placeInfoBottomSheetBinding.favoriteDisabled.setVisibility(View.GONE);
+                Toast.makeText(requireActivity(), "Đã thêm vào yêu thích!", Toast.LENGTH_SHORT).show();
+            } else {
+                placeInfoBottomSheetBinding.favoriteEnabled.setVisibility(View.GONE);
+                placeInfoBottomSheetBinding.favoriteDisabled.setVisibility(View.VISIBLE);
+                Toast.makeText(requireActivity(), "Thêm yêu thích thất bại!" , Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        favoritePlaceViewModel.getDeleteByUserAndPlaceIdLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (!result.isError() && result.getData() != null) {
+                Place place = result.getData();
+                FavoritePlaceManager.getInstance(requireActivity().getApplicationContext()).remove(place);
+                boolean isFavorite = FavoritePlaceManager.getInstance(requireActivity().getApplicationContext()).isFavorite(place);
+                updatePlaceMarkerIcon(symbolManager, place, isFavorite);
+                placeInfoBottomSheetBinding.favoriteEnabled.setVisibility(View.GONE);
+                placeInfoBottomSheetBinding.favoriteDisabled.setVisibility(View.VISIBLE);
+                Toast.makeText(requireActivity(), "Đã xóa khỏi yêu thích!", Toast.LENGTH_SHORT).show();
+            } else {
+                placeInfoBottomSheetBinding.favoriteEnabled.setVisibility(View.VISIBLE);
+                placeInfoBottomSheetBinding.favoriteDisabled.setVisibility(View.GONE);
+                Toast.makeText(requireActivity(), "Xóa yêu thích thất bại!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -695,7 +732,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                             .fetchFormat("png"))
                     .generate(place.getCoverImage().getImagePublicId());
             BitMapUtil.getBitMapFromUrl(context, transformUrl, bitmap -> {
-                style.addImage(place.getCoverImage().getImagePublicId(), bitmap);
+                int borderColor = ContextCompat.getColor(context, R.color.red3);
+                Bitmap bitmapWithBorder = BitMapUtil.addCircularBorder(bitmap, 20, borderColor);
+                style.addImage(place.getCoverImage().getImagePublicId() + "fav_disabled", bitmap);
+                style.addImage(place.getCoverImage().getImagePublicId() + "fav_enabled", bitmapWithBorder);
             });
         }
     }
@@ -712,9 +752,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         data.addProperty("title", "Place Marker");
         data.add("place", placeJson);
 
+        boolean isFavorite = FavoritePlaceManager.getInstance(requireActivity().getApplicationContext()).isFavorite(place);
+
         symbolManager.create(new SymbolOptions()
                 .withLatLng(new LatLng(place.getLatitude(), place.getLongitude()))
-                .withIconImage(place.getCoverImage().getImagePublicId())
+                .withIconImage(isFavorite ? place.getCoverImage().getImagePublicId() + "fav_enabled" : place.getCoverImage().getImagePublicId() + "fav_disabled")
                 .withData(data)
                 .withTextField(place.getName())
                 .withTextFont(new String[]{"Roboto Medium"})
@@ -722,17 +764,45 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 .withTextColor(ColorHexUtil.getColorHexString(ContextCompat.getColor(requireContext(), R.color.black4)))
                 .withTextHaloColor(ColorHexUtil.getColorHexString(ContextCompat.getColor(requireContext(), R.color.white1)))
                 .withTextHaloWidth(5.0f)
-                .withTextHaloBlur(0.0f)
+                .withTextHaloBlur(1.0f)
                 .withTextAnchor(Property.TEXT_ANCHOR_TOP_LEFT)
-                .withTextOffset(new Float[]{0f, 2f})
+                .withTextOffset(new Float[]{0f, 2.4f})
         );
     }
 
     private void removePlaceImagesFromMap(Style style, List<Place> placeList) {
         for (Place place : placeList) {
-            String imageId = place.getCoverImage().getImagePublicId();
-            if (style.getImage(imageId) != null) {
-                style.removeImage(imageId);
+            String imageId1 = place.getCoverImage().getImagePublicId() + "fav_disabled";
+            String imageId2 = place.getCoverImage().getImagePublicId() + "fav_enabled";
+            if (style.getImage(imageId1) != null) {
+                style.removeImage(imageId1);
+            }
+            if (style.getImage(imageId2) != null) {
+                style.removeImage(imageId2);
+            }
+        }
+    }
+
+    private void updatePlaceMarkerIcon(SymbolManager symbolManager, Place place, boolean isFavorite) {
+        LongSparseArray<Symbol> symbolArray = symbolManager.getAnnotations();
+
+        String imageId = place.getCoverImage().getImagePublicId() +
+                (isFavorite ? "fav_enabled" : "fav_disabled");
+
+        for (int i = 0; i < symbolArray.size(); i++) {
+            Symbol symbol = symbolArray.valueAt(i);
+            JsonElement dataElement = symbol.getData();
+            if (dataElement != null && dataElement.isJsonObject()) {
+                JsonObject data = dataElement.getAsJsonObject();
+                if (data.has("place") && data.get("place").isJsonObject()) {
+                    JsonObject placeJson = data.get("place").getAsJsonObject();
+                    if (placeJson.has("id") && placeJson.get("id").getAsString().equals(place.getId())) {
+                        symbol.setIconImage(imageId);
+                        symbolManager.delete(symbol);
+                        addPlaceMarker(symbolManager, place);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -761,8 +831,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
         // Place info tab
         // View pager
-        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(requireActivity(), gson.toJson(place));
         ViewPager2 viewPager = placeInfoBottomSheetBinding.viewPager;
+        PlaceInfoTabAdapter placeInfoTabAdapter = new PlaceInfoTabAdapter(requireActivity(), gson.toJson(place),viewPager);
         viewPager.setAdapter(placeInfoTabAdapter);
         ViewPager2HeightAdjuster.autoAdjustHeight(viewPager, true);
 
@@ -807,6 +877,19 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }
+        });
+
+        boolean isFavorite = FavoritePlaceManager.getInstance(requireContext()).isFavorite(place);
+
+        placeInfoBottomSheetBinding.favoriteEnabled.setVisibility(isFavorite ? View.VISIBLE : View.GONE);
+        placeInfoBottomSheetBinding.favoriteDisabled.setVisibility(isFavorite ? View.GONE : View.VISIBLE);
+
+        placeInfoBottomSheetBinding.favoriteDisabled.setOnClickListener(v -> {
+            favoritePlaceViewModel.createFavoritePlace("Bearer " + SessionManager.getInstance(requireContext()).getAccessToken(), place.getId());
+        });
+
+        placeInfoBottomSheetBinding.favoriteEnabled.setOnClickListener(v -> {
+            favoritePlaceViewModel.deleteByUserAndPlaceId("Bearer " + SessionManager.getInstance(requireContext()).getAccessToken(), place.getId());
         });
 
         TextView placeName = placeInfoBottomSheetBinding.placeName;

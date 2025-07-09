@@ -1,6 +1,7 @@
 package com.example.wanderfunmobile.data.dto.tripplace;
 
 import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
+import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 
 import org.parceler.Parcel;
 
@@ -10,7 +11,7 @@ import java.util.Date;
 @Parcel
 public class TripPlaceDto {
     private Long id;
-    private MiniPlaceDto place;
+    private PlaceDto place;
     private LocalDate startTime;
     private LocalDate endTime;
     private Long tripId;
@@ -42,11 +43,11 @@ public class TripPlaceDto {
         this.endTime = endTime;
     }
 
-    public MiniPlaceDto getPlace() {
+    public PlaceDto getPlace() {
         return place;
     }
 
-    public void setPlace(MiniPlaceDto place) {
+    public void setPlace(PlaceDto place) {
         this.place = place;
     }
 

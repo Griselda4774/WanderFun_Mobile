@@ -24,19 +24,19 @@ public class FavoritePlaceViewModel extends ViewModel {
     }
 
     private final MutableLiveData<Result<List<Place>>> findAllByUserLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<FavoritePlace>> createFavoritePlaceLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result<FavoritePlace>> deleteByUserAndPlaceIdLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<Place>> createFavoritePlaceLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<Place>> deleteByUserAndPlaceIdLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
     public MutableLiveData<Result<List<Place>>> getFindAllByUserLiveData() {
         return findAllByUserLiveData;
     }
 
-    public MutableLiveData<Result<FavoritePlace>> getCreateFavoritePlaceLiveData() {
+    public MutableLiveData<Result<Place>> getCreateFavoritePlaceLiveData() {
         return createFavoritePlaceLiveData;
     }
 
-    public MutableLiveData<Result<FavoritePlace>> getDeleteByUserAndPlaceIdLiveData() {
+    public MutableLiveData<Result<Place>> getDeleteByUserAndPlaceIdLiveData() {
         return deleteByUserAndPlaceIdLiveData;
     }
 

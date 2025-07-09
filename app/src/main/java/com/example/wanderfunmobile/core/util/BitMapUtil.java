@@ -1,8 +1,11 @@
 package com.example.wanderfunmobile.core.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.DrawableRes;
@@ -13,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.wanderfunmobile.R;
 
 public class BitMapUtil {
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -58,6 +62,26 @@ public class BitMapUtil {
                 }
         );
     }
+
+    public static Bitmap addCircularBorder(Bitmap originalBitmap, int borderSize, int borderColor) {
+        int diameter = Math.max(originalBitmap.getWidth(), originalBitmap.getHeight());
+        int newDiameter = diameter + 2 * borderSize;
+
+        Bitmap output = Bitmap.createBitmap(newDiameter, newDiameter, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        paint.setColor(borderColor);
+        canvas.drawCircle(newDiameter / 2f, newDiameter / 2f, newDiameter / 2f, paint);
+
+        Rect srcRect = new Rect(0, 0, originalBitmap.getWidth(), originalBitmap.getHeight());
+        Rect destRect = new Rect(borderSize, borderSize, newDiameter - borderSize, newDiameter - borderSize);
+        canvas.drawBitmap(originalBitmap, srcRect, destRect, null);
+
+        return output;
+    }
+
 
     public interface BitmapCallback {
         void onBitmapLoaded(Bitmap bitmap);

@@ -2,12 +2,17 @@ package com.example.wanderfunmobile.data.dto.place;
 
 import android.media.Image;
 
+import com.example.wanderfunmobile.data.dto.images.ImageDto;
+
+import org.parceler.Parcel;
+
+@Parcel
 public class PlaceCategoryDto {
 
     private Integer id;
     private String name;
     private String nameEn;
-    private Image iconImage;
+    private ImageDto iconImage;
 
     public Integer getId() {
         return id;
@@ -29,11 +34,11 @@ public class PlaceCategoryDto {
         this.nameEn = nameEn;
     }
 
-    public Image getIconImage() {
+    public ImageDto getIconImage() {
         return iconImage;
     }
 
-    public void setIconImage(Image iconImage) {
+    public void setIconImage(ImageDto iconImage) {
         this.iconImage = iconImage;
     }
 }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_margin="16dp"
+    android:layout_gravity="center">
+
+    <EditText
+        android:id="@+id/otp1"
+        style="@style/Text.Otp"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@drawable/edit_text_cursor"/>
+
+    <EditText
+        android:id="@+id/otp2"
+        style="@style/Text.Otp"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@drawable/edit_text_cursor"/>
+
+    <EditText
+        android:id="@+id/otp3"
+        style="@style/Text.Otp"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@drawable/edit_text_cursor"/>
+
+    <EditText
+        android:id="@+id/otp4"
+        style="@style/Text.Otp"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@drawable/edit_text_cursor"/>
+
+    <EditText
+        android:id="@+id/otp5"
+        style="@style/Text.Otp"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@drawable/edit_text_cursor"/>
+
+    <EditText
+        android:id="@+id/otp6"
+        style="@style/Text.Otp"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@drawable/edit_text_cursor"/>
+
+</LinearLayout>

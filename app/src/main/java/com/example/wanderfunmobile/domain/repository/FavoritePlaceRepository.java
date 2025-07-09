@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface FavoritePlaceRepository {
     LiveData<Result<List<Place>>> findAllByUser(String bearerToken);
-    LiveData<Result<FavoritePlace>> createFavoritePlace(String bearerToken, Long placeId);
-    LiveData<Result<FavoritePlace>> deleteByUserAndPlaceId(String bearerToken, Long id);
+    LiveData<Result<Place>> createFavoritePlace(String bearerToken, Long placeId);
+    LiveData<Result<Place>> deleteByUserAndPlaceId(String bearerToken, Long id);
 }

@@ -35,6 +35,7 @@ import com.example.wanderfunmobile.data.dto.cloudinary.CloudinaryImageDto;
 import com.example.wanderfunmobile.databinding.ActivityEditProfileBinding;
 import com.example.wanderfunmobile.domain.model.images.Image;
 import com.example.wanderfunmobile.domain.model.users.User;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.UserViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.gson.Gson;
@@ -62,6 +63,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private Uri imageUri;
     @Inject
     Gson gson;
+    private LoadingDialog loadingDialog;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +98,9 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void setUpActivity() {
+        // Set up loading dialog
+        loadingDialog = new LoadingDialog(this);
+
         // Back button
         ConstraintLayout backButton = viewBinding.backButton.button;
         backButton.setOnClickListener(v -> {
@@ -171,14 +176,14 @@ public class EditProfileActivity extends AppCompatActivity {
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getUpdateSelfInfoResponseLiveData().observe(this, result -> {
             if (!result.isError()) {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(getApplicationContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("status", "profile_updated");
                 setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(this, "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();
 
             }
@@ -236,7 +241,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void updateUserData() {
-        showLoadingDialog();
+        loadingDialog.show();
         User updatedUser = new User();
         String firstName = viewBinding.firstnameInput.input.textEdittext.getText().toString().trim();
         String lastName = viewBinding.lastnameInput.input.textEdittext.getText().toString().trim();
@@ -247,7 +252,7 @@ public class EditProfileActivity extends AppCompatActivity {
             updatedUser.setFirstName(firstName);
         } else {
             Toast.makeText(this, "Vui lòng nhập tên", Toast.LENGTH_SHORT).show();
-            hideLoadingDialog();
+            loadingDialog.hide();
             return;
         }
 
@@ -255,7 +260,7 @@ public class EditProfileActivity extends AppCompatActivity {
             updatedUser.setLastName(lastName);
         } else {
             Toast.makeText(this, "Vui lòng nhập họ", Toast.LENGTH_SHORT).show();
-            hideLoadingDialog();
+            loadingDialog.hide();
             return;
         }
 
@@ -299,15 +304,5 @@ public class EditProfileActivity extends AppCompatActivity {
             updatedUser.setAvatarImage(null);
             userViewModel.updateSelfInfo("Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken(), updatedUser);
         }
-    }
-
-    private void showLoadingDialog() {
-        viewBinding.loadingDialog.setVisibility(View.VISIBLE);
-        viewBinding.loadingDialog.show();
-    }
-
-    private void hideLoadingDialog() {
-        viewBinding.loadingDialog.setVisibility(View.GONE);
-        viewBinding.loadingDialog.hide();
     }
 }

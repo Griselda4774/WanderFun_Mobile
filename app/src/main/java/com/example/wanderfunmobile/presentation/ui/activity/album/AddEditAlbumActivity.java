@@ -40,6 +40,7 @@ import com.example.wanderfunmobile.presentation.ui.activity.place.SearchPlaceAct
 import com.example.wanderfunmobile.presentation.ui.adapter.ImageWithDeleteAdapter;
 import com.example.wanderfunmobile.core.util.CloudinaryUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
+import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.AlbumViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 
@@ -65,6 +66,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> placePickerLauncher;
     @Inject
     ObjectMapper objectMapper;
+    private LoadingDialog loadingDialog;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -86,6 +88,8 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         EditText albumDescription = viewBinding.albumDescriptionLayout.findViewById(R.id.content_edittext);
 
         RecyclerView recyclerView = viewBinding.albumImageList.findViewById(R.id.album_image_list);
+
+        loadingDialog = new LoadingDialog(this);
 
         initViewModels();
         setupHeader();
@@ -109,7 +113,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                     }
 
                     recyclerView.setAdapter(imageWithDeleteAdapter);
-                    hideLoadingDialog();
+                    loadingDialog.hide();
                 }
             });
         }
@@ -125,9 +129,17 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private void initViewModels() {
-        hideLoadingDialog();
+        loadingDialog.hide();
 
         albumViewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
 
@@ -140,18 +152,18 @@ public class AddEditAlbumActivity extends AppCompatActivity {
                 }
                 imageWithDeleteAdapter.notifyDataSetChanged();
                 updateRecyclerViewVisibility();
-                hideLoadingDialog();
+                loadingDialog.hide();
             }
         });
 
         albumViewModel.createAlbumResponseLiveData().observe(this, response -> {
-            hideLoadingDialog();
+            loadingDialog.hide();
             showToast(response.isError() ? "Tạo album thất bại" : "Tạo album thành công");
             if (!response.isError()) finish();
         });
 
         albumViewModel.updateAlbumResponseLiveData().observe(this, response -> {
-            hideLoadingDialog();
+            loadingDialog.hide();
             showToast(response.isError() ? "Cập nhật album thất bại" : "Cập nhật album thành công");
             if (!response.isError()) finish();
         });
@@ -170,7 +182,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         viewBinding.headerTitle.setText(albumId == 0 ? "Tạo album" : "Chỉnh sửa album");
         if (albumId != 0) {
             String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
-            showLoadingDialog();
+            loadingDialog.show();
             albumViewModel.getAlbumById(token, albumId);
         }
     }
@@ -280,7 +292,7 @@ public class AddEditAlbumActivity extends AppCompatActivity {
 
 
     private void saveAlbum(AlbumCreateDto albumCreateDto) {
-        showLoadingDialog();
+        loadingDialog.show();
         String token = "Bearer " + SessionManager.getInstance(getApplicationContext()).getAccessToken();
         boolean isUpdate = albumId != 0;
 
@@ -379,16 +391,6 @@ public class AddEditAlbumActivity extends AppCompatActivity {
         } else {
             recyclerView.setVisibility(View.VISIBLE); // Show RecyclerView
         }
-    }
-
-    private void showLoadingDialog() {
-        viewBinding.loadingDialog.setVisibility(View.VISIBLE);
-        viewBinding.loadingDialog.show();
-    }
-
-    private void hideLoadingDialog() {
-        viewBinding.loadingDialog.setVisibility(View.GONE);
-        viewBinding.loadingDialog.hide();
     }
 
     private void showToast(String msg) {

@@ -91,8 +91,7 @@ public class AddEditPostActivity extends AppCompatActivity {
         });
 
         // Initialize loading dialog
-        loadingDialog = viewBinding.loadingDialog;
-        hideLoadingDialog();
+        loadingDialog = new LoadingDialog(this);
 
         // Initialize ViewModel
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
@@ -122,28 +121,28 @@ public class AddEditPostActivity extends AppCompatActivity {
 
         postViewModel.getCreatePostLiveData().observe(this, result -> {
             if (!result.isError()) {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(getApplicationContext(), "Đăng bài thành công", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("status", "post_created");
                 setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(getApplicationContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
             }
         });
 
         postViewModel.getUpdatePostLiveData().observe(this, result -> {
             if (!result.isError()) {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(getApplicationContext(), "Sửa bài viết thành công", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("status", "post_updated");
                 setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(getApplicationContext(), "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
             }
         });
@@ -208,6 +207,14 @@ public class AddEditPostActivity extends AppCompatActivity {
             taggedPlace = null;
             viewBinding.tagPlaceContainer.setVisibility(GONE);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
     }
 
     private void initBottomSheet() {
@@ -394,14 +401,14 @@ public class AddEditPostActivity extends AppCompatActivity {
         });
 
         viewBinding.postButton.setOnClickListener(v -> {
-            showLoadingDialog();
+            loadingDialog.show();
             Post postCreate = new Post();
             postCreate.setTrip(taggedTrip);
             postCreate.setPlace(taggedPlace);
             if (viewBinding.textEdittext.getText() != null && !viewBinding.textEdittext.getText().toString().isEmpty()) {
                 postCreate.setContent(viewBinding.textEdittext.getText().toString());
             } else {
-                hideLoadingDialog();
+                loadingDialog.hide();
                 Toast.makeText(this, "Nội dung bài viết không được để trống", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -427,18 +434,6 @@ public class AddEditPostActivity extends AppCompatActivity {
                 performCreateOrUpdatePost(postCreate);
             }
         });
-    }
-
-    
-
-    private void showLoadingDialog() {
-        loadingDialog.setVisibility(View.VISIBLE);
-        loadingDialog.show();
-    }
-
-    private void hideLoadingDialog() {
-        loadingDialog.setVisibility(GONE);
-        loadingDialog.hide();
     }
 
     private void performCreateOrUpdatePost(Post post) {

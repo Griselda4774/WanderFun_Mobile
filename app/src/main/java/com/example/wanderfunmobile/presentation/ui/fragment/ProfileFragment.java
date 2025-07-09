@@ -10,16 +10,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.wanderfunmobile.R;
+import com.example.wanderfunmobile.core.util.FavoritePlaceManager;
 import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.databinding.FragmentProfileBinding;
 import com.example.wanderfunmobile.domain.model.users.User;
-import com.example.wanderfunmobile.presentation.ui.activity.LoginActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.auth.ChangePasswordActivity;
+import com.example.wanderfunmobile.presentation.ui.activity.auth.LoginActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.album.MyAlbumActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.checkin.CheckInHistoryActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.favoriteplace.FavoritePlaceActivity;
@@ -83,6 +84,7 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(requireActivity().getApplicationContext(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
                 SessionManager.getInstance(requireActivity().getApplicationContext()).logout();
                 PostViewManager.getInstance(requireActivity().getApplicationContext()).reset();
+                FavoritePlaceManager.getInstance(requireActivity().getApplicationContext()).clear();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 requireActivity().finish();
@@ -128,6 +130,12 @@ public class ProfileFragment extends Fragment {
         // Leaderboard
         viewBinding.leaderboardSection.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), LeaderboardActivity.class);
+            startActivity(intent);
+        });
+
+        // Change Password
+        viewBinding.changePasswordSection.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
             startActivity(intent);
         });
 
