@@ -26,6 +26,8 @@ public class AuthViewModel extends ViewModel {
     private final MutableLiveData<ResponseDto<TokenResponseDto>> refreshTokenResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<Void>> sendOtpResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result<Void>> verifyOtpResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<Void>> forgotPasswordResponseLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Result<Void>> changePasswordResponseLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
 
@@ -58,6 +60,14 @@ public class AuthViewModel extends ViewModel {
 
     public LiveData<Result<Void>> getVerifyOtpResponseLiveData() {
         return verifyOtpResponseLiveData;
+    }
+
+    public LiveData<Result<Void>> getForgotPasswordResponseLiveData() {
+        return forgotPasswordResponseLiveData;
+    }
+
+    public LiveData<Result<Void>> getChangePasswordResponseLiveData() {
+        return changePasswordResponseLiveData;
     }
 
     public LiveData<Boolean> getIsLoading() {
@@ -108,6 +118,22 @@ public class AuthViewModel extends ViewModel {
         isLoading.setValue(true);
         authRepository.verifyOtp(mailOtpDto).observeForever(result -> {
             verifyOtpResponseLiveData.setValue(result);
+            isLoading.setValue(false);
+        });
+    }
+
+    public void forgotPassword(String email, String otpCode, String newPassword) {
+        isLoading.setValue(true);
+        authRepository.forgotPassword(email, otpCode, newPassword).observeForever(result -> {
+            forgotPasswordResponseLiveData.setValue(result);
+            isLoading.setValue(false);
+        });
+    }
+
+    public void changePassword(String bearerToken, String oldPassword, String newPassword) {
+        isLoading.setValue(true);
+        authRepository.changePassword(bearerToken, oldPassword, newPassword).observeForever(result -> {
+            changePasswordResponseLiveData.setValue(result);
             isLoading.setValue(false);
         });
     }

@@ -62,6 +62,14 @@ public class VerifyOtpActivity extends AppCompatActivity {
         setUpView();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
+    }
+
     private void getIntentData() {
         if (getIntent() != null) {
             email = getIntent().getStringExtra("email");
@@ -88,11 +96,8 @@ public class VerifyOtpActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Xác thực thành công!", Toast.LENGTH_SHORT).show();
                 if ("register".equals(action) || "login".equals(action)) {
                     login();
-                } else if ("reset_password".equals(action)) {
-                    // Navigate to reset password activity
-                    // Intent intent = new Intent(this, ResetPasswordActivity.class);
-                    // startActivity(intent);
-                    // finish();
+                } else if ("forgot_password".equals(action)) {
+                    toResetPasswordActivity();
                 }
             } else {
                 Toast.makeText(this, "Xác thực không thành công!", Toast.LENGTH_SHORT).show();
@@ -175,6 +180,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
         viewBinding.resendCodeButton.setOnClickListener(v -> {
             loadingDialog.setLoadingText("Đang gửi mã xác thực...");
             loadingDialog.show();
+            viewBinding.countdownText.restart();
             authViewModel.sendOtp(email);
         });
     }
@@ -191,6 +197,13 @@ public class VerifyOtpActivity extends AppCompatActivity {
     private void toMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private void toResetPasswordActivity() {
+        Intent intent = new Intent(this, ResetPasswordActivity.class);
+        intent.putExtra("email", email);
+        intent.putExtra("otp", viewBinding.otpInput.getOtp());
         startActivity(intent);
     }
 }

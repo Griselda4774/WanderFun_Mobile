@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.wanderfunmobile.data.dto.ResponseDto;
+import com.example.wanderfunmobile.data.dto.auth.ChangePasswordDto;
+import com.example.wanderfunmobile.data.dto.auth.ForgotPasswordDto;
 import com.example.wanderfunmobile.data.dto.auth.LoginDto;
 import com.example.wanderfunmobile.data.dto.auth.LoginResponseDto;
 import com.example.wanderfunmobile.data.dto.auth.MailOtpDto;
@@ -193,5 +195,74 @@ public class AuthRepositoryImpl implements AuthRepository {
         }
 
         return verifyOtpResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<Void>> forgotPassword(String email, String otpCode, String newPassword) {
+        MutableLiveData<Result<Void>> forgotPasswordResponseLiveData = new MutableLiveData<>();
+        String errorType = "AuthRepositoryImpl Verify OTP Error";
+        try {
+            ForgotPasswordDto forgotPasswordDto = new ForgotPasswordDto();
+            forgotPasswordDto.setEmail(email);
+            forgotPasswordDto.setOtp(otpCode);
+            forgotPasswordDto.setNewPassword(newPassword);
+            Call<ResponseDto<Void>> call = authApi.forgotPassword(forgotPasswordDto);
+            call.enqueue(new Callback<ResponseDto<Void>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<Void>> call,
+                                       @NonNull Response<ResponseDto<Void>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<Void> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        forgotPasswordResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<Void>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e(errorType, "Error during forgot password onFailure");
+                }
+            });
+        } catch (Exception e) {
+            Log.e(errorType, "Error during forgot password catch");
+        }
+
+        return forgotPasswordResponseLiveData;
+    }
+
+    @Override
+    public LiveData<Result<Void>> changePassword(String bearerToken, String oldPassword, String newPassword) {
+        MutableLiveData<Result<Void>> changePasswordResponseLiveData = new MutableLiveData<>();
+        String errorType = "AuthRepositoryImpl Verify OTP Error";
+        try {
+            ChangePasswordDto changePasswordDto = new ChangePasswordDto();
+            changePasswordDto.setNewPassword(newPassword);
+            changePasswordDto.setOldPassword(oldPassword);
+            Call<ResponseDto<Void>> call = authApi.changePassword(bearerToken, changePasswordDto);
+            call.enqueue(new Callback<ResponseDto<Void>>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseDto<Void>> call,
+                                       @NonNull Response<ResponseDto<Void>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Result<Void> result = new Result<>();
+                        result.setError(response.body().isError());
+                        result.setMessage(response.body().getMessage());
+                        changePasswordResponseLiveData.postValue(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseDto<Void>> call,
+                                      @NonNull Throwable throwable) {
+                    Log.e(errorType, "Error during change password onFailure");
+                }
+            });
+        } catch (Exception e) {
+            Log.e(errorType, "Error during change password catch");
+        }
+
+        return changePasswordResponseLiveData;
     }
 }

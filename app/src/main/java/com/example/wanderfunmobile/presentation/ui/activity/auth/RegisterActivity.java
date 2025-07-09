@@ -165,6 +165,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
+    }
+
     private void setUpViewModel() {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 

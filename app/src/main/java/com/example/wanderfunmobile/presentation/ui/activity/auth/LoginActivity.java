@@ -98,8 +98,15 @@ public class LoginActivity extends AppCompatActivity {
         viewBinding.forgotPassword.setOnClickListener(v-> {
             Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
             startActivity(intent);
-            finish();
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
     }
 
     private void setUpViewModel() {

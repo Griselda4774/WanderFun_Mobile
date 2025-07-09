@@ -17,4 +17,6 @@ public interface AuthRepository {
     LiveData<ResponseDto<TokenResponseDto>> refreshToken(String bearerToken);
     LiveData<Result<Void>> sendOtp(String email);
     LiveData<Result<Void>> verifyOtp(MailOtpDto mailOtpDto);
+    LiveData<Result<Void>> forgotPassword(String email, String otpCode, String newPassword);
+    LiveData<Result<Void>> changePassword(String bearerToken, String oldPassword, String newPassword);
 }
