@@ -1,6 +1,5 @@
 package com.example.wanderfunmobile.presentation.ui.activity.auth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -16,25 +15,24 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
-import com.example.wanderfunmobile.databinding.ActivityResetPasswordBinding;
+import com.example.wanderfunmobile.core.util.SessionManager;
+import com.example.wanderfunmobile.databinding.ActivityChangePasswordBinding;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.presentation.viewmodel.AuthViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class ResetPasswordActivity extends AppCompatActivity {
-    private ActivityResetPasswordBinding viewBinding;
+public class ChangePasswordActivity extends AppCompatActivity {
+    private ActivityChangePasswordBinding viewBinding;
     private AuthViewModel authViewModel;
     private LoadingDialog loadingDialog;
-    private String email;
-    private String otp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        viewBinding = ActivityResetPasswordBinding.inflate(getLayoutInflater());
+        viewBinding = ActivityChangePasswordBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
 
         ViewCompat.setOnApplyWindowInsetsListener(viewBinding.getRoot(), (v, insets) -> {
@@ -43,35 +41,25 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return insets;
         });
 
-        getIntentData();
-
         setUpViewModel();
 
-        setUpActivity();
-    }
-
-    private void getIntentData() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            email = intent.getStringExtra("email");
-            otp = intent.getStringExtra("otp");
-        }
+        setUpView();
     }
 
     private void setUpViewModel() {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-        authViewModel.getForgotPasswordResponseLiveData().observe(this, result -> {
+        authViewModel.getChangePasswordResponseLiveData().observe(this, result -> {
             loadingDialog.hide();
             if (!result.isError()) {
-                Toast.makeText(getApplicationContext(), "Mật khẩu đã được đặt lại!", Toast.LENGTH_SHORT).show();
-                toLoginActivity();
+                Toast.makeText(getApplicationContext(), "Đổi mật khẩu thành công!", Toast.LENGTH_SHORT).show();
+                finish();
             } else {
-                Toast.makeText(this, "Đặt lại mật khẩu không thành công!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đổi mật khẩu thất bại!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void setUpActivity() {
+    private void setUpView() {
         loadingDialog = new LoadingDialog(this);
 
         // Back button
@@ -79,11 +67,15 @@ public class ResetPasswordActivity extends AppCompatActivity {
             finish();
         });
 
-        EditText passwordEditText = viewBinding.newPasswordInput.input.passwordEdittext;
-        setupPasswordToggle(passwordEditText, viewBinding.newPasswordInput.hidePassIcon, viewBinding.newPasswordInput.viewPassIcon);
+        EditText passwordEditText = viewBinding.passwordInput.input.passwordEdittext;
+        setupPasswordToggle(passwordEditText, viewBinding.passwordInput.hidePassIcon, viewBinding.passwordInput.viewPassIcon);
 
-        EditText rePasswordEditText = viewBinding.reNewPasswordInput.input.passwordEdittext;
-        setupPasswordToggle(rePasswordEditText, viewBinding.reNewPasswordInput.hidePassIcon, viewBinding.reNewPasswordInput.viewPassIcon);
+        EditText newPasswordEditText = viewBinding.newPasswordInput.input.passwordEdittext;
+        setupPasswordToggle(newPasswordEditText, viewBinding.newPasswordInput.hidePassIcon, viewBinding.newPasswordInput.viewPassIcon);
+
+        EditText reNewPasswordEditText = viewBinding.reNewPasswordInput.input.passwordEdittext;
+        setupPasswordToggle(reNewPasswordEditText, viewBinding.reNewPasswordInput.hidePassIcon, viewBinding.reNewPasswordInput.viewPassIcon);
+
         viewBinding.confirmButton.button.setText("Xong");
         viewBinding.confirmButton.button.setOnClickListener(v -> {
             String password = passwordEditText.getText().toString();
@@ -97,28 +89,37 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 return;
             }
 
-            String rePassword = rePasswordEditText.getText().toString();
-            if (rePassword.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập lại mật khẩu", Toast.LENGTH_SHORT).show();
+            String newPassword = newPasswordEditText.getText().toString();
+            if (newPassword.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập mật khẩu mới", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!password.equals(rePassword)) {
-                Toast.makeText(this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
+            if (newPassword.length() < 8 || !password.matches(".*[a-z].*") || !password.matches(".*[A-Z].*") || !password.matches(".*\\d.*")) {
+                Toast.makeText(this, "Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (newPassword.equals(password)) {
+                Toast.makeText(this, "Mật khẩu mới không được trùng với mật khẩu cũ", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String reNewPassword = reNewPasswordEditText.getText().toString();
+            if (reNewPassword.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập lại mật khẩu mới", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!newPassword.equals(reNewPassword)) {
+                Toast.makeText(this, "Mật khẩu mới không khớp", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             loadingDialog.setLoadingText("Đang đặt lại mật khẩu...");
             loadingDialog.show();
-            authViewModel.forgotPassword(email, otp, password);
+            authViewModel.changePassword("Bearer " + SessionManager.getInstance(this).getAccessToken(), password, newPassword);
         });
-    }
-
-    private void toLoginActivity() {
-        Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
     }
 
     private void setupPasswordToggle(EditText passwordEditText, ImageView showIcon, ImageView hideIcon) {

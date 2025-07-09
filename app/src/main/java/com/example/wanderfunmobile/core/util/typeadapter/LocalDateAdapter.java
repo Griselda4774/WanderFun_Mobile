@@ -2,7 +2,6 @@ package com.example.wanderfunmobile.core.util.typeadapter;
 
 import android.util.Log;
 
-import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;

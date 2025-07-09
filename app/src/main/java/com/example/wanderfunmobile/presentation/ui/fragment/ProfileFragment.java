@@ -19,6 +19,7 @@ import com.example.wanderfunmobile.core.util.FavoritePlaceManager;
 import com.example.wanderfunmobile.core.util.PostViewManager;
 import com.example.wanderfunmobile.databinding.FragmentProfileBinding;
 import com.example.wanderfunmobile.domain.model.users.User;
+import com.example.wanderfunmobile.presentation.ui.activity.auth.ChangePasswordActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.auth.LoginActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.album.MyAlbumActivity;
 import com.example.wanderfunmobile.presentation.ui.activity.checkin.CheckInHistoryActivity;
@@ -129,6 +130,12 @@ public class ProfileFragment extends Fragment {
         // Leaderboard
         viewBinding.leaderboardSection.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), LeaderboardActivity.class);
+            startActivity(intent);
+        });
+
+        // Change Password
+        viewBinding.changePasswordSection.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
             startActivity(intent);
         });
 
