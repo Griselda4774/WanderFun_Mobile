@@ -9,6 +9,7 @@ import com.example.wanderfunmobile.data.api.backend.AuthApi;
 import com.example.wanderfunmobile.data.api.backend.CheckInApi;
 import com.example.wanderfunmobile.data.api.backend.CloudinaryApi;
 import com.example.wanderfunmobile.data.api.backend.FavoritePlaceApi;
+import com.example.wanderfunmobile.data.api.backend.GoongApi;
 import com.example.wanderfunmobile.data.api.backend.LeaderboardApi;
 import com.example.wanderfunmobile.data.api.backend.places.FeedbackApi;
 import com.example.wanderfunmobile.data.api.backend.places.PlaceApi;
@@ -35,11 +36,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BackendApiModule {
     @Provides
     @Singleton
-    public AuthApi provideAuthApi(@ApplicationContext Context context, Gson gson) {
+    public AuthApi provideAuthApi(@ApplicationContext Context context) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
@@ -50,11 +51,11 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public AddressApi provideAddressApi(@ApplicationContext Context context, Gson gson) {
+    public AddressApi provideAddressApi(@ApplicationContext Context context) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
@@ -80,11 +81,11 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public CloudinaryApi provideCloudinaryApi(@ApplicationContext Context context, Gson gson) {
+    public CloudinaryApi provideCloudinaryApi(@ApplicationContext Context context) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
@@ -155,11 +156,11 @@ public class BackendApiModule {
 
     @Provides
     @Singleton
-    public LeaderboardApi provideLeaderboardApi(@ApplicationContext Context context, Gson gson) {
+    public LeaderboardApi provideLeaderboardApi(@ApplicationContext Context context) {
         String baseUrl = context.getString(R.string.base_url);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
@@ -196,6 +197,21 @@ public class BackendApiModule {
                         .build())
                 .build()
                 .create(CheckInApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public GoongApi provideGoongApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.goong_api_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(GoongApi.class);
     }
 
     @Provides

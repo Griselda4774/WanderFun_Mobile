@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.dto.place.MiniPlaceDto;
+import com.example.wanderfunmobile.data.dto.place.PlaceDto;
 import com.example.wanderfunmobile.data.dto.tripplace.TripPlaceDto;
 import com.example.wanderfunmobile.databinding.ActivityTripPlaceCreateBinding;
 import com.example.wanderfunmobile.domain.model.places.Place;
@@ -197,7 +198,7 @@ public class TripPlaceCreateActivity extends AppCompatActivity {
                 if (startTime.before(endTime)) {
                     Intent resultIntent = new Intent();
                     TripPlaceDto resultTripPlaceDto = new TripPlaceDto();
-                    resultTripPlaceDto.setPlace(objectMapper.map(selectedPlace, MiniPlaceDto.class));
+                    resultTripPlaceDto.setPlace(objectMapper.map(selectedPlace, PlaceDto.class));
                     resultTripPlaceDto.setStartTime(DateTimeUtil.dateToLocalDate(startTime));
                     resultTripPlaceDto.setEndTime(DateTimeUtil.dateToLocalDate(endTime));
                     resultTripPlaceDto.setPlaceNotes(noteEditText.getText().toString());

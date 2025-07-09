@@ -3,6 +3,9 @@ package com.example.wanderfunmobile.data.dto.place;
 import com.example.wanderfunmobile.data.dto.addresses.AddressDto;
 import com.example.wanderfunmobile.data.dto.images.ImageDto;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class PlaceDto {
     private Long id;
     private double longitude;
