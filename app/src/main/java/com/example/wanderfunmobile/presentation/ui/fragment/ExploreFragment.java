@@ -103,6 +103,7 @@ import org.maplibre.android.style.layers.LineLayer;
 import org.maplibre.android.style.layers.Property;
 import org.maplibre.android.style.sources.GeoJsonSource;
 import org.maplibre.geojson.Feature;
+import org.maplibre.geojson.FeatureCollection;
 import org.maplibre.geojson.Geometry;
 import org.maplibre.geojson.MultiPolygon;
 import org.maplibre.geojson.Point;
@@ -532,6 +533,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 viewBinding.searchInput.clearFocus();
                 viewBinding.searchResultContainer.setVisibility(View.GONE);
                 focusOnLocation(new LatLng(place.getLatitude(), place.getLongitude()), mapLibreMap, 12, -200);
+                List<Place> tempList = new ArrayList<>();
+                tempList.add(place);
+                addPlaceImageToMap(requireContext(), mapStyle, tempList);
                 placeViewModel.findPlaceById(place.getId());
             }
         });
@@ -1079,57 +1083,4 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         int total = coordinates.size();
         return Point.fromLngLat(longitude / total, latitude / total);
     }
-
-    private void clickToProvince(String provinceName, Feature feature) {
-        if (provinceName == null || feature == null) return;
-
-        Geometry geometry = feature.geometry();
-        if (geometry == null) return;
-
-        Point centroid = null;
-        if (geometry instanceof Polygon) {
-            centroid = getCentroidOfPolygon((Polygon) geometry);
-        } else if (geometry instanceof MultiPolygon) {
-            List<Polygon> polygons = ((MultiPolygon) geometry).polygons();
-            if (!polygons.isEmpty()) {
-                centroid = getCentroidOfPolygon(polygons.get(0));
-            }
-        }
-
-        if (centroid != null) {
-            LatLng centerLatLng = new LatLng(centroid.latitude(), centroid.longitude());
-            focusOnLocation(centerLatLng, mapLibreMap, 8.0f);
-        }
-
-        FillLayer selectedLayer = mapStyle.getLayerAs("province-selected");
-        if (selectedLayer == null) return;
-
-        if (provinceName.equals(selectedProvinceName)) {
-            selectedProvinceName = null;
-            selectedLayer.setFilter(eq(get("Name"), literal("")));
-            removePlaceImagesFromMap(mapStyle, placeList);
-            removePlaceMarkers(symbolManager);
-        } else {
-            selectedProvinceName = provinceName;
-            selectedLayer.setFilter(eq(get("Name"), literal(provinceName)));
-            placeViewModel.findAllPlacesByProvinceName(provinceName);
-        }
-    }
-
-    private void simulateMapClickByProvinceName(String provinceName) {
-        if (mapStyle == null || provinceName == null) return;
-
-        GeoJsonSource source = mapStyle.getSourceAs("province-source");
-        if (source == null) return;
-
-        List<Feature> features = source.querySourceFeatures(
-                eq(get("Name"), literal(provinceName))
-        );
-
-        if (features.isEmpty()) return;
-
-        Feature feature = features.get(0);
-        clickToProvince(provinceName, feature);
-    }
-
 }
