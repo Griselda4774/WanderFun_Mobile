@@ -1,4 +1,4 @@
-package com.example.wanderfunmobile.data.dto.goong;
+package com.example.wanderfunmobile.data.dto.goong.trip;
 
 import java.util.List;
 
