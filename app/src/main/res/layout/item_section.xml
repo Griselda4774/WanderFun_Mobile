@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Giới thiệu"
-        style="@style/Text.Title"
+        style="@style/Text.Title.Medium"
         android:background="@drawable/bg_border_bottom"
         android:paddingBottom="4dp" />
 

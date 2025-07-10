@@ -8,8 +8,6 @@ public class PlaceDetail {
     private Long id;
     private Long placeId;
     private String description;
-    private int checkInPoint;
-    private float checkInRangeMeter;
     private LocalTime timeOpen;
     private LocalTime timeClose;
     private boolean isClosed;
@@ -17,7 +15,6 @@ public class PlaceDetail {
     private String bestTimeToVisit;
     private int priceRangeTop;
     private int priceRangeBottom;
-    private boolean isVerified;
     private String alternativeName;
     private String operator;
     private String url;
@@ -47,22 +44,6 @@ public class PlaceDetail {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getCheckInPoint() {
-        return checkInPoint;
-    }
-
-    public void setCheckInPoint(int checkInPoint) {
-        this.checkInPoint = checkInPoint;
-    }
-
-    public float getCheckInRangeMeter() {
-        return checkInRangeMeter;
-    }
-
-    public void setCheckInRangeMeter(float checkInRangeMeter) {
-        this.checkInRangeMeter = checkInRangeMeter;
     }
 
     public LocalTime getTimeOpen() {
@@ -119,14 +100,6 @@ public class PlaceDetail {
 
     public void setPriceRangeBottom(int priceRangeBottom) {
         this.priceRangeBottom = priceRangeBottom;
-    }
-
-    public boolean isVerified() {
-        return isVerified;
-    }
-
-    public void setVerified(boolean verified) {
-        isVerified = verified;
     }
 
     public String getAlternativeName() {

@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <EditText
-        android:id="@+id/search_edittext"
-        style="@style/Text.Content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_edit_text_light"
-        android:cursorVisible="true"
-        android:hint="Tìm kiếm địa điểm"
-        android:inputType="text"
-        android:padding="@dimen/input_padding"
-        android:textCursorDrawable="@drawable/edit_text_cursor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</merge>
+<EditText
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_edittext"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_edit_text_light"
+    android:cursorVisible="true"
+    android:hint="Tìm kiếm địa điểm"
+    android:inputType="text"
+    android:padding="@dimen/input_padding"
+    android:textCursorDrawable="@drawable/edit_text_cursor"
+    style="@style/Text.Content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />

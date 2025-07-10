@@ -175,7 +175,7 @@ public class PlaceDescriptionInfoFragment extends Fragment {
             }
 
             // Check-in point
-            viewBinding.checkInPoint.setText(String.valueOf(place.getPlaceDetail().getCheckInPoint()));
+            viewBinding.checkInPoint.setText(String.valueOf(place.getCheckInPoint()));
 
 
             // Alternative name
@@ -204,6 +204,13 @@ public class PlaceDescriptionInfoFragment extends Fragment {
                 viewBinding.descriptionContent.setText(place.getPlaceDetail().getDescription());
             } else {
                 viewBinding.descriptionContent.setText("Không có dữ liệu");
+            }
+
+            // Best time to visit
+            if (place.getPlaceDetail().getBestTimeToVisit() != null && !place.getPlaceDetail().getBestTimeToVisit().isEmpty()) {
+                viewBinding.bestTimeVisitContent.setText(place.getPlaceDetail().getBestTimeToVisit());
+            } else {
+                viewBinding.bestTimeVisitContent.setText("Không có dữ liệu");
             }
         }
     }

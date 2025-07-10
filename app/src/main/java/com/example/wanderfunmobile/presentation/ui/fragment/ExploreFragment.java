@@ -15,9 +15,7 @@ import static org.maplibre.android.style.layers.PropertyFactory.lineWidth;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PointF;
@@ -41,6 +39,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
@@ -56,9 +55,11 @@ import com.example.wanderfunmobile.core.util.ViewPager2HeightAdjuster;
 import com.example.wanderfunmobile.databinding.BottomSheetLocationPinBinding;
 import com.example.wanderfunmobile.databinding.BottomSheetPlaceInfoBinding;
 import com.example.wanderfunmobile.databinding.FragmentExploreBinding;
+import com.example.wanderfunmobile.domain.model.addresses.Province;
 import com.example.wanderfunmobile.domain.model.places.Place;
-import com.example.wanderfunmobile.presentation.ui.activity.place.FeedbackCreateActivity;
 import com.example.wanderfunmobile.presentation.ui.adapter.place.PlaceInfoTabAdapter;
+import com.example.wanderfunmobile.presentation.ui.adapter.searchs.SearchPlaceItemAdapter;
+import com.example.wanderfunmobile.presentation.ui.adapter.searchs.SearchProvinceItemAdapter;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.CheckInDialog;
 import com.example.wanderfunmobile.presentation.ui.custom.dialog.LoadingDialog;
 import com.example.wanderfunmobile.core.util.BitMapUtil;
@@ -66,6 +67,7 @@ import com.example.wanderfunmobile.core.util.ColorHexUtil;
 import com.example.wanderfunmobile.core.util.SessionManager;
 import com.example.wanderfunmobile.data.mapper.ObjectMapper;
 import com.example.wanderfunmobile.presentation.ui.custom.starrating.StarRatingView;
+import com.example.wanderfunmobile.presentation.viewmodel.AutoCompleteViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.CheckInViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.FavoritePlaceViewModel;
 import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
@@ -95,6 +97,7 @@ import org.maplibre.android.maps.Style;
 import org.maplibre.android.plugins.annotation.Symbol;
 import org.maplibre.android.plugins.annotation.SymbolManager;
 import org.maplibre.android.plugins.annotation.SymbolOptions;
+import org.maplibre.android.style.expressions.Expression;
 import org.maplibre.android.style.layers.FillLayer;
 import org.maplibre.android.style.layers.LineLayer;
 import org.maplibre.android.style.layers.Property;
@@ -147,6 +150,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private boolean canCheckIn;
     private Long currentCheckInPlaceId;
     private FavoritePlaceViewModel favoritePlaceViewModel;
+    private final List<Province> searchProvinceList = new ArrayList<>();
+    private SearchProvinceItemAdapter searchProvinceItemAdapter;
+    private final List<Place> searchPlaceList = new ArrayList<>();
+    private SearchPlaceItemAdapter searchPlaceItemAdapter;
+    private AutoCompleteViewModel autoCompleteViewModel;
 
     public ExploreFragment() {
     }
@@ -174,9 +182,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setUpFragment(savedInstanceState);
-
         setUpViewModel();
+
+        setUpAdapter();
+
+        setUpFragment(savedInstanceState);
     }
 
     @Override
@@ -387,6 +397,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
         checkInViewModel = new ViewModelProvider(this).get(CheckInViewModel.class);
         favoritePlaceViewModel = new ViewModelProvider(this).get(FavoritePlaceViewModel.class);
+        autoCompleteViewModel = new ViewModelProvider(this).get(AutoCompleteViewModel.class);
     }
 
     private void setUpFragment(Bundle savedInstanceState) {
@@ -394,8 +405,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         setUpDialog();
         setUpMapView(savedInstanceState);
         setUpButton();
+        setUpSearchBar();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void setUpViewModel() {
         placeViewModel.getFindAllPlacesResponseLiveData().observe(getViewLifecycleOwner(), result -> {
             if (result != null && !result.isError()) {
@@ -461,6 +474,65 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 placeInfoBottomSheetBinding.favoriteEnabled.setVisibility(View.VISIBLE);
                 placeInfoBottomSheetBinding.favoriteDisabled.setVisibility(View.GONE);
                 Toast.makeText(requireActivity(), "Xóa yêu thích thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        autoCompleteViewModel.getAutoCompleteSearchPlaceLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (result != null && !result.isError()) {
+                if (!result.getData().isEmpty()) {
+                    searchPlaceList.clear();
+                    searchPlaceList.addAll(result.getData());
+                    searchPlaceItemAdapter.notifyDataSetChanged();
+                    viewBinding.searchPlaceTitle.setVisibility(View.VISIBLE);
+                } else {
+                    viewBinding.searchPlaceTitle.setVisibility(View.GONE);
+                    searchPlaceList.clear();
+                    searchPlaceItemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        autoCompleteViewModel.getAutoCompleteSearchProvinceLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (result != null && !result.isError()) {
+                if (!result.getData().isEmpty()) {
+                    searchProvinceList.clear();
+                    searchProvinceList.addAll(result.getData());
+                    searchProvinceItemAdapter.notifyDataSetChanged();
+                    viewBinding.searchProvinceTitle.setVisibility(View.VISIBLE);
+                } else {
+                    viewBinding.searchProvinceTitle.setVisibility(View.GONE);
+                    searchProvinceList.clear();
+                    searchProvinceItemAdapter.notifyDataSetChanged();
+                }
+                viewBinding.searchResultContainer.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void setUpAdapter() {
+        viewBinding.searchProvinceList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        searchProvinceItemAdapter = new SearchProvinceItemAdapter(searchProvinceList);
+        viewBinding.searchProvinceList.setAdapter(searchProvinceItemAdapter);
+        searchProvinceItemAdapter.setOnSearchProvinceItemClickListener(province -> {
+            if (province != null) {
+                selectedProvinceName = province.getName();
+                viewBinding.searchInput.setText(selectedProvinceName);
+                viewBinding.searchInput.clearFocus();
+                viewBinding.searchResultContainer.setVisibility(View.GONE);
+                placeViewModel.findAllPlacesByProvinceName(selectedProvinceName);
+            }
+        });
+
+        viewBinding.searchPlaceList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        searchPlaceItemAdapter = new SearchPlaceItemAdapter(searchPlaceList);
+        viewBinding.searchPlaceList.setAdapter(searchPlaceItemAdapter);
+        searchPlaceItemAdapter.setOnSearchPlaceItemClickListener(place -> {
+            if (place != null) {
+                viewBinding.searchInput.setText(place.getName());
+                viewBinding.searchInput.clearFocus();
+                viewBinding.searchResultContainer.setVisibility(View.GONE);
+                focusOnLocation(new LatLng(place.getLatitude(), place.getLongitude()), mapLibreMap, 12, -200);
+                placeViewModel.findPlaceById(place.getId());
             }
         });
     }
@@ -567,6 +639,15 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
             } else {
                 checkPermissions();
             }
+        });
+    }
+
+    private void setUpSearchBar() {
+        viewBinding.searchResultContainer.setVisibility(View.GONE);
+
+        viewBinding.searchInput.setDebouncedSearchListener(query -> {
+            autoCompleteViewModel.autoCompleteSearchProvince(query);
+            autoCompleteViewModel.autoCompleteSearchPlace(query);
         });
     }
 
@@ -998,4 +1079,57 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         int total = coordinates.size();
         return Point.fromLngLat(longitude / total, latitude / total);
     }
+
+    private void clickToProvince(String provinceName, Feature feature) {
+        if (provinceName == null || feature == null) return;
+
+        Geometry geometry = feature.geometry();
+        if (geometry == null) return;
+
+        Point centroid = null;
+        if (geometry instanceof Polygon) {
+            centroid = getCentroidOfPolygon((Polygon) geometry);
+        } else if (geometry instanceof MultiPolygon) {
+            List<Polygon> polygons = ((MultiPolygon) geometry).polygons();
+            if (!polygons.isEmpty()) {
+                centroid = getCentroidOfPolygon(polygons.get(0));
+            }
+        }
+
+        if (centroid != null) {
+            LatLng centerLatLng = new LatLng(centroid.latitude(), centroid.longitude());
+            focusOnLocation(centerLatLng, mapLibreMap, 8.0f);
+        }
+
+        FillLayer selectedLayer = mapStyle.getLayerAs("province-selected");
+        if (selectedLayer == null) return;
+
+        if (provinceName.equals(selectedProvinceName)) {
+            selectedProvinceName = null;
+            selectedLayer.setFilter(eq(get("Name"), literal("")));
+            removePlaceImagesFromMap(mapStyle, placeList);
+            removePlaceMarkers(symbolManager);
+        } else {
+            selectedProvinceName = provinceName;
+            selectedLayer.setFilter(eq(get("Name"), literal(provinceName)));
+            placeViewModel.findAllPlacesByProvinceName(provinceName);
+        }
+    }
+
+    private void simulateMapClickByProvinceName(String provinceName) {
+        if (mapStyle == null || provinceName == null) return;
+
+        GeoJsonSource source = mapStyle.getSourceAs("province-source");
+        if (source == null) return;
+
+        List<Feature> features = source.querySourceFeatures(
+                eq(get("Name"), literal(provinceName))
+        );
+
+        if (features.isEmpty()) return;
+
+        Feature feature = features.get(0);
+        clickToProvince(provinceName, feature);
+    }
+
 }

@@ -437,7 +437,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Giới thiệu"
-            style="@style/Text.Title"
+            style="@style/Text.Title.Medium"
             android:background="@drawable/bg_border_bottom"
             android:paddingBottom="4dp" />
 
@@ -459,6 +459,35 @@
             android:scaleType="centerCrop"
             android:clipToOutline="true"
             android:background="@drawable/bg_radius" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/best_time_visit_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="@dimen/app_margin_medium"
+        android:paddingVertical="@dimen/item_padding_vertical"
+        android:orientation="vertical"
+        android:gravity="start">
+
+        <TextView
+            android:id="@+id/best_time_visit_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nên ghé thăm vào thời điểm nào?"
+            style="@style/Text.Title.Medium"
+            android:background="@drawable/bg_border_bottom"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/best_time_visit_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/place_info_section_small_margin"
+            android:text="Không có thông tin."
+            style="@style/Text.Content" />
 
     </LinearLayout>
 

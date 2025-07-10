@@ -14,6 +14,10 @@ public class PlaceDto {
     private String name;
     private PlaceCategoryDto category;
     private ImageDto coverImage;
+    private int checkInPoint;
+    private float checkInRangeMeter;
+    private boolean verified;
+    private boolean pending;
     private float rating;
     private int feedbackCount;
     private int checkInCount;
@@ -76,6 +80,38 @@ public class PlaceDto {
 
     public void setCoverImage(ImageDto coverImage) {
         this.coverImage = coverImage;
+    }
+
+    public int getCheckInPoint() {
+        return checkInPoint;
+    }
+
+    public void setCheckInPoint(int checkInPoint) {
+        this.checkInPoint = checkInPoint;
+    }
+
+    public float getCheckInRangeMeter() {
+        return checkInRangeMeter;
+    }
+
+    public void setCheckInRangeMeter(float checkInRangeMeter) {
+        this.checkInRangeMeter = checkInRangeMeter;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
     }
 
     public float getRating() {

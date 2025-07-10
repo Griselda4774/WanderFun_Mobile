@@ -6,6 +6,7 @@ import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.data.api.backend.AddressApi;
 import com.example.wanderfunmobile.data.api.backend.AlbumApi;
 import com.example.wanderfunmobile.data.api.backend.AuthApi;
+import com.example.wanderfunmobile.data.api.backend.AutoCompleteApi;
 import com.example.wanderfunmobile.data.api.backend.CheckInApi;
 import com.example.wanderfunmobile.data.api.backend.CloudinaryApi;
 import com.example.wanderfunmobile.data.api.backend.FavoritePlaceApi;
@@ -227,5 +228,20 @@ public class BackendApiModule {
                         .build())
                 .build()
                 .create(FavoritePlaceApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public AutoCompleteApi provideAutoCompleteApi(@ApplicationContext Context context) {
+        String baseUrl = context.getString(R.string.base_url);
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build())
+                .build()
+                .create(AutoCompleteApi.class);
     }
 }

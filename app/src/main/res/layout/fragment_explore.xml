@@ -7,31 +7,32 @@
     tools:context=".presentation.ui.fragment.ExploreFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <org.maplibre.android.maps.MapView
+            android:id="@+id/map_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/map_view"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/gps_button"
             android:layout_width="@dimen/rounded_button_size"
             android:layout_height="@dimen/rounded_button_size"
-            android:gravity="center"
-            android:orientation="horizontal"
             android:layout_marginEnd="@dimen/app_margin_medium"
             android:layout_marginBottom="@dimen/app_margin_medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:background="@drawable/bg_button_rounded_border"
             android:clickable="true"
-            android:stateListAnimator="@animator/touch_opacity_animator">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:stateListAnimator="@animator/touch_opacity_animator"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
                 android:layout_width="@dimen/button_icon_size"
@@ -45,15 +46,15 @@
             android:id="@+id/check_in_button"
             android:layout_width="@dimen/rounded_button_size"
             android:layout_height="@dimen/rounded_button_size"
-            android:gravity="center"
-            android:orientation="horizontal"
             android:layout_marginEnd="@dimen/app_margin_medium"
             android:layout_marginBottom="@dimen/app_margin_medium"
-            app:layout_constraintBottom_toTopOf="@id/gps_button"
-            app:layout_constraintEnd_toEndOf="parent"
             android:background="@drawable/bg_button_rounded_border"
             android:clickable="true"
-            android:stateListAnimator="@animator/touch_opacity_animator">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:stateListAnimator="@animator/touch_opacity_animator"
+            app:layout_constraintBottom_toTopOf="@id/gps_button"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
                 android:layout_width="@dimen/button_icon_size"
@@ -63,55 +64,112 @@
 
         </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="@dimen/app_margin_medium"
             android:layout_marginTop="@dimen/app_margin_medium"
-            android:paddingHorizontal="@dimen/input_padding"
-            android:background="@drawable/bg_search_bar">
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/search_bar_app_logo"
-                android:layout_width="@dimen/search_bar_icon_size"
-                android:layout_height="@dimen/search_bar_icon_size"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/search_bar_input"
-                android:src="@drawable/ic_app_logo_rounded" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/search_bar_input"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/search_bar_app_logo"
-                app:layout_constraintEnd_toStartOf="@id/search_bar_user_avatar">
+                android:background="@drawable/bg_search_bar"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/input_padding">
 
-                <include layout="@layout/edittext_search_place" />
+                <ImageView
+                    android:layout_width="@dimen/search_bar_icon_size"
+                    android:layout_height="@dimen/search_bar_icon_size"
+                    android:src="@drawable/ic_app_logo_rounded" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.example.wanderfunmobile.presentation.ui.custom.inputs.DebouncedSearchEditText
+                    android:id="@+id/search_input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edit_text_light"
+                    android:cursorVisible="true"
+                    android:hint="Tìm kiếm địa điểm"
+                    android:inputType="text"
+                    android:padding="@dimen/input_padding"
+                    android:textCursorDrawable="@drawable/edit_text_cursor"
+                    style="@style/Text.Content"/>
 
-            <ImageView
-                android:id="@+id/search_bar_user_avatar"
-                android:layout_width="@dimen/search_bar_icon_size"
-                android:layout_height="@dimen/search_bar_icon_size"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/search_bar_input"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:background="@drawable/bg_img_rounded"
-                android:scaleType="centerCrop"
-                android:clipToOutline="true"
-                android:src="@drawable/ic_avatar" />
+                <ImageView
+                    android:id="@+id/search_bar_user_avatar"
+                    android:layout_width="@dimen/search_bar_icon_size"
+                    android:layout_height="@dimen/search_bar_icon_size"
+                    android:background="@drawable/bg_img_rounded"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_avatar" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/search_result_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:orientation="vertical"
+                android:background="@drawable/bg_search_result"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/search_province_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tìm kiếm theo tỉnh"
+                    android:paddingVertical="4dp"
+                    android:textStyle="bold"
+                    style="@style/Text.Content" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/search_province_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:scrollbars="none"
+                    android:overScrollMode="ifContentScrolls"/>
+
+                <TextView
+                    android:id="@+id/search_place_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tìm kiếm địa điểm"
+                    android:paddingVertical="4dp"
+                    android:textStyle="bold"
+                    style="@style/Text.Content" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/search_place_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:scrollbars="none"
+                    android:overScrollMode="ifContentScrolls"/>
+
+                <TextView
+                    android:id="@+id/search_all_places"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:paddingStart="8dp"
+                    android:text="Tìm tất cả địa điểm với từ khóa"
+                    style="@style/Text.Content"
+                    android:background="@drawable/effect_ripple"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -127,6 +185,8 @@
         android:id="@+id/selection_dialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:layout_anchor="@+id/constraintLayout"
+        app:layout_anchorGravity="center" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
