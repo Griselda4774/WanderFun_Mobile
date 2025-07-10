@@ -10,6 +10,8 @@ public class MiniPlaceDto {
     private Long id;
     private String name;
     private ImageDto coverImage;
+    private double longitude;
+    private double latitude;
     private AddressDto address;
     private float rating;
 
@@ -33,6 +35,22 @@ public class MiniPlaceDto {
 
     public ImageDto getCoverImage() {
         return coverImage;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     public void setCoverImage(ImageDto coverImage) {
