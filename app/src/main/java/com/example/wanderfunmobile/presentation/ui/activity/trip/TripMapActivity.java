@@ -71,8 +71,10 @@ import org.maplibre.android.location.permissions.PermissionsManager;
 import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.maps.OnMapReadyCallback;
 import org.maplibre.android.maps.Style;
+import org.maplibre.android.plugins.annotation.Symbol;
 import org.maplibre.android.plugins.annotation.SymbolManager;
 import org.maplibre.android.plugins.annotation.SymbolOptions;
+import org.maplibre.android.style.layers.Layer;
 import org.maplibre.android.style.layers.LineLayer;
 import org.maplibre.android.style.layers.Property;
 import org.maplibre.android.style.layers.PropertyFactory;
@@ -83,6 +85,7 @@ import org.maplibre.geojson.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -91,13 +94,13 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class TripMapActivity extends AppCompatActivity implements OnMapReadyCallback {
     private ActivityTripMapBinding binding;
-    private TripViewModel tripViewModel;
     private GoongViewModel goongViewModel;
     private Style mapStyle;
     private String mapStyleUrl;
     private long lastUpdateTime = 0;
     private Location currentLocation;
     private SymbolManager symbolManager;
+    private final List<Symbol> tripPlaceSymbols = new ArrayList<>();
     private List<TripPlace> tripPlaceList = new ArrayList<>();
     @Inject
     Gson gson;
@@ -119,9 +122,17 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
             return insets;
         });
 
-        setUpRequestPermissionsLauncher();
         initViewModels();
+        setUpMapView(savedInstanceState);
 
+        binding.backButton.button.setOnClickListener(v -> {
+            finish();
+        });
+    }
+
+    private void initViewModels() {
+        TripViewModel tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
+        goongViewModel = new ViewModelProvider(this).get(GoongViewModel.class);
 
         Long tripId = getIntent().getLongExtra("tripId", -1);
         if (tripId != -1) {
@@ -130,26 +141,6 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
             Toast.makeText(this, "Không tìm thấy chuyến đi!", Toast.LENGTH_SHORT).show();
             finish();
         }
-
-        setUpMapView(savedInstanceState);
-    }
-
-    private void setUpRequestPermissionsLauncher() {
-        ActivityResultLauncher<String[]> requestPermissionsLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestMultiplePermissions(),
-                result -> {
-                    Boolean isLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
-
-                    if (Boolean.FALSE.equals(isLocationGranted)) {
-                        Toast.makeText(this, "Quyền truy cập bị từ chối!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-    }
-
-    private void initViewModels() {
-        tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
-        goongViewModel = new ViewModelProvider(this).get(GoongViewModel.class);
 
         tripViewModel.getTripByIdResponseLiveData().observe(this, response -> {
             if (response != null && !response.isError() && response.getData() != null) {
@@ -329,23 +320,6 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
         });
     }
 
-    private void addTripPlaceImageToMap(Context context, Style style, List<TripPlace> tripPlaceList) {
-        for (TripPlace tripPlace : tripPlaceList) {
-            String transformUrl = MediaManager.get().url()
-                    .transformation(new Transformation<>()
-                            .width(160)
-                            .height(160)
-                            .crop("thumb")
-                            .radius("max")
-                            .background("transparent")
-                            .fetchFormat("png"))
-                    .generate(tripPlace.getPlace().getCoverImage().getImagePublicId());
-            BitMapUtil.getBitMapFromUrl(context, transformUrl, bitmap -> {
-                style.addImage(tripPlace.getPlace().getCoverImage().getImagePublicId(), bitmap);
-            });
-        }
-    }
-
     private void drawPlaceMarker(SymbolManager symbolManager, List<TripPlace> tripPlaceList) {
         for (int i = 0; i < tripPlaceList.size(); i++) {
             if (i == 0 || i == tripPlaceList.size() - 1) {
@@ -362,7 +336,7 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
         data.addProperty("title", "Trip Place Marker");
         data.add("tripPlace", tripPlaceJson);
 
-        symbolManager.create(new SymbolOptions()
+        Symbol symbol = symbolManager.create(new SymbolOptions()
                 .withLatLng(new LatLng(tripPlace.getPlace().getLatitude(), tripPlace.getPlace().getLongitude()))
                 .withIconImage(markerIcon)
                 .withData(data)
@@ -376,6 +350,8 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
                 .withTextAnchor(Property.TEXT_ANCHOR_CENTER)
                 .withTextOffset(new Float[]{0f, 3f})
         );
+
+        tripPlaceSymbols.add(symbol);
     }
 
     private void drawRouteOnMap(List<LatLng> latLngs) {
@@ -400,7 +376,7 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
                     routeLayer.setProperties(
                             PropertyFactory.lineColor(ContextCompat.getColor(this, R.color.blue2)),
                             PropertyFactory.lineWidth(4f),
-                            PropertyFactory.lineOpacity(0.5f),
+                            PropertyFactory.lineOpacity(0.3f),
                             PropertyFactory.lineCap(LINE_CAP_ROUND),
                             PropertyFactory.lineJoin(LINE_JOIN_ROUND)
                     );
@@ -409,4 +385,5 @@ public class TripMapActivity extends AppCompatActivity implements OnMapReadyCall
             });
         });
     }
+
 }

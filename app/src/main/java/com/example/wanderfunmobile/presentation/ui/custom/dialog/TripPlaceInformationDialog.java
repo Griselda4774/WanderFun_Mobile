@@ -10,19 +10,27 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.bumptech.glide.Glide;
+import com.example.wanderfunmobile.R;
 import com.example.wanderfunmobile.core.util.DateTimeUtil;
 import com.example.wanderfunmobile.core.util.StringUtil;
 import com.example.wanderfunmobile.databinding.DialogPlaceSelectionBinding;
 import com.example.wanderfunmobile.databinding.DialogTripPlaceInformationBinding;
+import com.example.wanderfunmobile.domain.model.places.Place;
 import com.example.wanderfunmobile.domain.model.trips.TripPlace;
+import com.example.wanderfunmobile.presentation.viewmodel.CheckInViewModel;
+import com.example.wanderfunmobile.presentation.viewmodel.places.PlaceViewModel;
 
 public class TripPlaceInformationDialog extends Dialog {
 
     private DialogTripPlaceInformationBinding binding;
-
+    private PlaceViewModel placeViewModel;
     private TripPlace tripPlace;
+    private Place selectedPlace;
 
     public TripPlaceInformationDialog(@NonNull Context context, TripPlace tripPlace) {
         super(context);
@@ -47,6 +55,25 @@ public class TripPlaceInformationDialog extends Dialog {
 
         setupDismissSpace();
         setupTripPlaceInformation();
+        setupViewModel(context);
+
+        binding.innerContainer.setOnClickListener(view -> {
+            placeViewModel.findPlaceById(tripPlace.getPlace().getId());
+
+            if (selectedPlace != null) {
+                PlaceInformationDialog placeInformationDialog = new PlaceInformationDialog(context, selectedPlace);
+                placeInformationDialog.show();
+            }
+        });
+    }
+
+    private void setupViewModel(Context context) {
+        placeViewModel =  new ViewModelProvider((ViewModelStoreOwner) context).get(PlaceViewModel.class);
+        placeViewModel.getFindPlaceByIdResponseLiveData().observe((LifecycleOwner) context, result -> {
+            if (!result.isError()) {
+                selectedPlace = result.getData();
+            }
+        });
     }
 
     private void setupDismissSpace(){
@@ -69,5 +96,4 @@ public class TripPlaceInformationDialog extends Dialog {
                 .load(tripPlace.getPlace().getCoverImage().getImageUrl())
                 .into(binding.tripPlaceImage);
     }
-
 }
